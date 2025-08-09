@@ -1,0 +1,14 @@
+:root {
+  /* Brand tokens from client (desktop) */
+  --color-primary: #1b3a4e;      /* Azul principal */
+  --color-border: #788e9e;       /* Borde/mini-bordes gris */
+  --color-accent: #1b3a4e;       /* Usamos el mismo para coherencia */
+  --color-text: #0e1a20;         /* Texto principal oscuro */
+  --color-text-inv: #ffffff;     /* Texto sobre primario */
+  --color-bg: #ffffff;           /* Fondo claro (desktop) */
+  --color-surface: #f7fafc;      /* Superficie suave */
+  --color-surface-2: #f0f4f7;    /* Superficie alternativa */
+
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(0,0,0,0.08);
+}

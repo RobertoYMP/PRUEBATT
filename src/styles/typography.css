@@ -1,0 +1,52 @@
+/* Caslon 2000 font-face declarations (drop files in /public/fonts) */
+@font-face {
+  font-family: 'Caslon 2000';
+  src: url('/fonts/Caslon2000-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Caslon 2000';
+  src: url('/fonts/Caslon2000-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Caslon 2000';
+  src: url('/fonts/Caslon2000-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Caslon 2000';
+  src: url('/fonts/Caslon2000-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Base typography */
+:root {
+  --font-family: 'Caslon 2000', serif;
+}
+
+h1,h2,h3,h4,h5,h6 { font-weight: 700; letter-spacing: .2px; }
+p,li,td,th,button,input,select,textarea { font-weight: 400; }
+
+/* Fluid scale using clamp() for headings and body */
+:root{
+  --fs-xxl: clamp(28px, 2vw + 16px, 40px); /* H1 */
+  --fs-xl:  clamp(22px, 1.6vw + 14px, 32px); /* H2 */
+  --fs-lg:  clamp(18px, 1.1vw + 12px, 24px); /* H3 */
+  --fs-md:  clamp(16px, 0.7vw + 10px, 20px); /* body large */
+  --fs-sm:  clamp(14px, 0.4vw + 8px, 16px);  /* body */
+  --lh-tight: 1.15;
+  --lh-base: 1.45;
+}
+h1{font-size:var(--fs-xxl); line-height:var(--lh-tight); margin:0 0 12px}
+h2{font-size:var(--fs-xl); line-height:var(--lh-tight); margin:0 0 10px}
+h3{font-size:var(--fs-lg); line-height:var(--lh-tight); margin:0 0 8px}
+p,li,td,th,button,input,select,textarea{font-size:var(--fs-sm); line-height:var(--lh-base)}
