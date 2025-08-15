@@ -23,6 +23,7 @@ import NewSpecialist from './pages/admin/NewSpecialist.jsx'
 import EditSpecialist from './pages/admin/EditSpecialist.jsx'
 import PatientProfile from './pages/admin/PatientProfile.jsx'
 import SpecialistProfile from './pages/admin/SpecialistProfile.jsx'
+import RequireRole from './components/RequireRole.jsx'
 
 export default function App() {
   return (
@@ -37,28 +38,28 @@ export default function App() {
           <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="/reset" element={<ResetPassword />} />
 
-          {/* Paciente */}
-          <Route path="/app" element={<Dashboard />} />
-          <Route path="/app/upload" element={<Upload />} />
-          <Route path="/app/history" element={<History />} />
-          <Route path="/app/notifications" element={<Notifications />} />
-          <Route path="/app/specialists" element={<Specialists />} />
-          <Route path="/app/results" element={<PrediagResults />} />
-          <Route path="/app/charts" element={<PrediagCharts />} />
-          <Route path="/app/recommendations" element={<Recommendations />} />
-          <Route path="/app/manual" element={<ManualEntry />} />
+          {/* Paciente (solo rol patient) */}
+          <Route path="/app" element={<RequireRole role="patient"><Dashboard /></RequireRole>} />
+          <Route path="/app/upload" element={<RequireRole role="patient"><Upload /></RequireRole>} />
+          <Route path="/app/history" element={<RequireRole role="patient"><History /></RequireRole>} />
+          <Route path="/app/notifications" element={<RequireRole role="patient"><Notifications /></RequireRole>} />
+          <Route path="/app/specialists" element={<RequireRole role="patient"><Specialists /></RequireRole>} />
+          <Route path="/app/results" element={<RequireRole role="patient"><PrediagResults /></RequireRole>} />
+          <Route path="/app/charts" element={<RequireRole role="patient"><PrediagCharts /></RequireRole>} />
+          <Route path="/app/recommendations" element={<RequireRole role="patient"><Recommendations /></RequireRole>} />
+          <Route path="/app/manual" element={<RequireRole role="patient"><ManualEntry /></RequireRole>} />
 
-          {/* Médico */}
-          <Route path="/doctor" element={<DoctorDashboard />} />
-          <Route path="/doctor/reviews" element={<ReviewHistory />} />
-          <Route path="/doctor/edit-recommendations" element={<EditRecommendations />} />
+          {/* Médico (solo rol doctor) */}
+          <Route path="/doctor" element={<RequireRole role="doctor"><DoctorDashboard /></RequireRole>} />
+          <Route path="/doctor/reviews" element={<RequireRole role="doctor"><ReviewHistory /></RequireRole>} />
+          <Route path="/doctor/edit-recommendations" element={<RequireRole role="doctor"><EditRecommendations /></RequireRole>} />
 
-          {/* Admin */}
-          <Route path="/admin/users" element={<Users />} />
-          <Route path="/admin/new-specialist" element={<NewSpecialist />} />
-          <Route path="/admin/edit-specialist" element={<EditSpecialist />} />
-          <Route path="/admin/patient-profile" element={<PatientProfile />} />
-          <Route path="/admin/specialist-profile" element={<SpecialistProfile />} />
+          {/* Admin (solo rol admin) */}
+          <Route path="/admin/users" element={<RequireRole role="admin"><Users /></RequireRole>} />
+          <Route path="/admin/new-specialist" element={<RequireRole role="admin"><NewSpecialist /></RequireRole>} />
+          <Route path="/admin/edit-specialist" element={<RequireRole role="admin"><EditSpecialist /></RequireRole>} />
+          <Route path="/admin/patient-profile" element={<RequireRole role="admin"><PatientProfile /></RequireRole>} />
+          <Route path="/admin/specialist-profile" element={<RequireRole role="admin"><SpecialistProfile /></RequireRole>} />
 
           <Route path="*" element={<div className="card"><h2>404</h2><p>Página no encontrada.</p></div>} />
         </Routes>

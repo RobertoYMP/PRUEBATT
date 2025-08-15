@@ -9,28 +9,45 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  async function onSubmit(e){
+  async function onSubmit(e) {
     e.preventDefault()
     setError('')
     try {
-      await login({ email, password })
-      nav('/app')
+      const res = await login({ email, password })
+      const role = res.session?.role
+      if (role === 'admin') return nav('/admin/users')
+      if (role === 'doctor') return nav('/doctor')
+      return nav('/app') // patient
     } catch (err) {
       setError(err.message)
     }
   }
 
   return (
-    <div className="card stack" style={{maxWidth: 480, margin: '40px auto'}}>
+    <div className="card stack" style={{ maxWidth: 480, margin: '40px auto' }}>
       <h2>Iniciar sesión</h2>
-      <p style={{color:'var(--color-muted)'}}>Consulta nuestros términos y condiciones</p>
+      <p className="badge estable">
+        Demo: Admin → usuario <b>admin</b> / <b>admin12</b> · Doctor → usuario <b>doctor</b> / <b>doctor12</b>
+      </p>
       {error && <div className="badge critico">{error}</div>}
       <form onSubmit={onSubmit} className="stack">
-        <FormField label="Correo electrónico" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
-        <FormField label="Contraseña" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
+        <FormField
+          label="Usuario"
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <FormField
+          label="Contraseña"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button className="btn" type="submit">Iniciar Sesión</button>
       </form>
-      <div className="row" style={{justifyContent:'space-between'}}>
+      <div className="row" style={{ justifyContent: 'space-between' }}>
         <Link to="/forgot">¿Has olvidado tu contraseña?</Link>
         <Link to="/register">Registrarse</Link>
       </div>
