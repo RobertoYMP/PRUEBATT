@@ -1,0 +1,35 @@
+.header-button {
+    background: linear-gradient(to right, var(--light-blue) 100%, var(--color-secundary) 0%);
+    background-size: 200% auto;
+    color: #fff;
+    padding: var(--padding-button);
+    border: none;
+    text-decoration: none;
+    text-align: center;
+    margin: var(--margin-header);
+    transition: background-position 0.4s ease-in-out;
+}
+
+.header-button:hover {
+    text-decoration: none;
+    background: linear-gradient(to right, var(--light-blue), var(--color-secundary));
+    background-size: 200% auto;
+    background-position: right center;
+    transition: background-position 0.4s ease-in-out;
+}
+
+.header-button-primary {
+    color: #fff;
+    padding: var(--padding-button);
+    border: none;
+    text-decoration: none;
+    text-align: center;
+    margin: var(--margin-header);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.header-button-primary:hover {
+    text-decoration: none;
+    background-color: var(--color-secundary);
+    transition: background-color 0.2s ease-in-out;
+}

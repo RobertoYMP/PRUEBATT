@@ -1,14 +1,26 @@
 :root {
-  /* Brand tokens from client (desktop) */
-  --color-primary: #1b3a4e;      /* Azul principal */
-  --color-border: #788e9e;       /* Borde/mini-bordes gris */
-  --color-accent: #1b3a4e;       /* Usamos el mismo para coherencia */
-  --color-text: #0e1a20;         /* Texto principal oscuro */
-  --color-text-inv: #ffffff;     /* Texto sobre primario */
-  --color-bg: #ffffff;           /* Fondo claro (desktop) */
-  --color-surface: #f7fafc;      /* Superficie suave */
-  --color-surface-2: #f0f4f7;    /* Superficie alternativa */
+  --color-primary: #102d40;      
+  --color-secundary: #2c516a;
+  --light-blue: #8facbf;
+  --extra-blue: #cedfea;
+  --color-border: #788e9e;       
+  --color-accent: #1b3a4e;       
+  --color-text: #000;         
+  --color-text-inv: #ffffff;     
+  --color-bg: #ffffff;           
+  --color-surface: #f7fafc;      
+  --color-surface-2: #f0f4f7;    
 
   --radius: 12px;
   --shadow: 0 8px 24px rgba(0,0,0,0.08);
+  --bottom-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.3);
+
+  --header-height: 3rem;
+  --half-radius: 50px;
+  --default-radius: 10px;
+  --padding: 1rem;
+  --padding-header: 10px;
+  --padding-button: 8px;
+  --default-gap: 10px;
+  --margin-header: 0 15px 0 15px;
 }

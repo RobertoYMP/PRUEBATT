@@ -1,0 +1,100 @@
+.appbar-container {
+    display: flex;
+    height: var(--header-height); 
+    align-items: center;
+    background: linear-gradient(to right, var(--color-secundary), var(--color-primary)); 
+    position: sticky; 
+    top: 0; 
+    z-index: 10;
+    color: #fff;
+    box-shadow: var(--bottom-shadow);
+}
+
+.brand-container {
+    background-color: #fff;
+    height: 100%;
+    width: 25%;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    gap: var(--default-gap);
+    border-top-right-radius: var(--half-radius);
+    border-bottom-right-radius: var(--half-radius);
+    color: var(--color-text);
+    padding: var(--padding-header);
+}
+
+.name-brand, .logo-brand {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-container, .nav-toggle-container {
+    display: flex;
+    width: 75%;
+    justify-content: end;
+}
+
+.card-menu-container-open, .card-menu-container-close {
+    position: absolute;
+    justify-self: anchor-center;
+    justify-items: center;
+    width: 90%;
+    background-color: var(--extra-blue);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.5s;
+}
+
+.card-menu-container-open .row, .card-menu-container-close .row {
+    width: 100%;
+    display: block;
+    text-align: center;
+    justify-items: center;
+}
+
+.card-menu-container-open .row .row-content, .card-menu-container-close .row .row-content{
+    display: grid;
+    gap: 1px;
+    width: 100%;
+}
+
+.card-menu-container-open .row .row-content a, .card-menu-container-close .row .row-content a{
+    width: 100%;
+    padding: var(--padding-header);
+    border-radius: var(--default-radius);
+    transition: background-color 0.8s;
+}
+
+.card-menu-container-open .row .row-content a:hover, .card-menu-container-close .row .row-content a:hover {
+    text-decoration: none;
+    background-color: var(--light-blue);
+    border-radius: var(--default-radius);
+    transition: background-color 0.8s;
+}
+
+.card-menu-container-open {
+    transform: translateY(3.2rem);
+    transition: transform 0.5s;
+}
+
+.card-menu-container-close {
+    transform: translateY(-150%);
+    transition: transform 0.5s;
+}
+
+@media (max-width: 1023px){
+    .menu-container { 
+        display: none;
+    }
+    .brand-container {
+        width: 100%;
+    }
+}
+@media (min-width: 1024px){
+    .nav-toggle-container { 
+        display: none;
+    }
+}

@@ -13,22 +13,6 @@ a:hover { text-decoration: underline; }
 .layout { display: grid; grid-template-rows: auto 1fr auto; min-height: 100vh; }
 .container { width: 1280px; max-width: 92%; margin: 24px auto; }
 
-header.appbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 24px;
-  background: #fff; position: sticky; top: 0; z-index: 10;
-  border-bottom: 1px solid var(--color-border);
-}
-header .brand { display:flex; gap:12px; align-items:center; }
-header .brand .logo {
-  width: 36px; height: 36px; border-radius: 8px;
-  background: var(--color-primary);
-  display:grid; place-items:center; color: var(--color-text-inv); font-weight: 700;
-  border: 1px solid var(--color-border);
-}
-header nav a { margin-left: 12px; padding: 8px 12px; border-radius: 8px; }
-header nav a:hover { background: rgba(120,142,158,0.12); }
-
 footer {
   padding: 24px; text-align: center; color: #3a4b57; background: #fff;
   border-top: 1px solid var(--color-border);
@@ -41,6 +25,7 @@ footer {
   padding: 20px;
   box-shadow: var(--shadow);
 }
+
 .stack { display: grid; gap: 16px; }
 .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
 
@@ -87,15 +72,10 @@ footer {
 @media (max-width: 1023px){
   .container{ width: 100%; max-width: 92%; }
   .row{ gap: 10px; }
-  header .brand .logo{ width: 32px; height: 32px; }
-  nav.primary{ display:none; }
-  button.nav-toggle{ display:inline-flex; }
   .table-wrap{ overflow-x:auto; border:1px solid var(--color-border); border-radius: var(--radius); }
   .table{ min-width: 640px; }
   .stack-2{ display:grid; grid-template-columns: 1fr; gap: 12px; }
 }
 @media (min-width: 1024px){
-  button.nav-toggle{ display:none; }
-  nav.primary{ display:flex; }
   .stack-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 }
