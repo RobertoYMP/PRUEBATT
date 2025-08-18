@@ -30,6 +30,12 @@
     justify-content: center;
 }
 
+.logo-brand img {
+    max-height: 3rem;
+    top: 0;
+    position: absolute;
+}
+
 .menu-container, .nav-toggle-container {
     display: flex;
     width: 75%;

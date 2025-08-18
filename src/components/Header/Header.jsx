@@ -21,9 +21,10 @@ export default function Header() {
     <>
       <header className="appbar-container">
         <div className="brand-container">
-          <div className='name-brand'>MEDICTT
+          <div className='name-brand'>HEMATEC</div>
+          <div className="logo-brand">
+            <img src='/Logo/whiteLogo.png'/>
           </div>
-          <div className="logo-brand">Logo</div>
         </div>
 
         <div className='nav-toggle-container'>

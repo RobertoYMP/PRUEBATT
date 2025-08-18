@@ -1,0 +1,10 @@
+footer {
+    padding: 5px; 
+    text-align: center; 
+    color: #fff; 
+    background: var(--color-primary);
+    box-shadow: var(--top-shadow);
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: var(--grid-default);
+}

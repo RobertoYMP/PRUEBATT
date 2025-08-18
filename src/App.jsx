@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Header from './components/Header/Header.jsx'
-import Footer from './components/Footer.jsx'
+import Footer from './components/Footer/Footer.jsx'
 import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
 import ForgotPassword from './pages/auth/ForgotPassword.jsx'
