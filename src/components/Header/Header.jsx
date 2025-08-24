@@ -21,9 +21,41 @@ export default function Header() {
     <>
       <header className="appbar-container">
         <div className="brand-container">
-          <div className='name-brand'>HEMATEC</div>
+          <div className='name-brand'>
+            {!loggedIn &&
+              <Link to="/" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+            }
+            {loggedIn && role === 'patient' &&
+              <Link to="/app" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+            }
+            {loggedIn && role === 'doctor' &&
+              <Link to="/doctor" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+            }
+            {loggedIn && role === 'admin' &&
+              <Link to="/admin/users" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+            }
+          </div>
           <div className="logo-brand">
-            <img src='/Logo/whiteLogo.png'/>
+            {!loggedIn &&
+              <Link to="/" style={{ textDecoration: 'none' }}>
+                <img src='/Logo/whiteLogo.png'/>
+              </Link>
+            }
+            {loggedIn && role === 'patient' &&
+              <Link to="/app" style={{ textDecoration: 'none' }}>
+                <img src='/Logo/whiteLogo.png'/>
+              </Link>
+            }
+            {loggedIn && role === 'doctor' &&
+              <Link to="/doctor" style={{ textDecoration: 'none' }}>
+                <img src='/Logo/whiteLogo.png'/>
+              </Link>
+            }
+            {loggedIn && role === 'admin' &&
+              <Link to="/admin/users" style={{ textDecoration: 'none' }}>
+                <img src='/Logo/whiteLogo.png'/>
+              </Link>
+            }
           </div>
         </div>
 

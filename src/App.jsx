@@ -11,7 +11,7 @@ import Dashboard from './pages/patient/Dashboard.jsx'
 import Upload from './pages/patient/Upload.jsx'
 import History from './pages/patient/History.jsx'
 import Notifications from './pages/patient/Notifications.jsx'
-import Specialists from './pages/patient/Specialists.jsx'
+import Specialists from './pages/specialists/Specialists.jsx'
 import PrediagResults from './pages/patient/PrediagResults.jsx'
 import PrediagCharts from './pages/patient/PrediagCharts.jsx'
 import Recommendations from './pages/patient/Recommendations.jsx'
@@ -34,6 +34,7 @@ export default function App() {
         <Routes>
           {/* Auth */}
           <Route path="/" element={<Home />} />
+          <Route path='/specialists' element={<Specialists />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<ForgotPassword />} />
