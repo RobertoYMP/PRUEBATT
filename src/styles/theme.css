@@ -14,12 +14,15 @@
   --radius: 12px;
   --shadow: 0 8px 24px rgba(0,0,0,0.08);
   --bottom-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.3);
+  --box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   --top-shadow: 0px -2.5px 5px rgba(0, 0, 0, 0.3);
 
   --header-height: 3rem;
   --half-radius: 50px;
   --default-radius: 10px;
+  --card-radius: 25px;
   --padding: 1rem;
+  --big-padding: 1.5rem;
   --padding-header: 10px;
   --padding-button: 8px;
   --default-gap: 10px;
