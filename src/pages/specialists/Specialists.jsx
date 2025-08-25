@@ -1,6 +1,11 @@
+import { useState } from 'react'
 import './Specialists.css'
+import '../../components/Popup/Popup'
+import { Popup } from '../../components/Popup/Popup'
 
 export default function Specialists(){
+  const [error, setError] = useState(false)
+
   const items = [
     { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
     { nombre:'Dr. Juan López', especialidad:'Hematología', tel:'55 9876 5432', email:'juan@example.com' },
@@ -9,8 +14,15 @@ export default function Specialists(){
     { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
     { nombre:'Dr. Juan López', especialidad:'Hematología', tel:'55 9876 5432', email:'juan@example.com' },
   ]
+
   return (
-    <div className='specialists-container'>
+    <>
+      {error && (
+        <Popup
+          width={"30rem"}
+        />
+      )}
+      <div className='specialists-container'>
       <h2>Nuestros especialistas</h2>
       <div className='specialists-cards-container'>
         {items.map((x,i)=> (
@@ -24,5 +36,6 @@ export default function Specialists(){
         ))}
       </div>
     </div>
+    </>
   )
 }

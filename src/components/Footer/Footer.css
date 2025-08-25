@@ -7,4 +7,5 @@ footer {
     display: grid;
     grid-template-columns: repeat(2, auto);
     gap: var(--grid-default);
+    z-index: 10;
 }
