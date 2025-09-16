@@ -41,12 +41,24 @@ a:hover { text-decoration: underline; }
 .btn.danger { background: #C62828; color:#fff; }
 
 .field label { display:block; font-size:.95rem; color: #3a4b57; margin-bottom:6px; }
+
 .field input, .field select, .field textarea {
-  width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--color-border);
-  background:#fff; color:var(--color-text); outline:none;
+  width: 100%; 
+  padding: 12px 14px; 
+  border-radius: 10px; 
+  border: solid 3px var(--color-secundary);
+  background:#fff; 
+  color: var(--color-text); 
+  outline:none;
 }
+
 .field input:focus, .field select:focus, .field textarea:focus {
-  border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(27,58,78,0.15);
+  border-color: var(--color-primary); 
+  box-shadow: 0 0 0 3px rgba(27,58,78,0.15);
+}
+
+.field select option {
+  background-color: var(--extra-blue);
 }
 
 .table { width:100%; border-collapse: collapse; }

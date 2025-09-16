@@ -4,7 +4,7 @@ import '../../components/Popup/Popup'
 import { Popup } from '../../components/Popup/Popup'
 
 export default function Specialists(){
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(true)
 
   const items = [
     { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },

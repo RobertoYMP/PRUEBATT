@@ -74,8 +74,13 @@ export default function Header() {
               <div className='row-content'>
                 {!loggedIn && (
                   <>
-                    <Link to="/login" onClick={() => setOpen(false)}>Iniciar sesión</Link>
-                    <Link to="/register" onClick={() => setOpen(false)}>Registrarse</Link>
+                    {location.pathname === "/register" ? (
+                      <Link to="/login" onClick={() => setOpen(false)}>Iniciar sesión</Link>
+                    ) : location.pathname === "/login" ? (
+                      <Link to="/register" onClick={() => setOpen(false)}>Registrarse</Link>
+                    ) : (
+                      <><Link to="/login" onClick={() => setOpen(false)}>Iniciar sesión</Link><Link to="/register" onClick={() => setOpen(false)}>Registrarse</Link></>
+                    )}
                   </>
                 )}
                 {loggedIn && role === 'patient' && (
@@ -111,22 +116,44 @@ export default function Header() {
         <nav className="menu-container">
           {!loggedIn && (
             <>
-              <Button
-                as={Link} 
-                to="/login"  
-                typeButton={'header-button-primary'} 
-                content={"Iniciar sesión"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-              <Button
-                as={Link} 
-                to="/register"  
-                typeButton={'header-button'} 
-                content={"Registrarse"} 
-                width={"7rem"}
-                borderRadius={"var(--half-radius)"}
-              />
+              {location.pathname === "/register" ? (
+                <Button
+                  as={Link}
+                  to="/login"
+                  typeButton={"header-button-primary"}
+                  content={"Iniciar sesión"}
+                  width={"7rem"}
+                  borderRadius={"var(--default-radius)"}
+                />
+              ) : location.pathname === "/login" ? (
+                <Button
+                  as={Link}
+                  to="/register"
+                  typeButton={"header-button"}
+                  content={"Registrarse"}
+                  width={"7rem"}
+                  borderRadius={"var(--half-radius)"}
+                />
+              ) : (
+                <>
+                  <Button
+                    as={Link}
+                    to="/login"
+                    typeButton={"header-button-primary"}
+                    content={"Iniciar sesión"}
+                    width={"7rem"}
+                    borderRadius={"var(--default-radius)"}
+                  />
+                  <Button
+                    as={Link}
+                    to="/register"
+                    typeButton={"header-button"}
+                    content={"Registrarse"}
+                    width={"7rem"}
+                    borderRadius={"var(--half-radius)"}
+                  />
+                </>
+              )}
             </>
           )}
 

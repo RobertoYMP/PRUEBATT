@@ -1,0 +1,51 @@
+.register-card {
+    max-width: 480px;
+    margin: auto;
+    background-color: var(--color-secundary);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-radius);
+    display: grid;
+    gap: 1rem;
+    padding-bottom: var(--big-padding);
+    padding-top: 2rem;
+}
+
+.register-logo {
+    max-width: 480px;
+    margin: auto;
+    display: grid;
+    justify-content: center;
+}
+
+.register-header {
+    color: #fff;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.register-logo .logo-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: -50px;
+    background-color: var(--color-secundary);
+    box-shadow: var(--box-shadow);
+    border-radius: 50%;
+    color: #fff;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    font-size: 55px;
+}
+
+.register-button {
+    font-family: var(--font-family, 'Caslon 2000'), serif;
+    border-radius: var(--default-radius);
+    max-width: 50%;
+    margin: auto;
+    margin-top: var(--big-padding);
+}
+
+.top-margin {
+    margin-top: 1rem;
+}

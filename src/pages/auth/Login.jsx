@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
 import { login } from '../../mock/api.js'
+import '../../styles/login.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 export default function Login() {
   const nav = useNavigate()
@@ -24,32 +27,42 @@ export default function Login() {
   }
 
   return (
-    <div className="card stack" style={{ maxWidth: 480, margin: '40px auto' }}>
-      <h2>Iniciar sesión</h2>
-      <p className="badge estable">
-        Demo: Admin → usuario <b>admin</b> / <b>admin12</b> · Doctor → usuario <b>doctor</b> / <b>doctor12</b>
-      </p>
-      {error && <div className="badge critico">{error}</div>}
-      <form onSubmit={onSubmit} className="stack">
-        <FormField
-          label="Usuario"
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <FormField
-          label="Contraseña"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button className="btn" type="submit">Iniciar Sesión</button>
-      </form>
-      <div className="row" style={{ justifyContent: 'space-between' }}>
-        <Link to="/forgot">¿Has olvidado tu contraseña?</Link>
-        <Link to="/register">Registrarse</Link>
+    <div className='login-container'>
+      <div className='login-logo'>
+        <div className='logo-container'>
+          <FontAwesomeIcon icon={faUser} />
+        </div>
+      </div>
+      <div className="login-card">
+        <div className='login-header'>
+          <div className='login-tittle'>
+            <h2>Iniciar Sesión</h2>
+          </div>
+        </div>
+        <div className='body-login-card'>
+          {error && <div className="badge critico">{error}</div>}
+          <form onSubmit={onSubmit} className="stack top-margin">
+            <FormField
+              label="Usuario:"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <FormField
+              label="Contraseña:"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button className="button-primary login-button" type="submit" style={{borderRadius: "var(--default-radius)"}}>Iniciar Sesión</button>
+          </form>
+          <div className="row" style={{ justifyContent: 'space-between' }}>
+            <Link to="/forgot">¿Has olvidado tu contraseña?</Link>
+            <Link to="/register">Registrarse</Link>
+          </div>
+        </div>
       </div>
     </div>
   )
