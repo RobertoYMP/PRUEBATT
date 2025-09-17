@@ -1,0 +1,38 @@
+.right-button {
+  display: flex;
+  justify-content: end;
+}
+
+.stack h2 {
+  text-align: center;
+}
+
+.card-header {
+    display: grid;
+    grid-template-columns: 50px auto;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-header h3 {
+    align-content: center;
+}
+
+.card-users {
+  padding: 20px;
+}
+
+.users-table td {
+    padding: 0.5rem;
+}
+
+.users-table { 
+  width:100%; 
+  border-collapse: collapse; 
+}
+
+.users-table th, .users-table td { 
+  padding: 1rem 10px; 
+  border-bottom: 1px solid var(--color-border); 
+  text-align:left; 
+}
