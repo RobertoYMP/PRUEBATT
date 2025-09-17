@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export function Popup ({width, icon, type, tittle, message, showButton = false, buttonProps = {}, extraButton = false, extraButtonProps = {}, onClose, isVisible}) {
     const colorMap = {
         success: "green",
-        error: "#E03E1A",
-        warning: "#F3C11B",
+        error: "var(--color-danger)",
+        warning: "var(--color-warning)",
         info: "var(--color-primary)",
         action: "var(--light-blue)"
     };

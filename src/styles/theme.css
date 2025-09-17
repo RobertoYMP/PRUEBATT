@@ -9,7 +9,9 @@
   --color-text-inv: #ffffff;     
   --color-bg: #ffffff;           
   --color-surface: #f7fafc;      
-  --color-surface-2: #f0f4f7;    
+  --color-surface-2: #f0f4f7;
+  --color-danger: #E03E1A;
+  --color-warning: #F3C11B;    
 
   --radius: 12px;
   --shadow: 0 8px 24px rgba(0,0,0,0.08);
