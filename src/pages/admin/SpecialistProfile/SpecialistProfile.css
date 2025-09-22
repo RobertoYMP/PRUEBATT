@@ -1,0 +1,98 @@
+.specialist-container h2 {
+    text-align: center;
+}
+
+.specialist-title {
+    display: grid;
+    grid-template-columns: 115px auto;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.specialist-title img {
+    max-height: 80px;
+    border-radius: var(--default-radius);
+}
+
+.card-data-specialist {
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-radius);
+    padding: var(--big-padding);
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(3, auto);
+}
+
+.card-data-specialist div {
+    padding: 0.5rem;
+    align-items: center;
+}
+
+.card-specialist {
+    padding: 20px;
+}
+
+.card-header {
+    display: grid;
+    grid-template-columns: 50px auto;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-header h3 {
+    align-content: center;
+}
+
+.specialist-table td {
+    padding: 0.5rem;
+}
+
+.specialist-table { 
+    width:100%; 
+    border-collapse: collapse; 
+}
+
+.specialist-table th, .specialist-table td { 
+    padding: 1rem 10px; 
+    border-bottom: 1px solid var(--color-border); 
+    text-align:left; 
+}
+
+.button-specialist-container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 30%;
+}
+
+.specialist-container .buttons-separation {
+    margin-top: 2.5rem;
+}
+
+.button-specialist-container .button-primary, .button-specialist-container .button-danger, .button-specialist-container .button-secondary {
+    border-radius: var(--default-radius);
+}
+
+.edit-div {
+    display: flex;
+    gap: 2rem;
+    color: black;
+}
+
+.edit-div .icon-edit, .download-file, .visualize-button {
+    cursor: pointer;
+}
+
+.left, .right {
+    color: gray;
+}
+
+.icon-edit {
+    color: var(--color-secundary);
+}
+
+.specialist-table th {
+  color: var(--color-primary);
+  font-weight: bold;
+}

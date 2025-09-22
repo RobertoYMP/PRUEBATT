@@ -23,7 +23,7 @@ import Users from './pages/admin/Users/Users.jsx'
 import NewSpecialist from './pages/admin/NewEspecialist/NewSpecialist.jsx'
 import EditSpecialist from './pages/admin/EditSpecialist.jsx'
 import PatientProfile from './pages/admin/PatientProfile/PatientProfile.jsx'
-import SpecialistProfile from './pages/admin/SpecialistProfile.jsx'
+import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile.jsx'
 import RequireRole from './components/RequireRole.jsx'
 
 export default function App() {
