@@ -82,22 +82,27 @@ a:hover { text-decoration: underline; }
 }
 
 .badge { 
-  padding:6px 10px; 
+  padding:6px 5px; 
   border-radius:999px; 
   font-size:.85rem; 
-  border: 1px solid var(--color-border); 
+  border: 1px solid var(--color-border);
+  text-align: center; 
 }
 
 .badge.critico { 
-  background: #fff4f4; 
-  color: #a12727; 
-  border-color: #e6b5b5; 
+  background: var(--color-danger); 
+  color: white;
+  border: none;
+  min-width: 6rem;
+  max-width: 8rem; 
 }
 
 .badge.estable { 
-  background: #f0fff3; 
-  color: #1a7f37; 
-  border-color: #b5e6c6; 
+  background: var(--color-green); 
+  color: white; 
+  border: none;
+  min-width: 6rem;
+  max-width: 8rem;
 }
 
 .informative {

@@ -8,14 +8,14 @@
 }
 
 .card-header {
-    display: grid;
-    grid-template-columns: 50px auto;
-    gap: 1rem;
-    margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 50px auto;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .card-header h3 {
-    align-content: center;
+  align-content: center;
 }
 
 .card-users {
@@ -23,7 +23,7 @@
 }
 
 .users-table td {
-    padding: 0.5rem;
+  padding: 0.5rem;
 }
 
 .users-table { 
@@ -32,7 +32,12 @@
 }
 
 .users-table th, .users-table td { 
-  padding: 1rem 10px; 
+  padding: 1rem 2rem; 
   border-bottom: 1px solid var(--color-border); 
   text-align:left; 
+}
+
+.users-table th {
+  color: var(--color-primary);
+  font-weight: bold;
 }

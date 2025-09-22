@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Button from '../../../components/Button/Button'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faAddressCard } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faUserPlus, faAddressCard } from "@fortawesome/free-solid-svg-icons";
 import './Users.css'
 
 export default function Users(){
@@ -39,26 +39,46 @@ export default function Users(){
         <div className="table-wrap"><table className="users-table">
           <thead><tr><th>Nombre</th><th>Tipo</th><th>Fecha de registro</th><th>Estado</th><th>Acción</th></tr></thead>
           <tbody>
-            <tr><td>Nombre completo</td><td>Paciente</td><td>04/05/2025</td><td>Activo</td><td>
-              <Button
-                as={Link}
-                to="/admin/patient-profile"
-                typeButton={"button-secondary"}
-                content={"Gestionar"}
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-            </td></tr>
-            <tr><td>Nombre completo</td><td>Médico especialista</td><td>04/05/2025</td><td>Activo</td><td>
-              <Button
-                as={Link}
-                to="/admin/specialist-profile"
-                typeButton={"button-secondary"}
-                content={"Gestionar"}
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-            </td></tr>
+            <tr><td>Nombre completo</td>
+              <td>
+                <FontAwesomeIcon icon={faUser} style={{color: "var(--light-blue)", paddingRight: "0.5rem"}}/>
+                Paciente
+              </td>
+              <td>04/05/2025</td>
+              <td>
+                <div className="badge estable">Activo</div>
+              </td>
+              <td>
+                <Button
+                  as={Link}
+                  to="/admin/patient-profile"
+                  typeButton={"button-secondary"}
+                  content={"Gestionar"}
+                  width={"7rem"}
+                  borderRadius={"var(--default-radius)"}
+                />
+              </td>
+            </tr>
+            <tr><td>Nombre completo</td>
+              <td>
+                <FontAwesomeIcon icon={faAddressCard} style={{color: "var(--light-blue)", paddingRight: "0.5rem"}}/>
+                Médico especialista
+              </td>
+              <td>04/05/2025</td>
+              <td>
+                <div className='badge critico'>Inactivo</div>
+              </td>
+              <td>
+                <Button
+                  as={Link}
+                  to="/admin/specialist-profile"
+                  typeButton={"button-secondary"}
+                  content={"Gestionar"}
+                  width={"7rem"}
+                  borderRadius={"var(--default-radius)"}
+                />
+              </td>
+            </tr>
           </tbody>
         </table></div>
       </div>
