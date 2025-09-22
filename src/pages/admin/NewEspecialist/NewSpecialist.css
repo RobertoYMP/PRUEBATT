@@ -1,0 +1,36 @@
+.newspecialist-container {
+    text-align: center;
+}
+
+.card-newspecialist .field-padding-top, .card-newspecialist .field-padding-top {
+    padding-top: var(--big-padding);
+}
+
+.card-newspecialist {
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-radius);
+    padding: var(--big-padding);
+    margin-top: 1rem;
+}
+
+.card-newspecialist .field label {
+    text-align: left;
+}
+
+.newspecialist-container hr {
+    margin-top: 2.5rem;
+}
+
+.add-margin-top {
+    margin-top: 2rem;
+}
+
+.button-newspecialist-container {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 70%;
+}
+
+.button-newspecialist-container .button-primary, .button-newspecialist-container .button-secondary {
+    border-radius: var(--default-radius);
+}
