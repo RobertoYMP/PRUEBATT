@@ -12,23 +12,22 @@ export default function NewSpecialist(){
           <div style={{flex:1}}><FormField label="Apellido:" /></div>
         </div>
         <div className="stack-2 field-padding-top">
-          <div style={{flex:1}}><FormField label="Fecha de nacimiento:" /></div>
+          <div style={{flex:1}}><FormField label="Fecha de nacimiento:" type='date'/></div>
           <div style={{flex:1}} className="field">
             <label>Sexo:</label>
             <select>
               <option>Mujer</option>
               <option>Hombre</option>
-              <option>Otro</option>
             </select>
           </div>
         </div>
         <div className='stack-2 field-padding-top'>
-          <div style={{flex:1}}><FormField label="Cédula Profesional:" /></div>
-          <div style={{flex:1}}><FormField label="Teléfono de contacto profesional:" /></div>          
+          <div style={{flex:1}}><FormField label="Cédula Profesional:" inputMode="numeric" pattern="[0-9]*"/></div>
+          <div style={{flex:1}}><FormField label="Teléfono de contacto profesional:" inputMode="numeric" pattern="[0-9]*"/></div>          
         </div>
         <div className="stack-2 field-padding-top">
           <FormField label="Especialidad:" tyle={{flex:1}}/>
-          <div style={{flex:1}}><FormField label="Correo electrónico:" /></div>
+          <div style={{flex:1}}><FormField label="Correo electrónico:" type='email'/></div>
         </div>
         <div className="stack-2 field-padding-top">
           <div style={{flex:1}}><FormField label="Contraseña:" type="password" /></div>

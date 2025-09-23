@@ -1,0 +1,22 @@
+.editspecialist-container {
+    text-align: center;
+}
+
+.card-editspecialist .field-padding-top, .card-editspecialist .field-padding-top {
+    padding-top: var(--big-padding);
+}
+
+.card-editspecialist {
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-radius);
+    padding: var(--big-padding);
+    margin-top: 1rem;
+}
+
+.card-editspecialist .field label {
+    text-align: left;
+}
+
+.editspecialist-container hr {
+    margin-top: 2.5rem;
+}

@@ -1,7 +1,9 @@
 import React from 'react'
 import './SpecialistProfile.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faAddressCard, faPencil, faCalendarDays, faTriangleExclamation, faCircleExclamation, faFileArrowDown, faEye, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faPencil, faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
+import { Link } from 'react-router-dom'
+import Button from '../../../components/Button/Button'
 
 export default function SpecialistProfile(){
   return (
@@ -48,7 +50,13 @@ export default function SpecialistProfile(){
       <hr className='buttons-separation'/>
       <div className="button-pacient-container add-margin-top">
         <button className="button-secondary">Regresar</button>
-        <button className="button-primary">Editar médico</button>
+        <Button
+          as={Link}
+          to="/admin/edit-specialist"
+          typeButton={"button-primary"}
+          content="Editar médico"
+          borderRadius={"var(--default-radius)"}
+        />
         <button className="button-danger">Eliminar médico</button>
       </div>
     </div>
