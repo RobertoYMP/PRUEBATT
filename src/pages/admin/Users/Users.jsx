@@ -12,20 +12,30 @@ export default function Users(){
       <div className='informative'>
         Asigna, edita o revoca permisos para los usuarios del sistema.
       </div>
-      <div className='right-button'>
-        <Button
-          as={Link}
-          to="/admin/new-specialist"
-          typeButton={"button-primary"}
-          content={
-            <>
-              <FontAwesomeIcon icon={faUserPlus} style={{marginRight: "1rem"}} />
-              Agregar médico especialista
-            </>
-          }
-          width={"20rem"}
-          borderRadius={"var(--default-radius)"}
-        />
+      <div className='filter-button'>
+        <div className='filter-container'>
+          Tipo de usuario:
+          <select className="select-filtro">
+            <option value="todos">Todos</option>
+            <option value="opcion1">Paciente</option>
+            <option value="opcion2">Médico especialista</option>
+          </select>
+        </div>
+        <div className='button-container'>
+          <Button
+            as={Link}
+            to="/admin/new-specialist"
+            typeButton={"button-primary"}
+            content={
+              <>
+                <FontAwesomeIcon icon={faUserPlus} style={{marginRight: "1rem"}} />
+                Agregar médico especialista
+              </>
+            }
+            width={"20rem"}
+            borderRadius={"var(--default-radius)"}
+          />
+        </div>
       </div>
       <div className="card-users">
         <hr></hr>

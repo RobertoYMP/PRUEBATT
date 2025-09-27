@@ -1,10 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import './DoctorDashboard.css'
+
 export default function DoctorDashboard(){
   return (
-    <div className="stack">
+    <div className="doctordashboard-container">
+      <h2>¡Es un placer tenerte aquí, Doctor!</h2>
+      <div className='informative'>
+        <b>PACIENTES EN ESTADO CRÍTICO</b>
+      </div>
       <div className="card">
-        <h2>¡Es un placer tenerte aquí, Doctor!</h2>
         <div className="row">
           <Link className="btn" to="/doctor/reviews">Pacientes en estado crítico</Link>
           <Link className="btn secondary" to="/doctor/edit-recommendations">Editar recomendaciones</Link>

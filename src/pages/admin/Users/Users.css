@@ -1,6 +1,19 @@
-.right-button {
+.filter-button {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+}
+
+.filter-button .button-container {
   display: flex;
   justify-content: end;
+}
+
+.filter-button .filter-container {
+  display: grid;
+  grid-template-columns: repeat(2, 30%);
+  gap: 1rem;
+  align-content: center;
+  align-items: center;
 }
 
 .stack h2 {
@@ -40,4 +53,36 @@
 .users-table th {
   color: var(--color-primary);
   font-weight: bold;
+}
+
+.select-filtro {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--color-secundary);
+  color: #fff;
+  padding: 8px 40px 8px 16px;
+  font-family: var(--font-family, 'Caslon 2000'), serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: auto;
+}
+
+.select-filtro {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.select-filtro select:focus {
+  border-color: var(--color-primary); 
+  box-shadow: 0 0 0 3px rgba(27,58,78,0.15);
+}
+
+.select-filtro option {
+  background-color: var(--extra-blue);
+  color: black;
+  border: none;
 }
