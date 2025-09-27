@@ -108,3 +108,97 @@
 .name-brand {
     cursor: pointer;
 }
+
+.user-header-container {
+  padding: 2px;
+}
+
+.user-container-header {
+  display: grid;
+  max-height: 2.5rem;
+  align-content: center;
+  min-width: 220px;
+  grid-template-columns: repeat(2, auto);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--default-radius);
+}
+
+.user-container-header:hover {
+  background: linear-gradient(to right, var(--light-blue), var(--color-secundary));
+  background-size: 200% auto;
+  background-position: right center;
+  transition: background-position 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.user-header-container .icon {
+  display: flex;
+  align-items: center;
+}
+
+.user-header-container .name {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.5rem;
+}
+
+.submenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0;
+  min-width: 220px;
+  z-index: 100;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background 0.8s ease;
+}
+
+.submenu-item:hover {
+  background: var(--extra-blue);
+}
+
+.submenu hr {
+  margin: 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.logout-header {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 1rem;
+}
+
+.submenu-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.submenu-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.submenu-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.submenu-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s, transform 0.3s;
+}

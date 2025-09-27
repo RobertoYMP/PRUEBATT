@@ -1,9 +1,12 @@
 import React from 'react'
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getSession, logout } from '../../mock/api'
 import './header.css'
 import Button from '../Button/Button'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser, faChevronDown, faBell, faBars, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { CSSTransition } from 'react-transition-group';
 
 export default function Header() {
   const { pathname } = useLocation()
@@ -12,10 +15,18 @@ export default function Header() {
   const role = session?.role
   const loggedIn = !!session
   function onLogout() {
-    logout().then(() => nav('/login'))
+    logout().then(() => nav('/login'));
+    setIsOpen(false);
   }
 
   const [open, setOpen] = React.useState(false)
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, []);
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <>
@@ -198,14 +209,6 @@ export default function Header() {
               />
               <Button
                 as={Link} 
-                to="/doctor/reviews"  
-                typeButton={'header-button-primary'} 
-                content={"Revisiones"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-              <Button
-                as={Link} 
                 to="/doctor/edit-recommendations"  
                 typeButton={'header-button-primary'} 
                 content={"Recomendaciones"} 
@@ -217,33 +220,46 @@ export default function Header() {
 
           {loggedIn && role === 'admin' && (
             <>
-              <Button
-                as={Link} 
-                to="/admin/users"  
-                typeButton={'header-button-primary'} 
-                content={"Administrar"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-              <Button
-                as={Link} 
-                to="/admin/new-specialist"  
-                typeButton={'header-button-primary'} 
-                content={"Agregar médico"} 
-                width={"10rem"}
-                borderRadius={"var(--default-radius)"}
-              />
+              <div className='user-header-container' onClick={toggleMenu}>
+                <div className='user-container-header'>
+                  <div className='icon'>
+                    <FontAwesomeIcon icon={faCircleUser} style={{color: "white", paddingRight: "0.5rem"}}/>
+                  </div>
+                  <div className='name'>
+                    <p>| </p>
+                    <p>Nombre</p>
+                  </div>
+                </div>
+              </div>
             </>
           )}
 
-          {loggedIn && (
-            <Button
-              typeButton={'header-button'} 
-              content={"Salir"} 
-              width={"5rem"}
-              borderRadius={"var(--half-radius)"}
-              onClick={onLogout}
-            />
+          {loggedIn && isOpen && (
+            <>
+              <CSSTransition
+                in={isOpen}
+                timeout={300}
+                classNames="submenu"
+                unmountOnExit
+              >
+                <div className="submenu">
+                  {role === 'doctor' && (
+                    <>
+                      <div className="submenu-item">
+                        <FontAwesomeIcon icon={faBell} style={{ marginRight: "0.5rem" }} />
+                        Notificaciones
+                        <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
+                      </div>
+                      <hr/>
+                    </>
+                  )}
+                  <div className="submenu-item logout-header" onClick={onLogout}>
+                    <FontAwesomeIcon icon={faRightFromBracket} style={{ marginLeft: "auto" }} />
+                    Salir
+                  </div>
+                </div>
+              </CSSTransition>
+            </>
           )}
         </nav>
       </header>
