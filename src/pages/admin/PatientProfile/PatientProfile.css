@@ -41,6 +41,12 @@
     border-collapse: collapse; 
 }
 
+.pacient-table th { 
+    font-size: large;
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
 .pacient-table th, .pacient-table td { 
     padding: 1rem 10px; 
     border-bottom: 1px solid var(--color-border); 
@@ -77,9 +83,4 @@
 
 .icon-edit {
     color: var(--color-secundary);
-}
-
-.pacient-table th {
-  color: var(--color-primary);
-  font-weight: bold;
 }

@@ -51,6 +51,7 @@
 }
 
 .users-table th {
+  font-size: large;
   color: var(--color-primary);
   font-weight: bold;
 }

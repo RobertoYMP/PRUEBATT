@@ -17,7 +17,6 @@ import PrediagCharts from './pages/patient/PrediagCharts.jsx'
 import Recommendations from './pages/patient/Recommendations.jsx'
 import ManualEntry from './pages/patient/ManualEntry.jsx'
 import DoctorDashboard from './pages/doctor/DoctorDashboard/DoctorDashboard.jsx'
-import ReviewHistory from './pages/doctor/ReviewHistory.jsx'
 import EditRecommendations from './pages/doctor/EditRecommendations.jsx'
 import Users from './pages/admin/Users/Users.jsx'
 import NewSpecialist from './pages/admin/NewEspecialist/NewSpecialist.jsx'
@@ -53,7 +52,6 @@ export default function App() {
 
           {/* Médico (solo rol doctor) */}
           <Route path="/doctor" element={<RequireRole role="doctor"><DoctorDashboard /></RequireRole>} />
-          <Route path="/doctor/reviews" element={<RequireRole role="doctor"><ReviewHistory /></RequireRole>} />
           <Route path="/doctor/edit-recommendations" element={<RequireRole role="doctor"><EditRecommendations /></RequireRole>} />
 
           {/* Admin (solo rol admin) */}

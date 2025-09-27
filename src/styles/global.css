@@ -127,6 +127,42 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 
+
+.global-table td {
+  padding: 0.5rem;
+}
+
+.global-table { 
+  width:100%; 
+  border-collapse: collapse; 
+}
+
+.global-table th { 
+  font-size: large;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.global-table th, .global-table td { 
+  padding: 1rem 10px; 
+  border-bottom: 1px solid var(--color-border); 
+  text-align:left; 
+}
+
+.visualize-button {
+  padding-left: var(--big-padding);
+}
+
+.user-header-container {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  align-items: center;
+}
+
+.user-header-container .icon {
+  
+}
+
 @media (max-width: 1279px){
   .container{ width: 1024px; max-width: 94%; }
   header.appbar{ padding: 12px 16px; }
