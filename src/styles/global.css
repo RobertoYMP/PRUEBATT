@@ -151,6 +151,11 @@ a:hover { text-decoration: underline; }
 
 .visualize-button {
   padding-left: var(--big-padding);
+  cursor: default;
+}
+
+.download-file {
+  cursor: default;
 }
 
 .color-gray {

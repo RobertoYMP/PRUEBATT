@@ -38,20 +38,20 @@ export default function PatientProfile(){
             <tr>
               <td><FontAwesomeIcon icon={faCalendarDays} style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}/> 04/05/2025</td>
               <td><FontAwesomeIcon icon={faTriangleExclamation} style={{color: "var(--color-danger)", paddingRight: "0.5rem"}}/> Estado Crítico</td>
-              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
-              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
+              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
+              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
             </tr>
             <tr>
               <td><FontAwesomeIcon icon={faCalendarDays} style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}/> 04/05/2025</td>
               <td><FontAwesomeIcon icon={faCircleExclamation} style={{color: "var(--color-warning)", paddingRight: "0.5rem"}}/> Estado Inestable</td>
-              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
-              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
+              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
+              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
             </tr>
             <tr>
               <td><FontAwesomeIcon icon={faCalendarDays} style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}/> 04/05/2025</td>
               <td><FontAwesomeIcon icon={faCircleCheck} style={{color: "var(--color-green)", paddingRight: "0.5rem"}}/> Estado Estable</td>
-              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
-              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
+              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
+              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
             </tr>
           </tbody>
         </table></div>

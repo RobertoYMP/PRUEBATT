@@ -73,7 +73,11 @@
     color: black;
 }
 
-.edit-div .icon-edit, .download-file, .visualize-button {
+.edit-div .icon-edit {
+    cursor: pointer;
+}
+
+.icon-button {
     cursor: pointer;
 }
 
