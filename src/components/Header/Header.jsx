@@ -197,28 +197,7 @@ export default function Header() {
             </>
           )}
 
-          {loggedIn && role === 'doctor' && (
-            <>
-              <Button
-                as={Link} 
-                to="/doctor"  
-                typeButton={'header-button-primary'} 
-                content={"Médico"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-              <Button
-                as={Link} 
-                to="/doctor/edit-recommendations"  
-                typeButton={'header-button-primary'} 
-                content={"Recomendaciones"} 
-                width={"10rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-            </>
-          )}
-
-          {loggedIn && role === 'admin' && (
+          {loggedIn && (role === 'admin' || role === 'doctor') && (
             <>
               <div className='user-header-container' onClick={toggleMenu}>
                 <div className='user-container-header'>
@@ -246,9 +225,14 @@ export default function Header() {
                   {role === 'doctor' && (
                     <>
                       <div className="submenu-item">
-                        <FontAwesomeIcon icon={faBell} style={{ marginRight: "0.5rem" }} />
+                        <FontAwesomeIcon icon={faBell} style={{ marginRight: "1rem" }} />
                         Notificaciones
                         <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
+                      </div>
+                      <hr />
+                      <div className="submenu-item">
+                        <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
+                        Historial de pacientes
                       </div>
                       <hr/>
                     </>
