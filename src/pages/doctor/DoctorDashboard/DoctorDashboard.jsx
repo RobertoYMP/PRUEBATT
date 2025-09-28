@@ -3,12 +3,20 @@ import { Link } from 'react-router-dom'
 import './DoctorDashboard.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
+import { useNotifications } from "../../../context/NotificationContext"; //Notificaciones
 
 export default function DoctorDashboard(){
   const rows = [
     { fecha:'04/05/2025', paciente:'Nombre del paciente', examen:'Biometría Hemática' },
     { fecha:'04/05/2024', paciente:'Nombre del paciente', examen:'Biometría Hemática' },
   ]
+
+  const { addNotification } = useNotifications();
+
+  const addForCurrentUser = () => {
+    //123 = id simulado => en tu app real usa el id del usuario (auth)
+    addNotification(123, "🚨 Nuevo paciente en estado crítico", { borderLeft: "4px solid #d9534f" });
+  };
 
   return (
     <div className="doctordashboard-container">
@@ -41,6 +49,8 @@ export default function DoctorDashboard(){
           </tbody>
         </table>
       </div>
+      <p>* Ejemplo de como se crea una notificación</p>
+      <button onClick={addForCurrentUser}>Notificar a 123 (yo)</button>
     </div>
   )
 }

@@ -7,6 +7,8 @@ import Button from '../Button/Button'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser, faChevronDown, faBell, faBars, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { CSSTransition } from 'react-transition-group';
+import NotificationList from "../Notification/NotificationList";
+import { useNotifications } from "../../context/NotificationContext";
 
 export default function Header() {
   const { pathname } = useLocation()
@@ -20,13 +22,14 @@ export default function Header() {
   }
 
   const [open, setOpen] = React.useState(false)
-
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsOpen(false);
   }, []);
   const toggleMenu = () => setIsOpen(!isOpen);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const { notifications, removeNotification } = useNotifications();
 
   return (
     <>
@@ -224,11 +227,22 @@ export default function Header() {
                 <div className="submenu">
                   {role === 'doctor' && (
                     <>
-                      <div className="submenu-item">
+                      <div className={`submenu-item ${notifOpen ? 'open' : ''}`} onClick={() => setNotifOpen((s) => !s)}>
                         <FontAwesomeIcon icon={faBell} style={{ marginRight: "1rem" }} />
                         Notificaciones
                         <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
                       </div>
+                      {notifOpen && (
+                        <>
+                          <hr/>
+                          <div className="notif-submenu">
+                            <NotificationList
+                              notifications={notifications}
+                              removeNotification={removeNotification}
+                            />
+                          </div>
+                        </>
+                      )}
                       <hr />
                       <div className="submenu-item">
                         <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />

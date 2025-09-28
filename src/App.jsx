@@ -24,47 +24,51 @@ import EditSpecialist from './pages/admin/EditSpecialist/EditSpecialist.jsx'
 import PatientProfile from './pages/admin/PatientProfile/PatientProfile.jsx'
 import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile.jsx'
 import RequireRole from './components/RequireRole.jsx'
+import { NotificationProvider } from "./context/NotificationContext"
 
 export default function App() {
+  const currentUserId = 123; //Simular que el usuario logueado tiene ID = 123
   return (
     <div className="layout">
-      <Header />
-      <main className="container">
-        <Routes>
-          {/* Auth */}
-          <Route path="/" element={<Home />} />
-          <Route path='/specialists' element={<Specialists />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset" element={<ResetPassword />} />
+      <NotificationProvider currentUserId={currentUserId}>
+        <Header />
+        <main className="container">
+          <Routes>
+            {/* Auth */}
+            <Route path="/" element={<Home />} />
+            <Route path='/specialists' element={<Specialists />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot" element={<ForgotPassword />} />
+            <Route path="/reset" element={<ResetPassword />} />
 
-          {/* Paciente (solo rol patient) */}
-          <Route path="/app" element={<RequireRole role="patient"><Dashboard /></RequireRole>} />
-          <Route path="/app/upload" element={<RequireRole role="patient"><Upload /></RequireRole>} />
-          <Route path="/app/history" element={<RequireRole role="patient"><History /></RequireRole>} />
-          <Route path="/app/notifications" element={<RequireRole role="patient"><Notifications /></RequireRole>} />
-          <Route path="/app/specialists" element={<RequireRole role="patient"><Specialists /></RequireRole>} />
-          <Route path="/app/results" element={<RequireRole role="patient"><PrediagResults /></RequireRole>} />
-          <Route path="/app/charts" element={<RequireRole role="patient"><PrediagCharts /></RequireRole>} />
-          <Route path="/app/recommendations" element={<RequireRole role="patient"><Recommendations /></RequireRole>} />
-          <Route path="/app/manual" element={<RequireRole role="patient"><ManualEntry /></RequireRole>} />
+            {/* Paciente (solo rol patient) */}
+            <Route path="/app" element={<RequireRole role="patient"><Dashboard /></RequireRole>} />
+            <Route path="/app/upload" element={<RequireRole role="patient"><Upload /></RequireRole>} />
+            <Route path="/app/history" element={<RequireRole role="patient"><History /></RequireRole>} />
+            <Route path="/app/notifications" element={<RequireRole role="patient"><Notifications /></RequireRole>} />
+            <Route path="/app/specialists" element={<RequireRole role="patient"><Specialists /></RequireRole>} />
+            <Route path="/app/results" element={<RequireRole role="patient"><PrediagResults /></RequireRole>} />
+            <Route path="/app/charts" element={<RequireRole role="patient"><PrediagCharts /></RequireRole>} />
+            <Route path="/app/recommendations" element={<RequireRole role="patient"><Recommendations /></RequireRole>} />
+            <Route path="/app/manual" element={<RequireRole role="patient"><ManualEntry /></RequireRole>} />
 
-          {/* Médico (solo rol doctor) */}
-          <Route path="/doctor" element={<RequireRole role="doctor"><DoctorDashboard /></RequireRole>} />
-          <Route path="/doctor/edit-recommendations" element={<RequireRole role="doctor"><EditRecommendations /></RequireRole>} />
+            {/* Médico (solo rol doctor) */}
+            <Route path="/doctor" element={<RequireRole role="doctor"><DoctorDashboard /></RequireRole>} />
+            <Route path="/doctor/edit-recommendations" element={<RequireRole role="doctor"><EditRecommendations /></RequireRole>} />
 
-          {/* Admin (solo rol admin) */}
-          <Route path="/admin/users" element={<RequireRole role="admin"><Users /></RequireRole>} />
-          <Route path="/admin/new-specialist" element={<RequireRole role="admin"><NewSpecialist /></RequireRole>} />
-          <Route path="/admin/edit-specialist" element={<RequireRole role="admin"><EditSpecialist /></RequireRole>} />
-          <Route path="/admin/patient-profile" element={<RequireRole role="admin"><PatientProfile /></RequireRole>} />
-          <Route path="/admin/specialist-profile" element={<RequireRole role="admin"><SpecialistProfile /></RequireRole>} />
+            {/* Admin (solo rol admin) */}
+            <Route path="/admin/users" element={<RequireRole role="admin"><Users /></RequireRole>} />
+            <Route path="/admin/new-specialist" element={<RequireRole role="admin"><NewSpecialist /></RequireRole>} />
+            <Route path="/admin/edit-specialist" element={<RequireRole role="admin"><EditSpecialist /></RequireRole>} />
+            <Route path="/admin/patient-profile" element={<RequireRole role="admin"><PatientProfile /></RequireRole>} />
+            <Route path="/admin/specialist-profile" element={<RequireRole role="admin"><SpecialistProfile /></RequireRole>} />
 
-          <Route path="*" element={<div className="card"><h2>404</h2><p>Página no encontrada.</p></div>} />
-        </Routes>
-      </main>
-      <Footer />
+            <Route path="*" element={<div className="card"><h2>404</h2><p>Página no encontrada.</p></div>} />
+          </Routes>
+        </main>
+        <Footer />
+      </NotificationProvider>
     </div>
   )
 }

@@ -1,0 +1,51 @@
+.notification-item {
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(2, auto);
+  gap: 2rem;
+  background: #fff;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  color: black;
+  max-width: 220px;
+}
+
+.notification-item p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.notification-text {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    gap: 0.5rem;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a00;
+}
+
+.notification-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.empty-msg {
+  padding: 1rem;
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+}
+
+.trash-div {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.notification-message {
+    text-align: justify;
+}
