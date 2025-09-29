@@ -133,7 +133,8 @@ a:hover { text-decoration: underline; }
 }
 
 .global-table { 
-  width:100%; 
+  margin: auto;
+  width: 95%; 
   border-collapse: collapse; 
 }
 
@@ -150,7 +151,7 @@ a:hover { text-decoration: underline; }
 }
 
 .visualize-button {
-  padding-left: var(--big-padding);
+  padding-left: 1.15rem;
   cursor: default;
 }
 

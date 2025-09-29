@@ -1,0 +1,33 @@
+.doctordashboard-container {
+    margin-top: var(--big-padding);
+}
+
+.doctordashboard-container h2 {
+    text-align: center;
+    margin-bottom: var(--big-padding);
+}
+
+.doctordashboard-container .header-container {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    margin-bottom: var(--big-padding);
+}
+
+.input-search {
+    width: 50%;
+}
+
+.header-container .date-container {
+    display: grid;
+    justify-content: end;
+    grid-template-columns: 20% 50%;
+    align-items: center;
+}
+
+.button-doctordashboard-container .button-secondary {
+    border-radius: var(--default-radius);
+}
+
+.buttons-separation {
+    margin-top: 2rem;
+}

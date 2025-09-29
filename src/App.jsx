@@ -25,6 +25,7 @@ import PatientProfile from './pages/admin/PatientProfile/PatientProfile.jsx'
 import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile.jsx'
 import RequireRole from './components/RequireRole.jsx'
 import { NotificationProvider } from "./context/NotificationContext"
+import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 
 export default function App() {
   const currentUserId = 123; //Simular que el usuario logueado tiene ID = 123
@@ -55,6 +56,7 @@ export default function App() {
 
             {/* Médico (solo rol doctor) */}
             <Route path="/doctor" element={<RequireRole role="doctor"><DoctorDashboard /></RequireRole>} />
+            <Route path="/doctor/history-reviews" element={<RequireRole role="doctor"><HistoryReviews /></RequireRole>} />
             <Route path="/doctor/edit-recommendations" element={<RequireRole role="doctor"><EditRecommendations /></RequireRole>} />
 
             {/* Admin (solo rol admin) */}

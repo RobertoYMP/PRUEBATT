@@ -244,10 +244,10 @@ export default function Header() {
                         </>
                       )}
                       <hr />
-                      <div className="submenu-item">
+                      <Link to="/doctor/history-reviews" className="submenu-item">
                         <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
                         Historial de pacientes
-                      </div>
+                      </Link>
                       <hr/>
                     </>
                   )}
