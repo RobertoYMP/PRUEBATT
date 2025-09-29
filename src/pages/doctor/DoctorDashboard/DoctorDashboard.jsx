@@ -43,7 +43,7 @@ export default function DoctorDashboard(){
                 <td><FontAwesomeIcon icon={faCalendarDays} style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}/> {r.fecha}</td>
                 <td>{r.paciente}</td>
                 <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
-                <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
+                <td><Link to="/doctor/edit-recommendations" className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></Link></td>
               </tr>
             ))}
           </tbody>

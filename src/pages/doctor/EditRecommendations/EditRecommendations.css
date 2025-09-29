@@ -1,0 +1,29 @@
+.editrecommendations-container h2 {
+    text-align: center;
+}
+
+.warning-container {
+    display: grid;
+    grid-template-columns: 50px auto;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    font-weight: bolder;
+    margin: var(--big-padding) 0 var(--big-padding) 0;
+}
+
+.warning-text {
+    color: #929292;
+    text-align: justify;
+    margin-bottom: 0.75rem;
+}
+
+.button-recommendations-container {
+    display: grid;
+    grid-template-columns: auto 25% auto;
+    gap: 20%;
+}
+
+.button-recommendations-container button{
+    border-radius: var(--default-radius);
+}

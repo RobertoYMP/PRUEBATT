@@ -163,6 +163,61 @@ a:hover { text-decoration: underline; }
   color: gray;
 }
 
+.blue-line {
+  max-width: 6rem;
+  height: 5px;
+  background-color: var(--color-secundary);
+  margin-bottom: 0.75rem;
+}
+
+.card-recommendations {
+  box-shadow: var(--box-shadow);
+  border-radius: var(--card-radius);
+  padding: var(--big-padding);
+  margin: 2rem 0 2rem 0;
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+}
+
+.card-recommendations div {
+  padding: 0.5rem;
+  align-items: center;
+}
+
+.title-card-recommendations {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 1rem;
+}
+
+.title-card-recommendations h3 {
+  color: var(--color-secundary);
+}
+
+.title-card-recommendations .button-primary, .title-card-recommendations .button-danger {
+  border-radius: var(--default-radius);
+}
+
+.button-container-edit {
+  display: flex;
+  justify-content: end;
+}
+
+.active-edit {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 1rem;
+}
+
+.middle-with {
+  max-width: 50%;
+}
+
+.textarea-recommendation-content {
+  width: 100%;
+  margin: 1rem 0 1rem 0;
+}
+
 @media (max-width: 1279px){
   .container{ width: 1024px; max-width: 94%; }
   header.appbar{ padding: 12px 16px; }
