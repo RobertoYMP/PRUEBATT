@@ -41,8 +41,8 @@ export default function SpecialistProfile(){
             <tr>
               <td><FontAwesomeIcon icon={faCalendarDays} style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}/> 04/05/2025</td>
               <td>Nombre del paciente</td>
-              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
-              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}}/></div></td>
+              <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px", cursor: "pointer"}}/></div></td>
+              <td><div className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px", cursor: "pointer"}}/></div></td>
             </tr>
           </tbody>
         </table></div>

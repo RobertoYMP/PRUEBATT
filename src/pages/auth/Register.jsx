@@ -36,7 +36,7 @@ export default function Register() {
           </div>
         </div>
         <div className='body-login-card'>
-          {error && <div className="badge critico">{error}</div>}
+          {error && <div className="badge critico complete">{error}</div>}
           <form onSubmit={onSubmit} className="stack top-margin">
             <div className="stack-2" style={{gap:16}}>
               <div style={{flex:1}}><FormField label="Nombre:" value={form.nombre} onChange={e=>set('nombre',e.target.value)} required /></div>

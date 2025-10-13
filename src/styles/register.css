@@ -1,7 +1,7 @@
 .register-card {
     max-width: 480px;
     margin: auto;
-    background-color: var(--color-secundary);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--blue-60) 25%, var(--color-secundary) 100%);
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
     display: grid;

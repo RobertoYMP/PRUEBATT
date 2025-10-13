@@ -5,7 +5,7 @@ import { getSession, logout } from '../../mock/api'
 import './header.css'
 import Button from '../Button/Button'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser, faChevronDown, faBell, faBars, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faCircleUser, faChevronDown, faBell, faBars, faRightFromBracket, faFile, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { CSSTransition } from 'react-transition-group';
 import NotificationList from "../Notification/NotificationList";
 import { useNotifications } from "../../context/NotificationContext";
@@ -37,16 +37,16 @@ export default function Header() {
         <div className="brand-container">
           <div className='name-brand'>
             {!loggedIn &&
-              <Link to="/" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+              <Link to="/" style={{ textDecoration: 'none' }}><strong>HEMATEC</strong></Link>
             }
             {loggedIn && role === 'patient' &&
-              <Link to="/app" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+              <Link to="/app" style={{ textDecoration: 'none' }}><strong>HEMATEC</strong></Link>
             }
             {loggedIn && role === 'doctor' &&
-              <Link to="/doctor" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+              <Link to="/doctor" style={{ textDecoration: 'none' }}><strong>HEMATEC</strong></Link>
             }
             {loggedIn && role === 'admin' &&
-              <Link to="/admin/users" style={{ textDecoration: 'none' }}>HEMATEC</Link>
+              <Link to="/admin/users" style={{ textDecoration: 'none' }}><strong>HEMATEC</strong></Link>
             }
           </div>
           <div className="logo-brand">
@@ -170,37 +170,7 @@ export default function Header() {
               )}
             </>
           )}
-
-          {loggedIn && role === 'patient' && (
-            <>
-              <Button
-                as={Link} 
-                to="/app"  
-                typeButton={'header-button-primary'} 
-                content={"Paciente"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-              <Button
-                as={Link} 
-                to="/app/history"  
-                typeButton={'header-button-primary'} 
-                content={"Historial"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-              <Button
-                as={Link} 
-                to="/app/notifications"  
-                typeButton={'header-button-primary'} 
-                content={"Notificaciones"} 
-                width={"7rem"}
-                borderRadius={"var(--default-radius)"}
-              />
-            </>
-          )}
-
-          {loggedIn && (role === 'admin' || role === 'doctor') && (
+          {loggedIn && (role === 'admin' || role === 'doctor' || role === 'patient') && (
             <>
               <div className='user-header-container' onClick={toggleMenu}>
                 <div className='user-container-header'>
@@ -247,6 +217,42 @@ export default function Header() {
                       <Link to="/doctor/history-reviews" className="submenu-item">
                         <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
                         Historial de pacientes
+                      </Link>
+                      <hr/>
+                    </>
+                  )}
+                  {role === 'patient' && (
+                    <>
+                      <div className={`submenu-item ${notifOpen ? 'open' : ''}`} onClick={() => setNotifOpen((s) => !s)}>
+                        <FontAwesomeIcon icon={faBell} style={{ marginRight: "1rem" }} />
+                        Notificaciones
+                        <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
+                      </div>
+                      {notifOpen && (
+                        <>
+                          <hr/>
+                          <div className="notif-submenu">
+                            <NotificationList
+                              notifications={notifications}
+                              removeNotification={removeNotification}
+                            />
+                          </div>
+                        </>
+                      )}
+                      <hr />
+                      <Link to="/app/history" className="submenu-item">
+                        <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
+                        Historial
+                      </Link>
+                      <hr/>
+                      <Link to="/app/upload" className="submenu-item">
+                        <FontAwesomeIcon icon={faFile} style={{ marginRight: "1rem" }} />
+                        Subir archivo
+                      </Link>
+                      <hr/>
+                      <Link to="/app/specialists" className="submenu-item">
+                        <FontAwesomeIcon icon={faCircleInfo} style={{ marginRight: "1rem" }} />
+                        Especialistas
                       </Link>
                       <hr/>
                     </>

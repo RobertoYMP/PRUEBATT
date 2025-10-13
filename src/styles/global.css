@@ -7,11 +7,26 @@ body {
   color: var(--color-text);
 }
 
-a { color: var(--color-primary); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { 
+  color: var(--color-primary); 
+  text-decoration: none; 
+}
 
-.layout { display: grid; grid-template-rows: auto 1fr auto; min-height: 100vh; }
-.container { width: 1280px; max-width: 92%; margin: 24px auto; }
+a:hover { 
+  text-decoration: underline; 
+}
+
+.layout { 
+  display: grid; 
+  grid-template-rows: auto 1fr auto; 
+  min-height: 100vh; 
+}
+
+.container { 
+  width: 1280px; 
+  max-width: 92%; 
+  margin: 3rem auto; 
+}
 
 .card {
   background: #fff;
@@ -21,26 +36,24 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--shadow);
 }
 
-.stack { display: grid; gap: 16px; }
-.row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-
-.btn {
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  background: var(--color-primary); color: var(--color-text-inv);
-  padding: 10px 16px; border: 1px solid var(--color-border); border-radius: 10px; cursor:pointer; font-weight:600;
-  transition: transform .05s ease, background .2s ease, box-shadow .2s ease;
-  box-shadow: 0 6px 14px rgba(27,58,78,.18);
+.stack { 
+  display: grid; 
+  gap: 16px; 
 }
-.btn:hover { background: #143141; transform: translateY(-1px); }
-.btn.secondary {
-  background: #fff; color: var(--color-primary);
-  border: 1px solid var(--color-border); box-shadow:none;
-}
-.btn.ghost { background: transparent; border: 1px dashed var(--color-border); color: var(--color-primary); }
-.btn.warning { background: #FFC857; color: #222; }
-.btn.danger { background: #C62828; color:#fff; }
 
-.field label { display:block; font-size:.95rem; color: #3a4b57; margin-bottom:6px; }
+.row { 
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap; 
+  align-items:center; 
+}
+
+.field label { 
+  display:block; 
+  font-size:.95rem; 
+  color: #3a4b57; 
+  margin-bottom:6px; 
+}
 
 .photo-input {
   background-color: #222;
@@ -62,7 +75,8 @@ a:hover { text-decoration: underline; }
 }
 
 .field select option {
-  background-color: var(--extra-blue);
+  background-color: var(--blue-60);
+  color: white;
 }
 
 .table { 
@@ -94,7 +108,10 @@ a:hover { text-decoration: underline; }
   color: white;
   border: none;
   min-width: 6rem;
-  max-width: 10rem; 
+}
+
+.badge.critico.complete {
+  width: 100%;
 }
 
 .badge.estable { 
@@ -147,11 +164,10 @@ a:hover { text-decoration: underline; }
 .global-table th, .global-table td { 
   padding: 1rem 10px; 
   border-bottom: 1px solid var(--color-border); 
-  text-align:left; 
+  text-align: center; 
 }
 
 .visualize-button {
-  padding-left: 1.15rem;
   cursor: default;
 }
 

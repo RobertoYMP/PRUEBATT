@@ -40,7 +40,7 @@ export default function Login() {
           </div>
         </div>
         <div className='body-login-card'>
-          {error && <div className="badge critico">{error}</div>}
+          {error && <div className="badge critico complete">{error}</div>}
           <form onSubmit={onSubmit} className="stack top-margin">
             <FormField
               label="Usuario:"

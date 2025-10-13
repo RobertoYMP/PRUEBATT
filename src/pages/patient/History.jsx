@@ -13,7 +13,7 @@ export default function History(){
             {data.map((x,i)=> (
               <tr key={i}>
                 <td>{x.fecha}</td>
-                <td><span className="badge critico">{x.estado}</span></td>
+                <td><span className="badge critico complete">{x.estado}</span></td>
                 <td>{x.examen}</td>
                 <td><button className="btn secondary">Visualizar</button></td>
               </tr>

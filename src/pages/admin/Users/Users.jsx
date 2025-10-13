@@ -7,7 +7,7 @@ import './Users.css'
 
 export default function Users(){
   return (
-    <div className="stack">
+    <div className='users-container'>
       <h2>Gestión de roles y permisos</h2>
       <div className='informative'>
         Asigna, edita o revoca permisos para los usuarios del sistema.

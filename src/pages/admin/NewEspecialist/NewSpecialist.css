@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+.newspecialist-container h2 {
+    margin-bottom: 3rem;
+}
+
 .card-newspecialist .field-padding-top, .card-newspecialist .field-padding-top {
     padding-top: var(--big-padding);
 }

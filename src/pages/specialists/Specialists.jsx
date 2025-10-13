@@ -45,19 +45,19 @@ export default function Specialists(){
         }}
       />*/}
       <div className='specialists-container'>
-      <h2>Nuestros especialistas</h2>
-      <div className='specialists-cards-container'>
-        {items.map((x,i)=> (
-          <div key={i} className="specialist-card">
-            <img src='./Logo/blueLogo.png'></img>
-            <strong>{x.nombre}</strong>
-            <div>{x.especialidad}</div>
-            <div>{x.tel}</div>
-            <div>{x.email}</div>
-          </div>
-        ))}
+        <h2>Nuestros especialistas</h2>
+        <div className='specialists-cards-container'>
+          {items.map((x,i)=> (
+            <div key={i} className="specialist-card">
+              <img src='./Logo/blueLogo.png'></img>
+              <strong>{x.nombre}</strong>
+              <div>{x.especialidad}</div>
+              <div>{x.tel}</div>
+              <div>{x.email}</div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   )
 }

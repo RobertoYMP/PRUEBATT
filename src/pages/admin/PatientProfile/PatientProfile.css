@@ -1,12 +1,13 @@
 .pacientprofile-container h2 {
     text-align: center;
+    margin-bottom: 3rem;
 }
 
 .card-data-pacient {
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
     padding: var(--big-padding);
-    margin-top: 1rem;
+    margin: 1rem 0;
     display: grid;
     grid-template-columns: repeat(2, auto);
     grid-template-rows: repeat(3, auto);
@@ -50,21 +51,7 @@
 .pacient-table th, .pacient-table td { 
     padding: 1rem 10px; 
     border-bottom: 1px solid var(--color-border); 
-    text-align:left; 
-}
-
-.button-pacient-container {
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    gap: 30%;
-}
-
-.pacientprofile-container .buttons-separation {
-    margin-top: 2.5rem;
-}
-
-.button-pacient-container .button-primary, .button-pacient-container .button-danger, .button-pacient-container .button-secondary {
-    border-radius: var(--default-radius);
+    text-align: center; 
 }
 
 .edit-div {
@@ -87,4 +74,29 @@
 
 .icon-edit {
     color: var(--color-secundary);
+}
+
+.button-pacient-container .button-primary, .button-pacient-container .button-danger, .button-pacient-container .button-secondary {
+    border-radius: var(--default-radius);
+}
+
+.pacientprofile-container{
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+.pacientprofile-container .buttons-separation{
+  margin-top: 2rem;
+}
+
+.button-pacient-container{
+  margin-top: auto;         
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem 0 1.25rem;
+  border-top: 1px solid var(--color-border);
+  justify-content: space-between;
 }
