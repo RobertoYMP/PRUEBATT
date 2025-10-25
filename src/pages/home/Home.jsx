@@ -8,6 +8,13 @@ export default function Home () {
             <div className="home-container">
                 <div className="left-home-container">
                     <h1>HEMATEC</h1>
+                    <div className='responsive-title'>
+                        <div className='responsive-home-rectangle'></div>
+                        <div className='responsive-home-circle'>
+                            <h1>HEMATEC</h1>
+                            <img src='./Logo/lightBlueLogo.png'></img>
+                        </div>
+                    </div>
                     <p className='home-text-container'>
                         Somos una plataforma diseñada para cuidar tu bienestar de manera personalizada. Aquí podrás consultar y llevar el historial de tu examen de biometría hemática de 25 elementos, recibir recomendaciones específicas y estar al tanto de alertas importantes. Todo en un solo lugar, con la seguridad de que tanto usuarios como administradores gestionan la información de forma eficiente y confiable.
                     </p>

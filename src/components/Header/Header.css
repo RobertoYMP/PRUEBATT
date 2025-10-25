@@ -8,12 +8,13 @@
   z-index: 10;
   color: #fff;
   box-shadow: var(--bottom-shadow);
+  justify-content: space-between;
 }
 
 .brand-container {
   background-color: #fff;
   height: 100%;
-  width: 25%;
+  min-width: 50%;
   display: grid;
   grid-template-columns: 60% 40%;
   gap: var(--default-gap);
@@ -222,4 +223,14 @@
   color: white;
   border-top-left-radius: var(--default-radius);
   border-top-right-radius: var(--default-radius);
+}
+
+@media (max-width: 700px) {
+  .brand-container {
+    min-width: 70%;
+  }
+
+  .logo-brand {
+    justify-content: flex-start;
+  }
 }
