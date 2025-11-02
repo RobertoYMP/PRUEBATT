@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import process from 'process';
+import process from 'process/browser';
 
 window.global = window;
 window.Buffer = window.Buffer || Buffer;
