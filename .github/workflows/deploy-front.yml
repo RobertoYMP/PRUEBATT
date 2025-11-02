@@ -21,32 +21,43 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      # Env de producción para Vite (API y Cognito)
+      # Env de producción para Vite (API + Cognito Identity + S3 + DynamoDB)
       - name: Crear .env.production
         shell: bash
         run: |
           cat > .env.production << 'EOF'
           VITE_API_BASE=${{ vars.VITE_API_BASE }}
           VITE_COG_REGION=${{ vars.VITE_COG_REGION }}
-          VITE_COG_USER_POOL_ID=${{ vars.VITE_COG_USER_POOL_ID }}
-          VITE_COG_CLIENT_ID=${{ vars.VITE_COG_CLIENT_ID }}
+          VITE_IDENTITY_POOL_ID=${{ vars.VITE_IDENTITY_POOL_ID }}
+          VITE_UPLOADS_BUCKET=${{ vars.VITE_UPLOADS_BUCKET }}
+          VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}
           EOF
 
-      # Instalar dependencias (sin audit/fund); evita error EUSAGE del lock
-      - name: Instalar dependencias
-        run: npm install --no-audit --no-fund
+      # Instalar dependencias del proyecto (evita errores de lockfile)
+      - name: Instalar dependencias base
+        run: npm ci || npm install --no-audit --no-fund
 
-      # Asegurar Vite y plugin React (por si faltan en devDeps)
+      # Instalar SDK de AWS necesario para el front (sin tocar package.json/lock)
+      - name: Instalar SDK AWS (sin guardar)
+        run: |
+          npm i --no-save \
+            @aws-sdk/client-cognito-identity \
+            @aws-sdk/credential-providers \
+            @aws-sdk/client-s3 \
+            @aws-sdk/client-dynamodb \
+            @aws-sdk/lib-dynamodb
+
+      # Asegurar Vite y plugin React por si no están en devDeps
       - name: Asegurar Vite y plugin React
         run: |
           npm ls vite || npm i -D vite@^5
           npm ls @vitejs/plugin-react || npm i -D @vitejs/plugin-react
 
-      # Fix de permisos en .bin (algunos runners pierden el bit ejecutable)
+      # Fix permisos en .bin (por si el runner los pierde)
       - name: Fix permisos en node_modules/.bin
         run: chmod +x node_modules/.bin/* || true
 
-      # Build con fallback directo al bin de Vite (evita "Permission denied")
+      # Build (fallback directo al bin si hiciera falta)
       - name: Build
         run: |
           npx vite build || node ./node_modules/vite/bin/vite.js build
