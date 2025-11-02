@@ -1,19 +1,14 @@
-// src/pages/app/Upload.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// ⛔️ Quitamos el mock: import { uploadPdf } from '../../../mock/api.js'
 import './Upload.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
-// AWS SDK v3
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 
-// 👇 Debes exportar getIdToken en src/pages/auth/cognito.js
-// (si tu helper se llama distinto, cámbialo aquí)
 import { getIdToken } from '../auth/cognito';
 
 // Helpers de entorno
