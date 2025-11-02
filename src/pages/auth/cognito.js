@@ -5,7 +5,7 @@ import {
 } from 'amazon-cognito-identity-js';
 import { jwtDecode } from 'jwt-decode';
 
-// === Vars de entorno (asegúrate de tenerlas en .env.local / .env.production)
+// === Vars de entorno
 const USER_POOL_ID = import.meta.env.VITE_COG_USER_POOL_ID;
 const CLIENT_ID    = import.meta.env.VITE_COG_CLIENT_ID;
 
@@ -31,7 +31,6 @@ export const getSession = () =>
   });
 
 export async function getIdToken() {
-  // cache simple
   const cached = localStorage.getItem('idToken');
   if (cached) return cached;
   const s = await getSession();
@@ -50,7 +49,7 @@ export function signOut() {
   getCurrentCognitoUser()?.signOut();
 }
 
-// ---------- Utilidad de rol (grupos de Cognito) ----------
+// ---------- Rol desde grupos (opcional) ----------
 export function getRoleFromClaims(claims) {
   const groups = claims?.['cognito:groups'] || [];
   if (groups.includes('admin'))  return 'admin';
@@ -58,28 +57,10 @@ export function getRoleFromClaims(claims) {
   return 'patient';
 }
 
-// ---------- Flujos de usuario ----------
-export function signUp({ email, password, attributes = {} }) {
-  const attrs = [{ Name: 'email', Value: email }];
-  if (attributes.name)        attrs.push({ Name: 'name', Value: attributes.name });
-  if (attributes.family_name) attrs.push({ Name: 'family_name', Value: attributes.family_name });
-
-  return new Promise((resolve, reject) => {
-    userPool.signUp(email, password, attrs, null, (err, result) =>
-      err ? reject(err) : resolve(result?.user)
-    );
-  });
-}
-
-export function confirmSignUp({ email, code }) {
-  const user = new CognitoUser({ Username: email, Pool: userPool });
-  return new Promise((resolve, reject) => {
-    user.confirmRegistration(code, true, (err, res) =>
-      err ? reject(err) : resolve(res)
-    );
-  });
-}
-
+// ---------- Login ----------
+/**
+ * Inicia sesión y devuelve { user, session, claims, role }.
+ */
 export function signIn({ email, password }) {
   const user = new CognitoUser({ Username: email, Pool: userPool });
   const auth = new AuthenticationDetails({ Username: email, Password: password });
@@ -87,18 +68,28 @@ export function signIn({ email, password }) {
   return new Promise((resolve, reject) => {
     user.authenticateUser(auth, {
       onSuccess: (session) => {
-        const idToken = session.getIdToken().getJwtToken();
-        const claims  = jwtDecode(idToken);
-        const role    = getRoleFromClaims(claims);
+        try {
+          const idToken = session.getIdToken().getJwtToken();
+          const claims  = jwtDecode(idToken);
+          const role    = getRoleFromClaims(claims);
 
-        localStorage.setItem('idToken', idToken);
-        localStorage.setItem('claims', JSON.stringify(claims));
+          localStorage.setItem('idToken', idToken);
+          localStorage.setItem('claims', JSON.stringify(claims));
 
-        resolve({ user, session, claims, role });
+          console.debug('[auth] login OK', { role, sub: claims.sub });
+          resolve({ user, session, claims, role });
+        } catch (e) {
+          reject(e);
+        }
       },
-      onFailure: reject,
-      newPasswordRequired: (data) =>
-        reject({ code: 'NEW_PASSWORD_REQUIRED', data }),
+      onFailure: (err) => {
+        console.error('[auth] login FAIL', err);
+        reject(err);
+      },
+      newPasswordRequired: (data) => {
+        console.warn('[auth] NEW_PASSWORD_REQUIRED', data);
+        reject({ code: 'NEW_PASSWORD_REQUIRED', data });
+      },
     });
   });
 }
