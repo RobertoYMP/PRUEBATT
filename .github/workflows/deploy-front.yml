@@ -25,15 +25,16 @@ jobs:
       - name: Crear .env.production
         shell: bash
         run: |
-          cat > .env.production <<'EOF'
-VITE_API_BASE=${{ vars.VITE_API_BASE }}
-VITE_COG_REGION=${{ vars.VITE_COG_REGION }}
-VITE_COG_USER_POOL_ID=${{ vars.VITE_COG_USER_POOL_ID }}
-VITE_COG_CLIENT_ID=${{ vars.VITE_COG_CLIENT_ID }}
-VITE_IDENTITY_POOL_ID=${{ vars.VITE_IDENTITY_POOL_ID }}
-VITE_UPLOADS_BUCKET=${{ vars.VITE_UPLOADS_BUCKET }}
-VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}
-EOF
+          printf "%s\n" \
+            "VITE_API_BASE=${{ vars.VITE_API_BASE }}" \
+            "VITE_COG_REGION=${{ vars.VITE_COG_REGION }}" \
+            "VITE_COG_USER_POOL_ID=${{ vars.VITE_COG_USER_POOL_ID }}" \
+            "VITE_COG_CLIENT_ID=${{ vars.VITE_COG_CLIENT_ID }}" \
+            "VITE_IDENTITY_POOL_ID=${{ vars.VITE_IDENTITY_POOL_ID }}" \
+            "VITE_UPLOADS_BUCKET=${{ vars.VITE_UPLOADS_BUCKET }}" \
+            "VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}" \
+          > .env.production
+
 
       # Mostrar sin exponer valores reales (para verificar que sí llegó todo)
       - name: Mostrar .env.production (enmascarado)
