@@ -51,6 +51,9 @@ export function signOut() {
 
 // ---------- Rol desde grupos (opcional) ----------
 export function getRoleFromClaims(claims) {
+  const custom = claims?.['custom:role'];
+  if (custom === 'admin' || custom === 'doctor' || custom === 'patient') return custom;
+
   const groups = claims?.['cognito:groups'] || [];
   if (groups.includes('admin'))  return 'admin';
   if (groups.includes('doctor')) return 'doctor';
@@ -92,15 +95,34 @@ export function signIn({ email, password }) {
 }
 
 // ---------- Registro ----------
-export function signUp({ email, password, attributes = {} }) {
-  const attrs = [{ Name: 'email', Value: email }];
-  if (attributes.name)         attrs.push({ Name: 'name', Value: attributes.name });
-  if (attributes.family_name)  attrs.push({ Name: 'family_name', Value: attributes.family_name });
+export function signIn({ email, password }) {
+  const user = new CognitoUser({ Username: email, Pool: userPool });
+  const auth = new AuthenticationDetails({ Username: email, Password: password });
 
   return new Promise((resolve, reject) => {
-    userPool.signUp(email, password, attrs, null, (err, result) =>
-      err ? reject(err) : resolve(result?.user)
-    );
+    user.authenticateUser(auth, {
+      onSuccess: (session) => {
+        // <<< AQUI VA >>>
+        const idToken = session.getIdToken().getJwtToken();
+        const claims  = jwtDecode(idToken);
+        console.debug('[auth] claims:', claims);   // <-- línea para verificar
+        const role    = getRoleFromClaims(claims);
+
+        // (opcional) cache local
+        localStorage.setItem('idToken', idToken);
+        localStorage.setItem('claims', JSON.stringify(claims));
+
+        resolve({ user, session, claims, role });
+      },
+      onFailure: (err) => {
+        console.error('[auth] login FAIL', err);
+        reject(err);
+      },
+      newPasswordRequired: (data) => {
+        console.warn('[auth] NEW_PASSWORD_REQUIRED', data);
+        reject({ code: 'NEW_PASSWORD_REQUIRED', data });
+      },
+    });
   });
 }
 
