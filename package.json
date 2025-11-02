@@ -19,7 +19,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.0",
     "react-transition-group": "^4.4.5",
-    "recharts": "^2.12.7"
+    "recharts": "^2.12.7",
+    "amazon-cognito-identity-js": "^6.3.10",
+    "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
