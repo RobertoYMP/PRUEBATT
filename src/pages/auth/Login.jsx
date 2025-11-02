@@ -14,18 +14,21 @@ export default function Login() {
   const [error, setError] = useState('')
 
   async function onSubmit(e) {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError('');
+    setLoading(true);
     try {
-      const { claims } = await signIn({ email, password })
-      const role = getRoleFromClaims(claims) // 'admin' | 'doctor' | 'patient'
-      if (role === 'admin')  return nav('/admin/users')
-      if (role === 'doctor') return nav('/doctor')
-      return nav('/app') // patient
+      const { role } = await signIn({ email, password }); // ← ahora devuelve role
+      if (role === 'admin')  return nav('/admin/users', { replace: true });
+      if (role === 'doctor') return nav('/doctor',      { replace: true });
+      return nav('/app', { replace: true }); // patient
     } catch (err) {
-      setError(err.message || String(err))
+      setError(err?.message || String(err));
+    } finally {
+      setLoading(false);
     }
   }
+
 
   return (
     <div className='login-container'>
