@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getSession, logout } from '../../mock/api'
-import './header.css'
+import './Header.css'
 import Button from '../Button/Button'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser, faChevronDown, faBell, faBars, faRightFromBracket, faFile, faCircleInfo } from "@fortawesome/free-solid-svg-icons";

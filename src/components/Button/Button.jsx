@@ -1,4 +1,4 @@
-import './button.css'
+import './Button.css'
 
 export default function Button({as: Component = "button", to, typeButton, width, height, borderRadius, onClick, content}) {
     return (
