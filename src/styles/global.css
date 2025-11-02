@@ -39,7 +39,8 @@ a:hover {
 .stack { 
   display: grid; 
   gap: 16px;
-  margin: auto; 
+  margin: auto;
+  width: 100%; 
 }
 
 .row { 
@@ -113,6 +114,12 @@ a:hover {
 
 .badge.critico.complete {
   width: 100%;
+}
+
+.complete {
+  background: linear-gradient(to right, var(--light-blue), var(--color-secundary)); 
+  color: white;
+  border: none;
 }
 
 .badge.estable { 

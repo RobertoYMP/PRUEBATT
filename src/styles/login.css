@@ -50,6 +50,8 @@
     border-radius: var(--card-radius);
     box-shadow: var(--box-shadow);
     padding: var(--big-padding);
+    display: grid;
+    gap: 1rem;
 }
 
 .login-button {

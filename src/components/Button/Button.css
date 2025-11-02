@@ -57,6 +57,7 @@
     background-size: 200% auto;
     color: #fff;
     transition: background-color 0.2s ease-in-out;
+    border-radius: var(--padding-button);
 }
 
 .button-primary:hover, .button-secondary:hover {
