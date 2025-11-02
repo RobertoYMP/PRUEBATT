@@ -29,7 +29,8 @@ jobs:
           EOF
 
       - name: Instalar dependencias
-        run: npm ci
+        run: npm ci || npm install --no-audit --no-fund
+
 
       - name: Build
         run: npm run build
