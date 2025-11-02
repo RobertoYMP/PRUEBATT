@@ -10,6 +10,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,6 +20,13 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
+      - name: Crear .env.production
+        shell: bash
+        run: |
+          cat > .env.production << 'EOF'
+          VITE_API_BASE=${{ vars.VITE_API_BASE }}
+          EOF
 
       - name: Instalar dependencias
         run: npm ci
