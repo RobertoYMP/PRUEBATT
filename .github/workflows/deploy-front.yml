@@ -35,7 +35,6 @@ jobs:
             "VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}" \
           > .env.production
 
-
       # Mostrar sin exponer valores reales (para verificar que sí llegó todo)
       - name: Mostrar .env.production (enmascarado)
         run: sed 's/=.*/=***MASKED***/' .env.production
@@ -43,6 +42,10 @@ jobs:
       # Instalar dependencias del proyecto (evita errores de lockfile)
       - name: Instalar dependencias base
         run: npm ci || npm install --no-audit --no-fund
+
+      # ⬇️ Polyfills de Node para navegador (imprescindible para Cognito)
+      - name: Instalar polyfills buffer/process (sin guardar)
+        run: npm i --no-save buffer process
 
       # Asegurar libs usadas en auth (sin tocar tu lock si no están)
       - name: Asegurar amazon-cognito-identity-js y jwt-decode
