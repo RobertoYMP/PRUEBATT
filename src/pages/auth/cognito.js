@@ -4,7 +4,7 @@ import {
   CognitoUser,
   AuthenticationDetails,
 } from 'amazon-cognito-identity-js';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const USER_POOL_ID = import.meta.env.VITE_COG_USER_POOL_ID;
 const CLIENT_ID    = import.meta.env.VITE_COG_CLIENT_ID;
