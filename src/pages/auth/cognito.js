@@ -5,7 +5,7 @@ import {
 } from 'amazon-cognito-identity-js';
 import { jwtDecode } from 'jwt-decode';
 
-// === Vars de entorno
+// === Vars de entorno (deben existir)
 const USER_POOL_ID = import.meta.env.VITE_COG_USER_POOL_ID;
 const CLIENT_ID    = import.meta.env.VITE_COG_CLIENT_ID;
 
@@ -58,9 +58,6 @@ export function getRoleFromClaims(claims) {
 }
 
 // ---------- Login ----------
-/**
- * Inicia sesión y devuelve { user, session, claims, role }.
- */
 export function signIn({ email, password }) {
   const user = new CognitoUser({ Username: email, Pool: userPool });
   const auth = new AuthenticationDetails({ Username: email, Password: password });
@@ -91,5 +88,27 @@ export function signIn({ email, password }) {
         reject({ code: 'NEW_PASSWORD_REQUIRED', data });
       },
     });
+  });
+}
+
+// ---------- Registro ----------
+export function signUp({ email, password, attributes = {} }) {
+  const attrs = [{ Name: 'email', Value: email }];
+  if (attributes.name)         attrs.push({ Name: 'name', Value: attributes.name });
+  if (attributes.family_name)  attrs.push({ Name: 'family_name', Value: attributes.family_name });
+
+  return new Promise((resolve, reject) => {
+    userPool.signUp(email, password, attrs, null, (err, result) =>
+      err ? reject(err) : resolve(result?.user)
+    );
+  });
+}
+
+export function confirmSignUp({ email, code }) {
+  const user = new CognitoUser({ Username: email, Pool: userPool });
+  return new Promise((resolve, reject) => {
+    user.confirmRegistration(code, true, (err, res) =>
+      err ? reject(err) : resolve(res)
+    );
   });
 }
