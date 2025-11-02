@@ -28,9 +28,11 @@ jobs:
           VITE_API_BASE=${{ vars.VITE_API_BASE }}
           EOF
 
+      - name: Actualizar lockfile
+        run: npm install --package-lock-only --no-audit --no-fund
+      
       - name: Instalar dependencias
-        run: npm ci || npm install --no-audit --no-fund
-
+        run: npm ci
 
       - name: Build
         run: npm run build
