@@ -5,6 +5,7 @@ import {
 } from 'amazon-cognito-identity-js';
 import { jwtDecode } from 'jwt-decode';
 
+// === Vars de entorno (asegúrate de tenerlas en .env.local / .env.production)
 const USER_POOL_ID = import.meta.env.VITE_COG_USER_POOL_ID;
 const CLIENT_ID    = import.meta.env.VITE_COG_CLIENT_ID;
 
@@ -12,9 +13,12 @@ if (!USER_POOL_ID || !CLIENT_ID) {
   throw new Error('Both UserPoolId and ClientId are required.');
 }
 
-const userPool = new CognitoUserPool({ UserPoolId: USER_POOL_ID, ClientId: CLIENT_ID });
+const userPool = new CognitoUserPool({
+  UserPoolId: USER_POOL_ID,
+  ClientId: CLIENT_ID,
+});
 
-// ---------- Sesión ----------
+// ---------- Helpers de sesión ----------
 export const getCurrentCognitoUser = () => userPool.getCurrentUser() ?? null;
 
 export const getSession = () =>
@@ -27,6 +31,7 @@ export const getSession = () =>
   });
 
 export async function getIdToken() {
+  // cache simple
   const cached = localStorage.getItem('idToken');
   if (cached) return cached;
   const s = await getSession();
@@ -43,6 +48,14 @@ export function signOut() {
   localStorage.removeItem('idToken');
   localStorage.removeItem('claims');
   getCurrentCognitoUser()?.signOut();
+}
+
+// ---------- Utilidad de rol (grupos de Cognito) ----------
+export function getRoleFromClaims(claims) {
+  const groups = claims?.['cognito:groups'] || [];
+  if (groups.includes('admin'))  return 'admin';
+  if (groups.includes('doctor')) return 'doctor';
+  return 'patient';
 }
 
 // ---------- Flujos de usuario ----------
@@ -76,21 +89,16 @@ export function signIn({ email, password }) {
       onSuccess: (session) => {
         const idToken = session.getIdToken().getJwtToken();
         const claims  = jwtDecode(idToken);
+        const role    = getRoleFromClaims(claims);
+
         localStorage.setItem('idToken', idToken);
         localStorage.setItem('claims', JSON.stringify(claims));
-        resolve({ user, session, claims });
+
+        resolve({ user, session, claims, role });
       },
       onFailure: reject,
       newPasswordRequired: (data) =>
         reject({ code: 'NEW_PASSWORD_REQUIRED', data }),
     });
   });
-}
-
-// ---------- Rol (opcional) ----------
-export function getRoleFromClaims(claims) {
-  const groups = claims?.['cognito:groups'] || [];
-  if (groups.includes('admin'))  return 'admin';
-  if (groups.includes('doctor')) return 'doctor';
-  return 'patient';
 }
