@@ -1,7 +1,9 @@
 import { Buffer } from 'buffer';
-window.global  = window;
-window.Buffer  = window.Buffer || Buffer;
-window.process = window.process || { env: {} };
+import process from 'process';
+
+window.global = window;
+window.Buffer = window.Buffer || Buffer;
+window.process = window.process || process;
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
