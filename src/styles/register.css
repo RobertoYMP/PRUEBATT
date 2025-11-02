@@ -1,5 +1,12 @@
+.register-container{
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 80vh;
+}
+
 .register-card {
-    max-width: 480px;
+    width: 35rem;
     margin: auto;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--blue-60) 25%, var(--color-secundary) 100%);
     box-shadow: var(--box-shadow);
@@ -48,4 +55,14 @@
 
 .top-margin {
     margin-top: 1rem;
+}
+
+@media (max-width: 700px) {
+    .register-container {
+        margin: 0 1rem;
+    }
+
+    .register-card {
+        width: 100%;
+    }
 }

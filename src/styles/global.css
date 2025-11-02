@@ -38,7 +38,8 @@ a:hover {
 
 .stack { 
   display: grid; 
-  gap: 16px; 
+  gap: 16px;
+  margin: auto; 
 }
 
 .row { 
