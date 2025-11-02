@@ -1,5 +1,9 @@
 .header-button {
-    background: linear-gradient(to right, var(--light-blue) 100%, var(--color-secundary) 0%);
+    background: linear-gradient(90deg,
+        var(--blue-60) 0%,
+        var(--color-secundary) 50%,
+        var(--light-blue) 100%
+    );
     background-size: 200% auto;
     color: #fff;
     padding: var(--padding-button);
@@ -27,7 +31,7 @@
     text-decoration: none;
     text-align: center;
     margin: var(--margin-header);
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.4s ease-in-out;
     align-content: center;
 }
 
@@ -39,7 +43,7 @@
       color-mix(in srgb, var(--color-secundary) 85%, #000 15%)
     );
     filter: saturate(1.05);
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.4s ease-in-out;
 }
 
 .button-primary {

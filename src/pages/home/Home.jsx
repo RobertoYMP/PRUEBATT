@@ -12,6 +12,7 @@ export default function Home () {
                         <div className='responsive-home-rectangle'></div>
                         <div className='responsive-home-circle'>
                             <h1>HEMATEC</h1>
+                            <hr className='line-title'></hr>
                             <img src='./Logo/lightBlueLogo.png'></img>
                         </div>
                     </div>

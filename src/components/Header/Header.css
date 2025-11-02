@@ -43,6 +43,10 @@
   justify-content: end;
 }
 
+.nav-toggle .header-button {
+  padding: 0.25rem 1rem;
+}
+
 .card-menu-container-open, .card-menu-container-close {
   position: absolute;
   justify-self: anchor-center;
