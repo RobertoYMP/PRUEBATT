@@ -1,4 +1,3 @@
-// src/pages/auth/cognito.js  (ajusta la ruta según tu proyecto)
 import {
   CognitoUserPool,
   CognitoUser,
@@ -9,9 +8,13 @@ import { jwtDecode } from 'jwt-decode';
 const USER_POOL_ID = import.meta.env.VITE_COG_USER_POOL_ID;
 const CLIENT_ID    = import.meta.env.VITE_COG_CLIENT_ID;
 
+if (!USER_POOL_ID || !CLIENT_ID) {
+  throw new Error('Both UserPoolId and ClientId are required.');
+}
+
 const userPool = new CognitoUserPool({ UserPoolId: USER_POOL_ID, ClientId: CLIENT_ID });
 
-// ---------- Helpers de sesión ----------
+// ---------- Sesión ----------
 export const getCurrentCognitoUser = () => userPool.getCurrentUser() ?? null;
 
 export const getSession = () =>
@@ -24,7 +27,6 @@ export const getSession = () =>
   });
 
 export async function getIdToken() {
-  // cache para evitar hop extra
   const cached = localStorage.getItem('idToken');
   if (cached) return cached;
   const s = await getSession();
@@ -44,23 +46,15 @@ export function signOut() {
 }
 
 // ---------- Flujos de usuario ----------
-export function signIn({ email, password }) {
-  const user = new CognitoUser({ Username: email, Pool: userPool });
-  const auth = new AuthenticationDetails({ Username: email, Password: password });
+export function signUp({ email, password, attributes = {} }) {
+  const attrs = [{ Name: 'email', Value: email }];
+  if (attributes.name)        attrs.push({ Name: 'name', Value: attributes.name });
+  if (attributes.family_name) attrs.push({ Name: 'family_name', Value: attributes.family_name });
 
   return new Promise((resolve, reject) => {
-    user.authenticateUser(auth, {
-      onSuccess: (session) => {
-        const idToken = session.getIdToken().getJwtToken();
-        const claims  = jwtDecode(idToken);          // <- decodifica
-        localStorage.setItem('idToken', idToken);
-        localStorage.setItem('claims', JSON.stringify(claims));
-        resolve({ user, session, claims });          // <- **devuelve claims**
-      },
-      onFailure: reject,
-      newPasswordRequired: (data) =>
-        reject({ code: 'NEW_PASSWORD_REQUIRED', data }),
-    });
+    userPool.signUp(email, password, attrs, null, (err, result) =>
+      err ? reject(err) : resolve(result?.user)
+    );
   });
 }
 
@@ -81,9 +75,10 @@ export function signIn({ email, password }) {
     user.authenticateUser(auth, {
       onSuccess: (session) => {
         const idToken = session.getIdToken().getJwtToken();
+        const claims  = jwtDecode(idToken);
         localStorage.setItem('idToken', idToken);
-        localStorage.setItem('claims', JSON.stringify(jwtDecode(idToken)));
-        resolve({ user, session });
+        localStorage.setItem('claims', JSON.stringify(claims));
+        resolve({ user, session, claims });
       },
       onFailure: reject,
       newPasswordRequired: (data) =>
@@ -92,7 +87,7 @@ export function signIn({ email, password }) {
   });
 }
 
-// ---------- Rol desde grupos (opcional) ----------
+// ---------- Rol (opcional) ----------
 export function getRoleFromClaims(claims) {
   const groups = claims?.['cognito:groups'] || [];
   if (groups.includes('admin'))  return 'admin';
