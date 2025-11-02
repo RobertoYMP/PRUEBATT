@@ -9,7 +9,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 
-import { getIdToken } from '../auth/cognito';
+import { getIdToken } from '../../auth/cognito';
 
 // Helpers de entorno
 const REGION = import.meta.env.VITE_COG_REGION;
