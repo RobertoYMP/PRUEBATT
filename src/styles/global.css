@@ -76,7 +76,7 @@ a:hover {
 }
 
 .field select option {
-  background-color: var(--blue-60);
+  background-color: var(--color-primary);
   color: white;
 }
 
