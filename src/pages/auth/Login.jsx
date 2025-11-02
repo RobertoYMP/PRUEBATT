@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
-import { signIn, getRoleFromClaims } from '../../auth/cognito'
+import { signIn, getRoleFromClaims } from './cognito'
 import '../../styles/login.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
