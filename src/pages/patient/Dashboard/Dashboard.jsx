@@ -27,7 +27,7 @@ export default function Dashboard(){
         </div>
         <div className="right-card-container">
           <div><h3>Historial</h3></div>
-          <div><FontAwesomeIcon icon={faBars} className='right-dashboard-icon'/></div>
+          <div><FontAwesomeIcon icon={faBars} className='right-dashboard-icon' style={{color: "white"}}/></div>
           <div>
             <Button
               as={Link}
