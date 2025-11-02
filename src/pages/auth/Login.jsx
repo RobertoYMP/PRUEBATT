@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
-// ❌ elimina: import { login } from '../../mock/api.js'
 import { signIn, getRoleFromClaims } from '../../auth/cognito'
 import '../../styles/login.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
