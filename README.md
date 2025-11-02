@@ -1,6 +1,7 @@
 # MEDICTT (Front-end)
 
-Proyecto de *solo frontend* (React + Vite) para MEDICTT. Incluye rutas y pantallas base para paciente, médico y administrador.
+Proyecto de *solo frontend* (React + Vite) para MEDICTT. Incluye rutas y pantallas base para paciente, médico y administrador
+
 
 ## Cómo correr
 ```bash
