@@ -21,23 +21,33 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      # Env de producción para Vite (API + Cognito Identity + S3 + DynamoDB)
+      # Env de producción para Vite (API + Cognito + Identity + S3 + Dynamo)
       - name: Crear .env.production
         shell: bash
         run: |
-          cat > .env.production << 'EOF'
-          VITE_API_BASE=${{ vars.VITE_API_BASE }}
-          VITE_COG_REGION=${{ vars.VITE_COG_REGION }}
-          VITE_IDENTITY_POOL_ID=${{ vars.VITE_IDENTITY_POOL_ID }}
-          VITE_UPLOADS_BUCKET=${{ vars.VITE_UPLOADS_BUCKET }}
-          VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}
-          EOF
+          cat > .env.production <<'EOF'
+VITE_API_BASE=${{ vars.VITE_API_BASE }}
+VITE_COG_REGION=${{ vars.VITE_COG_REGION }}
+VITE_COG_USER_POOL_ID=${{ vars.VITE_COG_USER_POOL_ID }}
+VITE_COG_CLIENT_ID=${{ vars.VITE_COG_CLIENT_ID }}
+VITE_IDENTITY_POOL_ID=${{ vars.VITE_IDENTITY_POOL_ID }}
+VITE_UPLOADS_BUCKET=${{ vars.VITE_UPLOADS_BUCKET }}
+VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}
+EOF
+
+      # Mostrar sin exponer valores reales (para verificar que sí llegó todo)
+      - name: Mostrar .env.production (enmascarado)
+        run: sed 's/=.*/=***MASKED***/' .env.production
 
       # Instalar dependencias del proyecto (evita errores de lockfile)
       - name: Instalar dependencias base
         run: npm ci || npm install --no-audit --no-fund
 
-      # Instalar SDK de AWS necesario para el front (sin tocar package.json/lock)
+      # Asegurar libs usadas en auth (sin tocar tu lock si no están)
+      - name: Asegurar amazon-cognito-identity-js y jwt-decode
+        run: npm i --no-save amazon-cognito-identity-js jwt-decode
+
+      # SDK AWS para S3/Dynamo/Identity desde el front
       - name: Instalar SDK AWS (sin guardar)
         run: |
           npm i --no-save \
@@ -47,20 +57,17 @@ jobs:
             @aws-sdk/client-dynamodb \
             @aws-sdk/lib-dynamodb
 
-      # Asegurar Vite y plugin React por si no están en devDeps
+      # Asegurar Vite y plugin React por si faltan
       - name: Asegurar Vite y plugin React
         run: |
           npm ls vite || npm i -D vite@^5
           npm ls @vitejs/plugin-react || npm i -D @vitejs/plugin-react
 
-      # Fix permisos en .bin (por si el runner los pierde)
       - name: Fix permisos en node_modules/.bin
         run: chmod +x node_modules/.bin/* || true
 
-      # Build (fallback directo al bin si hiciera falta)
       - name: Build
-        run: |
-          npx vite build || node ./node_modules/vite/bin/vite.js build
+        run: npx vite build || node ./node_modules/vite/bin/vite.js build
 
       - name: Configurar credenciales AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
