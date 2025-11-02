@@ -2,7 +2,6 @@
 
 Proyecto de *solo frontend* (React + Vite) para MEDICTT. Incluye rutas y pantallas base para paciente, médico y administrador
 
-
 ## Cómo correr
 ```bash
 npm install
