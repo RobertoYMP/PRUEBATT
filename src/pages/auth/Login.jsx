@@ -1,7 +1,9 @@
+// src/auth/Login.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
-import { login } from '../../mock/api.js'
+// ❌ elimina: import { login } from '../../mock/api.js'
+import { signIn, getRoleFromClaims } from '../../auth/cognito'
 import '../../styles/login.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -16,13 +18,13 @@ export default function Login() {
     e.preventDefault()
     setError('')
     try {
-      const res = await login({ email, password })
-      const role = res.session?.role
-      if (role === 'admin') return nav('/admin/users')
+      const { claims } = await signIn({ email, password })
+      const role = getRoleFromClaims(claims) // 'admin' | 'doctor' | 'patient'
+      if (role === 'admin')  return nav('/admin/users')
       if (role === 'doctor') return nav('/doctor')
       return nav('/app') // patient
     } catch (err) {
-      setError(err.message)
+      setError(err.message || String(err))
     }
   }
 
@@ -43,8 +45,8 @@ export default function Login() {
           {error && <div className="badge critico complete">{error}</div>}
           <form onSubmit={onSubmit} className="top-margin">
             <FormField
-              label="Usuario:"
-              type="text"
+              label="Usuario (email):"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
