@@ -1,5 +1,12 @@
+.login-container{
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: calc(80vh - 100px);
+}
+
 .login-card {
-    max-width: 480px;
+    width: 35rem;
     margin: auto;
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--blue-60) 25%, var(--color-secundary) 100%);
     box-shadow: var(--box-shadow);
@@ -48,18 +55,23 @@
 .login-button {
     font-family: var(--font-family, 'Caslon 2000'), serif;
     border-radius: var(--default-radius);
-    max-width: 50%;
     margin: auto;
     margin-bottom: var(--big-padding);
 }
 
 .top-margin {
     margin-top: 1rem;
+    display: grid; 
+    gap: 16px;
 }
 
 
 @media (max-width: 700px) {
     .login-container {
         margin: 0 1.25rem;
+    }
+
+    .login-card {
+        width: 100%;
     }
 }

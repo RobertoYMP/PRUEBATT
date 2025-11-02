@@ -41,7 +41,7 @@ export default function Login() {
         </div>
         <div className='body-login-card'>
           {error && <div className="badge critico complete">{error}</div>}
-          <form onSubmit={onSubmit} className="stack top-margin">
+          <form onSubmit={onSubmit} className="top-margin">
             <FormField
               label="Usuario:"
               type="text"
