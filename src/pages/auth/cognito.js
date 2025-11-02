@@ -44,15 +44,23 @@ export function signOut() {
 }
 
 // ---------- Flujos de usuario ----------
-export function signUp({ email, password, attributes = {} }) {
-  const attrs = [{ Name: 'email', Value: email }];
-  if (attributes.name)        attrs.push({ Name: 'name', Value: attributes.name });
-  if (attributes.family_name) attrs.push({ Name: 'family_name', Value: attributes.family_name });
+export function signIn({ email, password }) {
+  const user = new CognitoUser({ Username: email, Pool: userPool });
+  const auth = new AuthenticationDetails({ Username: email, Password: password });
 
   return new Promise((resolve, reject) => {
-    userPool.signUp(email, password, attrs, null, (err, result) =>
-      err ? reject(err) : resolve(result?.user)
-    );
+    user.authenticateUser(auth, {
+      onSuccess: (session) => {
+        const idToken = session.getIdToken().getJwtToken();
+        const claims  = jwtDecode(idToken);          // <- decodifica
+        localStorage.setItem('idToken', idToken);
+        localStorage.setItem('claims', JSON.stringify(claims));
+        resolve({ user, session, claims });          // <- **devuelve claims**
+      },
+      onFailure: reject,
+      newPasswordRequired: (data) =>
+        reject({ code: 'NEW_PASSWORD_REQUIRED', data }),
+    });
   });
 }
 
