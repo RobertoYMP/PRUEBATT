@@ -21,18 +21,35 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      # Env de producción para Vite (API y Cognito)
       - name: Crear .env.production
         shell: bash
         run: |
           cat > .env.production << 'EOF'
           VITE_API_BASE=${{ vars.VITE_API_BASE }}
+          VITE_COG_REGION=${{ vars.VITE_COG_REGION }}
+          VITE_COG_USER_POOL_ID=${{ vars.VITE_COG_USER_POOL_ID }}
+          VITE_COG_CLIENT_ID=${{ vars.VITE_COG_CLIENT_ID }}
           EOF
 
+      # Instalar dependencias (sin audit/fund); evita error EUSAGE del lock
       - name: Instalar dependencias
-        run: npm ci || npm install --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
+      # Asegurar Vite y plugin React (por si faltan en devDeps)
+      - name: Asegurar Vite y plugin React
+        run: |
+          npm ls vite || npm i -D vite@^5
+          npm ls @vitejs/plugin-react || npm i -D @vitejs/plugin-react
+
+      # Fix de permisos en .bin (algunos runners pierden el bit ejecutable)
+      - name: Fix permisos en node_modules/.bin
+        run: chmod +x node_modules/.bin/* || true
+
+      # Build con fallback directo al bin de Vite (evita "Permission denied")
       - name: Build
-        run: npm run build
+        run: |
+          npx vite build || node ./node_modules/vite/bin/vite.js build
 
       - name: Configurar credenciales AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -44,7 +61,7 @@ jobs:
         run: aws sts get-caller-identity
 
       - name: Publicar a S3
-        run: aws s3 sync dist s3://${{ vars.S3_BUCKET }} --delete
+        run: aws s3 sync dist s3://${{ vars.S3_BUCKET }} --delete --only-show-errors
 
       - name: Invalidar CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ vars.CF_DISTRIBUTION_ID }} --paths "/*"
