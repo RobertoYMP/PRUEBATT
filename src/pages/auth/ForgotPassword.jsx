@@ -13,7 +13,7 @@ export default function ForgotPassword() {
   return (
     <div className='forgot-container'>
       <div className='forgot-logo'>
-        <div className='forgot-container'>
+        <div className='forgot-container-logo'>
           <FontAwesomeIcon icon={faLock} />
         </div>
       </div>
