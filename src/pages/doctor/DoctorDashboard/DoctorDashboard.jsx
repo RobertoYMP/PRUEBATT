@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import './DoctorDashboard.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
-import { useNotifications } from "../../../context/NotificationContext"; //Notificaciones
+import { useNotifications } from "../../../context/NotificationContext";
+import { getSession } from '../../auth/cognito'
 
 export default function DoctorDashboard(){
   const rows = [
@@ -12,30 +13,28 @@ export default function DoctorDashboard(){
   ]
 
   const { addNotification } = useNotifications();
+  const addForCurrentUser = () => { addNotification(123, "🚨 Nuevo paciente en estado crítico", { borderLeft: "4px solid #d9534f" }); };
 
-  const addForCurrentUser = () => {
-    //123 = id simulado => en tu app real usa el id del usuario (auth)
-    addNotification(123, "🚨 Nuevo paciente en estado crítico", { borderLeft: "4px solid #d9534f" });
-  };
+  const claims = getSession()?.claims || {}
+  const displayName = claims.name || [claims.given_name, claims.family_name].filter(Boolean).join(' ') || claims.email || 'Doctor'
 
   return (
     <div className="doctordashboard-container">
-      <h2>¡Es un placer tenerte aquí, Doctor!</h2>
-      <div className='informative'>
-        <b>PACIENTES EN ESTADO CRÍTICO</b>
-      </div>
+      <h2>¡Es un placer tenerte aquí, {displayName}!</h2>
+      <div className='informative'><b>PACIENTES EN ESTADO CRÍTICO</b></div>
+
       <div className='header-container'>
         <div className='field input-search'>
           <input type="text" placeholder='Buscar paciente'/>
         </div>
         <div className='date-container'>
           Fecha:
-          <div className='field'>
-            <input type="date" />
-          </div>
+          <div className='field'><input type="date" /></div>
         </div>
       </div>
-      <div className="table-wrap"><table className="global-table">
+
+      <div className="table-wrap">
+        <table className="global-table">
           <thead><tr><th>Fecha</th><th>Paciente</th><th>Examen</th><th>Ver prediagnóstico</th></tr></thead>
           <tbody>
             {rows.map((r,i)=>(
@@ -49,6 +48,7 @@ export default function DoctorDashboard(){
           </tbody>
         </table>
       </div>
+
       <p>* Ejemplo de como se crea una notificación</p>
       <button onClick={addForCurrentUser}>Notificar a 123 (yo)</button>
     </div>
