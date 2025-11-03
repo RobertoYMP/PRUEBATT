@@ -1,127 +1,83 @@
-// src/pages/auth/cognito.js
+// pages/auth/cognito.js
+// Polyfill para Vite: evita "global is not defined"
+if (typeof window !== 'undefined' && !window.global) window.global = window;
+
 import {
   CognitoUserPool,
   CognitoUser,
   AuthenticationDetails,
 } from 'amazon-cognito-identity-js';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
-// === Vars de entorno (deben existir)
-const USER_POOL_ID = import.meta.env.VITE_COG_USER_POOL_ID;
-const CLIENT_ID    = import.meta.env.VITE_COG_CLIENT_ID;
-if (!USER_POOL_ID || !CLIENT_ID) {
-  throw new Error('Both UserPoolId and ClientId are required.');
-}
+const KEY = 'hematec.session';
 
-const userPool = new CognitoUserPool({
-  UserPoolId: USER_POOL_ID,
-  ClientId: CLIENT_ID,
+const pool = new CognitoUserPool({
+  UserPoolId: import.meta.env.VITE_COG_USER_POOL_ID,
+  ClientId:   import.meta.env.VITE_COG_CLIENT_ID,
 });
 
-// ---------- Helpers de sesión ----------
-export const getCurrentCognitoUser = () => userPool.getCurrentUser() ?? null;
+// -------- helpers de sesión (reutilízalos en toda la app) -----------
+export function saveSession({ idToken, accessToken, refreshToken }) {
+  const claims = jwtDecode(idToken);
+  const exp = claims.exp; // unix seconds
+  const role =
+    claims['custom:role'] ||
+    (Array.isArray(claims['cognito:groups']) ? claims['cognito:groups'][0] : 'patient');
 
-export const getSession = () =>
-  new Promise((resolve, reject) => {
-    const u = getCurrentCognitoUser();
-    if (!u) return reject(new Error('NO_AUTH'));
-    u.getSession((err, session) =>
-      err || !session?.isValid() ? reject(err || new Error('INVALID')) : resolve(session)
-    );
-  });
-
-export async function getIdToken() {
-  const cached = localStorage.getItem('idToken');
-  if (cached) return cached;
-  const s = await getSession();
-  const t = s.getIdToken().getJwtToken();
-  localStorage.setItem('idToken', t);
-  return t;
+  const session = { idToken, accessToken, refreshToken, exp, claims, role };
+  localStorage.setItem(KEY, JSON.stringify(session));
+  return session;
 }
 
-export async function getClaims() {
-  return jwtDecode(await getIdToken());
+export function getSession() {
+  try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; }
 }
 
-export function signOut() {
-  localStorage.removeItem('idToken');
-  localStorage.removeItem('claims');
-  getCurrentCognitoUser()?.signOut();
+export function isSessionValid() {
+  const s = getSession();
+  if (!s) return false;
+  const skew = 30; // segundos de holgura
+  return s.exp * 1000 > Date.now() + skew * 1000;
 }
 
-// ---------- Rol ----------
-export function getRoleFromClaims(claims) {
-  // Prefiere atributo custom:role; si no, usa grupos
-  const custom = claims?.['custom:role'];
-  if (custom === 'admin' || custom === 'doctor' || custom === 'patient') return custom;
-  const groups = claims?.['cognito:groups'] || [];
-  if (groups.includes('admin'))  return 'admin';
-  if (groups.includes('doctor')) return 'doctor';
-  return 'patient';
+export function clearSession() {
+  localStorage.removeItem(KEY);
 }
 
-// ---------- Errores legibles ----------
-export function humanizeCognitoError(err) {
-  const code = err?.code || err?.name || '';
-  switch (code) {
-    case 'UserNotFoundException':         return 'No existe una cuenta con ese correo.';
-    case 'UserNotConfirmedException':     return 'Debes confirmar tu correo antes de iniciar sesión.';
-    case 'NotAuthorizedException':        return 'Usuario o contraseña incorrectos.';
-    case 'PasswordResetRequiredException':return 'Debes restablecer tu contraseña.';
-    case 'TooManyRequestsException':      return 'Demasiados intentos. Intenta de nuevo en unos minutos.';
-    case 'NEW_PASSWORD_REQUIRED':         return 'Debes establecer una nueva contraseña.';
-    default: return err?.message || 'Error al iniciar sesión.';
-  }
+export function getAuthHeader() {
+  const s = getSession();
+  return s?.idToken ? { Authorization: `Bearer ${s.idToken}` } : {};
 }
 
-// ---------- Login (ÚNICA definición) ----------
+export function getRole() {
+  return getSession()?.role || 'patient';
+}
+// --------------------------------------------------------------------
+
+// LOGIN REAL CONTRA COGNITO
 export function signIn({ email, password }) {
-  const user = new CognitoUser({ Username: email, Pool: userPool });
-  const auth = new AuthenticationDetails({ Username: email, Password: password });
-
   return new Promise((resolve, reject) => {
+    const user = new CognitoUser({ Username: email, Pool: pool });
+    const auth = new AuthenticationDetails({ Username: email, Password: password });
+
     user.authenticateUser(auth, {
-      onSuccess: (session) => {
-        const idToken = session.getIdToken().getJwtToken();
-        const claims  = jwtDecode(idToken);
-        console.debug('[auth] claims:', claims);   // inspección
-        const role    = getRoleFromClaims(claims);
-
-        localStorage.setItem('idToken', idToken);
-        localStorage.setItem('claims', JSON.stringify(claims));
-
-        resolve({ user, session, claims, role });
+      onSuccess: (result) => {
+        const idToken      = result.getIdToken().getJwtToken();
+        const accessToken  = result.getAccessToken().getJwtToken();
+        const refreshToken = result.getRefreshToken().getToken();
+        const session = saveSession({ idToken, accessToken, refreshToken });
+        resolve({ role: session.role, claims: session.claims });
       },
       onFailure: (err) => {
-        console.error('[auth] login FAIL', err);
-        reject(err);
+        const map = {
+          NotAuthorizedException: 'Usuario o contraseña incorrectos.',
+          UserNotFoundException: 'No existe una cuenta con ese correo.',
+          UserNotConfirmedException: 'Debes confirmar tu correo.',
+          PasswordResetRequiredException: 'Debes restablecer tu contraseña.',
+        };
+        reject(new Error(map[err?.code] || err?.message || 'Error al autenticar'));
       },
-      newPasswordRequired: (data) => {
-        console.warn('[auth] NEW_PASSWORD_REQUIRED', data);
-        reject({ code: 'NEW_PASSWORD_REQUIRED', data });
-      },
+      newPasswordRequired: () => reject(new Error('Debes definir una nueva contraseña.')),
     });
-  });
-}
-
-// ---------- Registro ----------
-export function signUp({ email, password, attributes = {} }) {
-  const attrs = [{ Name: 'email', Value: email }];
-  if (attributes.name)        attrs.push({ Name: 'name', Value: attributes.name });
-  if (attributes.family_name) attrs.push({ Name: 'family_name', Value: attributes.family_name });
-
-  return new Promise((resolve, reject) => {
-    userPool.signUp(email, password, attrs, null, (err, result) =>
-      err ? reject(err) : resolve(result?.user)
-    );
-  });
-}
-
-export function confirmSignUp({ email, code }) {
-  const user = new CognitoUser({ Username: email, Pool: userPool });
-  return new Promise((resolve, reject) => {
-    user.confirmRegistration(code, true, (err, res) =>
-      err ? reject(err) : resolve(res)
-    );
   });
 }
