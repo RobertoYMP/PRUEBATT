@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -35,23 +39,22 @@ jobs:
             "VITE_HISTORY_TABLE=${{ vars.VITE_HISTORY_TABLE }}" \
           > .env.production
 
-      # Mostrar sin exponer valores reales (para verificar que sí llegó todo)
+      # Mostrar sin exponer valores reales
       - name: Mostrar .env.production (enmascarado)
         run: sed 's/=.*/=***MASKED***/' .env.production
 
-      # Instalar dependencias del proyecto (evita errores de lockfile)
-      - name: Instalar dependencias base
+      - name: Instalar dependencias
         run: npm ci || npm install --no-audit --no-fund
 
-      # ⬇️ Polyfills de Node para navegador (imprescindible para Cognito)
+      # Polyfills mínimos para amazon-cognito-identity-js si fueran requeridos
       - name: Instalar polyfills buffer/process (sin guardar)
         run: npm i --no-save buffer process
 
-      # Asegurar libs usadas en auth (sin tocar tu lock si no están)
-      - name: Asegurar amazon-cognito-identity-js y jwt-decode
-        run: npm i --no-save amazon-cognito-identity-js jwt-decode
+      # Asegurar libs de auth (jwt-decode v4 usa named export { jwtDecode })
+      - name: Asegurar amazon-cognito-identity-js y jwt-decode v4
+        run: npm i --no-save amazon-cognito-identity-js jwt-decode@^4
 
-      # SDK AWS para S3/Dynamo/Identity desde el front
+      # SDK AWS opcional para front (si lo usas)
       - name: Instalar SDK AWS (sin guardar)
         run: |
           npm i --no-save \
@@ -61,7 +64,7 @@ jobs:
             @aws-sdk/client-dynamodb \
             @aws-sdk/lib-dynamodb
 
-      # Asegurar Vite y plugin React por si faltan
+      # Asegurar Vite y plugin React
       - name: Asegurar Vite y plugin React
         run: |
           npm ls vite || npm i -D vite@^5
@@ -82,8 +85,31 @@ jobs:
       - name: Ver identidad STS
         run: aws sts get-caller-identity
 
-      - name: Publicar a S3
-        run: aws s3 sync dist s3://${{ vars.S3_BUCKET }} --delete --only-show-errors
+      # Deploy con políticas de caché correctas
+      - name: Publicar assets (cache largo, immutable)
+        run: |
+          aws s3 sync dist s3://${{ vars.S3_BUCKET }} \
+            --delete --only-show-errors \
+            --exclude "*.html" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      - name: Publicar HTML (sin caché)
+        run: |
+          aws s3 cp dist s3://${{ vars.S3_BUCKET }} \
+            --recursive --only-show-errors \
+            --exclude "*" --include "*.html" \
+            --content-type "text/html" \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --metadata-directive REPLACE
+
+      - name: Forzar Content-Type correcto de fuentes .woff2
+        run: |
+          aws s3 cp dist s3://${{ vars.S3_BUCKET }}/ \
+            --recursive --only-show-errors \
+            --exclude "*" --include "*.woff2" \
+            --content-type "font/woff2" \
+            --cache-control "public,max-age=31536000,immutable" \
+            --metadata-directive REPLACE
 
       - name: Invalidar CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ vars.CF_DISTRIBUTION_ID }} --paths "/*"
