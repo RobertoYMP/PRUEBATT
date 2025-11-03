@@ -11,7 +11,7 @@
     width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 24%);
-    gap: 9%;
+    gap: 8%;
     justify-content: center;
     word-break: break-word;
 }
@@ -33,7 +33,18 @@
 
 .specialist-card img {
     aspect-ratio: 1/1;
-    width: 30%;
+    width: 100px;
     border-radius: var(--card-radius);
     border: 3px solid var(--light-blue);
+}
+
+@media (max-width: 700px) {
+    .specialists-cards-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(1, 60%);
+        gap: 2rem;
+        justify-content: center;
+        word-break: break-word;
+    }
 }
