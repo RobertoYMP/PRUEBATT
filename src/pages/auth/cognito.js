@@ -7,7 +7,7 @@ import {
   CognitoUser,
   AuthenticationDetails,
 } from 'amazon-cognito-identity-js';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const KEY = 'hematec.session';
 
