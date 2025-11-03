@@ -41,7 +41,6 @@ export default function Upload() {
 
     try {
       if (!file) return setError('Selecciona un archivo PDF');
-      // Algunos navegadores no ponen type; forzamos sufijo .pdf más abajo
       if (file.type && file.type !== 'application/pdf') {
         return setError('El archivo debe ser un PDF');
       }
@@ -71,20 +70,22 @@ export default function Upload() {
       const identityId = resolved.identityId;
 
       // 5) Key con prefijo/sufijo esperados por el trigger
-      const safe = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
+      const safe    = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
       const withPdf = /\.pdf$/i.test(safe) ? safe : `${safe}.pdf`;
-      const key = `private/${identityId}/${Date.now()}-${withPdf}`;
+      const key     = `private/${identityId}/${Date.now()}-${withPdf}`;
 
-      // 6) Subir a S3 (Lambda hará DynamoDB+Textract)
+      // ⬇️ 6) **Evitar streams**: convertir a bytes para que el SDK no llame getReader()
+      const bodyBytes = new Uint8Array(await file.arrayBuffer());
+
       await s3.send(new PutObjectCommand({
         Bucket: UPLOADS_BUCKET,
         Key: key,
-        Body: file,
-        ContentType: 'application/pdf',
+        Body: bodyBytes,                // <- aquí el cambio clave
+        ContentType: 'application/pdf', // fuerza el tipo
       }));
 
       setLoading(false);
-      nav('/app/results'); // o a la pantalla que prefieras
+      nav('/app/results');
     } catch (err) {
       console.error(err);
       setLoading(false);
@@ -106,8 +107,7 @@ export default function Upload() {
             <br /><br />
             <FontAwesomeIcon icon={faHandPointRight} /> Debe ser el formato oficial de la clínica.
             <br /><br />
-            <FontAwesomeIcon icon={faExclamation} /> <strong>Importante: </strong>
-            Es un prediagnóstico automatizado.
+            <FontAwesomeIcon icon={faExclamation} /> <strong>Importante:</strong> Es un prediagnóstico automatizado.
           </div>
           <div className="upload-line"></div>
         </div>
