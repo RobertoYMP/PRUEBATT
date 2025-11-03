@@ -4,11 +4,18 @@ import './Dashboard.css'
 import Button from '../../../components/Button/Button'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faFile, faBars } from "@fortawesome/free-solid-svg-icons"
+import { getSession } from '../../auth/cognito'
 
 export default function Dashboard(){
+  const claims = getSession()?.claims || {};
+  const displayName =
+    claims.name ||
+    [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
+    claims.email || 'Usuario';
+
   return (
     <div className="dashboard-container">
-      <h2>¡Te damos la bienvenida, Nombre!</h2>
+      <h2>¡Te damos la bienvenida, {displayName}!</h2>
       <div className="card-container">
         <div className="left-card-container">
           <div className="border-container">
@@ -16,11 +23,11 @@ export default function Dashboard(){
             <div><FontAwesomeIcon icon={faFile} className='dashboard-icon'/></div>
             <div>
               <Button
-                  as={Link}
-                  to="/app/upload"
-                  typeButton={'button-primary'}
-                  content={'Ir a carga de resultados'}
-                  borderRadius={"var(--default-radius)"}
+                as={Link}
+                to="/app/upload"
+                typeButton={'button-primary'}
+                content={'Ir a carga de resultados'}
+                borderRadius={"var(--default-radius)"}
               />
             </div>
           </div>
