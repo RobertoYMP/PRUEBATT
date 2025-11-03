@@ -7,11 +7,11 @@ import { faFile, faBars } from "@fortawesome/free-solid-svg-icons"
 import { getSession } from '../../auth/cognito'
 
 export default function Dashboard(){
-  const claims = getSession()?.claims || {};
+  const claims = getSession()?.claims || {}
   const displayName =
     claims.name ||
     [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
-    claims.email || 'Usuario';
+    claims.email || 'Usuario'
 
   return (
     <div className="dashboard-container">
