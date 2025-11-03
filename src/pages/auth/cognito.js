@@ -53,6 +53,16 @@ export function getAuthHeader() {
 export function getRole() {
   return getSession()?.role || 'patient';
 }
+
+export function getIdToken() {
+  return getSession()?.idToken || null;
+}
+export function getAccessToken() {
+  return getSession()?.accessToken || null;
+}
+export function getRefreshToken() {
+  return getSession()?.refreshToken || null;
+}
 /* ===================================================== */
 
 /* ===================== Auth flows ===================== */
