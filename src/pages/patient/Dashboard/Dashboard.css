@@ -73,3 +73,138 @@
     color: white;
     text-align: center;
 }
+
+.dashboard-hero {
+  width: min(1100px, 100% - 3rem);
+  margin: 0 auto;
+  text-align: center;
+  padding-top: var(--big-padding);
+}
+
+.dashboard-hero h2 {
+  margin: 0 0 .25rem 0;
+  color: var(--color-primary);
+  letter-spacing: .2px;
+}
+
+.muted {
+  color: color-mix(in oklab, var(--color-primary) 35%, #6b7280);
+  font-size: .95rem;
+}
+
+.dashboard-grid {
+  width: min(1100px, 100% - 3rem);
+  margin: var(--big-padding) auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 5vw, 7rem);
+  align-items: stretch;
+  min-height: 60dvh;
+  place-content: center;
+}
+
+.card {
+  position: relative;
+  border: none;
+  padding: clamp(1.1rem, 2.2vw, 1.75rem);
+  border-radius: calc(var(--default-radius) + 6px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--box-shadow);
+  display: grid;
+  align-content: start;
+  gap: .65rem;
+  min-height: 16rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 10px;
+  border-radius: var(--big-padding);
+  background: linear-gradient(135deg, var(--light-blue), var(--color-secundary) 65%, #8facbf);
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  border: none;
+}
+
+@supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  .card::before {
+    padding: 0;
+    border: 1px solid color-mix(in oklab, var(--light-blue) 60%, #8facbf);
+  }
+}
+
+.upload-card {
+    text-align: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.9));
+}
+
+.history-card {
+    text-align: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(44,81,106,.10), rgba(44,81,106,.06));
+}
+
+.icon-badge {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--light-blue), var(--color-secundary));
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  font-size: 1.35rem;
+  margin-bottom: .25rem;
+  margin: auto;
+}
+
+.icon-badge.soft {
+  background: linear-gradient(135deg, color-mix(in oklab, var(--light-blue) 80%, #fff), color-mix(in oklab, var(--color-secundary) 80%, #fff));
+  color: white;
+}
+
+.card h3 {
+  margin: .25rem 0 .15rem 0;
+  color: var(--color-primary);
+  letter-spacing: .2px;
+}
+
+.card :where(a, button) {
+  margin-top: .5rem;
+  justify-self: start;
+  margin: auto;
+}
+
+.card:focus-within {
+  outline: 3px solid color-mix(in oklab, var(--light-blue) 60%, #ffffff);
+  outline-offset: 2px;
+}
+
+@media (max-width: 960px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    min-height: 14rem;
+  }
+  .card :where(a, button) {
+    width: 100%;
+  }
+}
