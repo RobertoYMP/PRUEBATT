@@ -26,7 +26,7 @@ import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile
 import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 
-// helpers de cognito
+// ⬇️ Importa initSession para “hidratar” Cognito al arrancar
 import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
 
 // Destino por rol
@@ -36,30 +36,30 @@ function targetByRole(role) {
   return '/app'
 }
 
-// Espera a que Cognito hidrate/refresh la sesión antes de decidir
+// Espera a que Cognito resuelva sesión/refresh antes de decidir
 function useAuthReady() {
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => { initSession().finally(() => setReady(true)); }, []);
-  return ready;
+  const [ready, setReady] = React.useState(false)
+  React.useEffect(() => { initSession().finally(() => setReady(true)) }, [])
+  return ready
 }
 
-// Públicas de auth (permiten ?force=1)
+// Públicas de auth (permiten ?force=1 para abrir aunque haya sesión)
 function PublicAuth({ children }) {
-  const ready = useAuthReady();
-  if (!ready) return null; // evita decisiones prematuras (bucle)
-  const { search } = useLocation();
-  const q = new URLSearchParams(search);
-  const force = q.has('force') || q.has('guest');
+  const ready = useAuthReady()
+  if (!ready) return null
+  const { search } = useLocation()
+  const q = new URLSearchParams(search)
+  const force = q.has('force') || q.has('guest')
   if (!force && isSessionValid()) {
     return <Navigate to={targetByRole(getRole())} replace />
   }
   return children
 }
 
-// Protegidas y con rol
+// Protegidas + rol
 function RoleRoute({ role, children }) {
-  const ready = useAuthReady();
-  if (!ready) return null;
+  const ready = useAuthReady()
+  if (!ready) return null
   if (!isSessionValid()) return <Navigate to="/login" replace />
   const r = getRole()
   if (role && r !== role) return <Navigate to={targetByRole(r)} replace />
