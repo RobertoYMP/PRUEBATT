@@ -1,7 +1,5 @@
-import React from 'react'
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { getSession, logout } from '../../mock/api'
 import './Header.css'
 import Button from '../Button/Button'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,26 +8,38 @@ import { CSSTransition } from 'react-transition-group';
 import NotificationList from "../Notification/NotificationList";
 import { useNotifications } from "../../context/NotificationContext";
 
+// ⬇️ Usa helpers reales de Cognito
+import { isSessionValid, getSession, signOut } from '../../pages/auth/cognito'
+
 export default function Header() {
   const { pathname } = useLocation()
   const nav = useNavigate()
+
+  const loggedIn = isSessionValid()
   const session = getSession()
   const role = session?.role
-  const loggedIn = !!session
+
+  const claims = session?.claims || {}
+  const displayName =
+    claims.name ||
+    [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
+    claims.email || 'Usuario'
+
   function onLogout() {
-    logout().then(() => nav('/login'));
-    setIsOpen(false);
+    try { signOut() } finally {
+      setIsOpen(false)
+      nav('/login', { replace: true })
+    }
   }
 
-  const [open, setOpen] = React.useState(false)
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
+  const { notifications, removeNotification } = useNotifications()
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, []);
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const { notifications, removeNotification } = useNotifications();
+  useEffect(() => { setIsOpen(false) }, [])
+
+  const toggleMenu = () => setIsOpen(!isOpen)
 
   return (
     <>
@@ -52,22 +62,22 @@ export default function Header() {
           <div className="logo-brand">
             {!loggedIn &&
               <Link to="/" style={{ textDecoration: 'none' }}>
-                <img src='/Logo/whiteLogo.png'/>
+                <img src='/Logo/whiteLogo.png' alt="Hematec" />
               </Link>
             }
             {loggedIn && role === 'patient' &&
               <Link to="/app" style={{ textDecoration: 'none' }}>
-                <img src='/Logo/whiteLogo.png'/>
+                <img src='/Logo/whiteLogo.png' alt="Hematec" />
               </Link>
             }
             {loggedIn && role === 'doctor' &&
               <Link to="/doctor" style={{ textDecoration: 'none' }}>
-                <img src='/Logo/whiteLogo.png'/>
+                <img src='/Logo/whiteLogo.png' alt="Hematec" />
               </Link>
             }
             {loggedIn && role === 'admin' &&
               <Link to="/admin/users" style={{ textDecoration: 'none' }}>
-                <img src='/Logo/whiteLogo.png'/>
+                <img src='/Logo/whiteLogo.png' alt="Hematec" />
               </Link>
             }
           </div>
@@ -77,7 +87,7 @@ export default function Header() {
           <div className='nav-toggle'>
             <Button
               typeButton={'header-button'} 
-              onClick={() => setOpen((o) => !o)}
+              onClick={() => setOpen(o => !o)}
               content={"☰"}
               borderRadius={"var(--default-radius)"}
             />
@@ -88,15 +98,19 @@ export default function Header() {
               <div className='row-content'>
                 {!loggedIn && (
                   <>
-                    {location.pathname === "/register" ? (
-                      <Link to="/login" onClick={() => setOpen(false)}>Iniciar sesión</Link>
-                    ) : location.pathname === "/login" ? (
-                      <Link to="/register" onClick={() => setOpen(false)}>Registrarse</Link>
+                    {pathname === "/register" ? (
+                      <Link to="/login?force=1" onClick={() => setOpen(false)}>Iniciar sesión</Link>
+                    ) : pathname === "/login" ? (
+                      <Link to="/register?force=1" onClick={() => setOpen(false)}>Registrarse</Link>
                     ) : (
-                      <><Link to="/login" onClick={() => setOpen(false)}>Iniciar sesión</Link><Link to="/register" onClick={() => setOpen(false)}>Registrarse</Link></>
+                      <>
+                        <Link to="/login?force=1" onClick={() => setOpen(false)}>Iniciar sesión</Link>
+                        <Link to="/register?force=1" onClick={() => setOpen(false)}>Registrarse</Link>
+                      </>
                     )}
                   </>
                 )}
+
                 {loggedIn && role === 'patient' && (
                   <>
                     <Link to="/app" onClick={() => setOpen(false)}>Paciente</Link>
@@ -104,19 +118,22 @@ export default function Header() {
                     <Link to="/app/notifications" onClick={() => setOpen(false)}>Notificaciones</Link>
                   </>
                 )}
+
                 {loggedIn && role === 'doctor' && (
                   <>
                     <Link to="/doctor" onClick={() => setOpen(false)}>Médico</Link>
-                    <Link to="/doctor/reviews" onClick={() => setOpen(false)}>Revisiones</Link>
+                    <Link to="/doctor/history-reviews" onClick={() => setOpen(false)}>Revisiones</Link>
                     <Link to="/doctor/edit-recommendations" onClick={() => setOpen(false)}>Recomendaciones</Link>
                   </>
                 )}
+
                 {loggedIn && role === 'admin' && (
                   <>
                     <Link to="/admin/users" onClick={() => setOpen(false)}>Admin</Link>
                     <Link to="/admin/new-specialist" onClick={() => setOpen(false)}>Agregar médico</Link>
                   </>
                 )}
+
                 {loggedIn && (
                   <button className="btn secondary" onClick={() => { setOpen(false); onLogout() }}>
                     Salir
@@ -130,19 +147,19 @@ export default function Header() {
         <nav className="menu-container">
           {!loggedIn && (
             <>
-              {location.pathname === "/register" ? (
+              {pathname === "/register" ? (
                 <Button
                   as={Link}
-                  to="/login"
+                  to="/login?force=1"
                   typeButton={"header-button-primary"}
                   content={"Iniciar sesión"}
                   width={"7rem"}
                   borderRadius={"var(--default-radius)"}
                 />
-              ) : location.pathname === "/login" ? (
+              ) : pathname === "/login" ? (
                 <Button
                   as={Link}
-                  to="/register"
+                  to="/register?force=1"
                   typeButton={"header-button"}
                   content={"Registrarse"}
                   width={"7rem"}
@@ -152,7 +169,7 @@ export default function Header() {
                 <>
                   <Button
                     as={Link}
-                    to="/login"
+                    to="/login?force=1"
                     typeButton={"header-button-primary"}
                     content={"Iniciar sesión"}
                     width={"7rem"}
@@ -160,7 +177,7 @@ export default function Header() {
                   />
                   <Button
                     as={Link}
-                    to="/register"
+                    to="/register?force=1"
                     typeButton={"header-button"}
                     content={"Registrarse"}
                     width={"7rem"}
@@ -170,100 +187,87 @@ export default function Header() {
               )}
             </>
           )}
+
           {loggedIn && (role === 'admin' || role === 'doctor' || role === 'patient') && (
-            <>
-              <div className='user-header-container' onClick={toggleMenu}>
-                <div className='user-container-header'>
-                  <div className='icon'>
-                    <FontAwesomeIcon icon={faCircleUser} style={{color: "white", paddingRight: "0.5rem"}}/>
-                  </div>
-                  <div className='name'>
-                    <p>| </p>
-                    <p>Nombre</p>
-                  </div>
+            <div className='user-header-container' onClick={toggleMenu}>
+              <div className='user-container-header'>
+                <div className='icon'>
+                  <FontAwesomeIcon icon={faCircleUser} style={{color: "white", paddingRight: "0.5rem"}}/>
+                </div>
+                <div className='name'>
+                  <p>| </p>
+                  <p>{displayName}</p>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
           {loggedIn && isOpen && (
-            <>
-              <CSSTransition
-                in={isOpen}
-                timeout={300}
-                classNames="submenu"
-                unmountOnExit
-              >
-                <div className="submenu">
-                  {role === 'doctor' && (
-                    <>
-                      <div className={`submenu-item ${notifOpen ? 'open' : ''}`} onClick={() => setNotifOpen((s) => !s)}>
-                        <FontAwesomeIcon icon={faBell} style={{ marginRight: "1rem" }} />
-                        Notificaciones
-                        <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
-                      </div>
-                      {notifOpen && (
-                        <>
-                          <hr/>
-                          <div className="notif-submenu">
-                            <NotificationList
-                              notifications={notifications}
-                              removeNotification={removeNotification}
-                            />
-                          </div>
-                        </>
-                      )}
-                      <hr />
-                      <Link to="/doctor/history-reviews" className="submenu-item">
-                        <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
-                        Historial de pacientes
-                      </Link>
-                      <hr/>
-                    </>
-                  )}
-                  {role === 'patient' && (
-                    <>
-                      <div className={`submenu-item ${notifOpen ? 'open' : ''}`} onClick={() => setNotifOpen((s) => !s)}>
-                        <FontAwesomeIcon icon={faBell} style={{ marginRight: "1rem" }} />
-                        Notificaciones
-                        <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
-                      </div>
-                      {notifOpen && (
-                        <>
-                          <hr/>
-                          <div className="notif-submenu">
-                            <NotificationList
-                              notifications={notifications}
-                              removeNotification={removeNotification}
-                            />
-                          </div>
-                        </>
-                      )}
-                      <hr />
-                      <Link to="/app/history" className="submenu-item">
-                        <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
-                        Historial
-                      </Link>
-                      <hr/>
-                      <Link to="/app/upload" className="submenu-item">
-                        <FontAwesomeIcon icon={faFile} style={{ marginRight: "1rem" }} />
-                        Subir archivo
-                      </Link>
-                      <hr/>
-                      <Link to="/app/specialists" className="submenu-item">
-                        <FontAwesomeIcon icon={faCircleInfo} style={{ marginRight: "1rem" }} />
-                        Especialistas
-                      </Link>
-                      <hr/>
-                    </>
-                  )}
-                  <div className="submenu-item logout-header" onClick={onLogout}>
-                    <FontAwesomeIcon icon={faRightFromBracket} style={{ marginLeft: "auto" }} />
-                    Salir
-                  </div>
+            <CSSTransition in={isOpen} timeout={300} classNames="submenu" unmountOnExit>
+              <div className="submenu">
+                {(role === 'doctor' || role === 'patient') && (
+                  <>
+                    <div className={`submenu-item ${notifOpen ? 'open' : ''}`} onClick={() => setNotifOpen(s => !s)}>
+                      <FontAwesomeIcon icon={faBell} style={{ marginRight: "1rem" }} />
+                      Notificaciones
+                      <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: "auto" }} />
+                    </div>
+                    {notifOpen && (
+                      <>
+                        <hr/>
+                        <div className="notif-submenu">
+                          <NotificationList
+                            notifications={notifications}
+                            removeNotification={removeNotification}
+                          />
+                        </div>
+                      </>
+                    )}
+                    <hr />
+                  </>
+                )}
+
+                {role === 'doctor' && (
+                  <>
+                    <Link to="/doctor/history-reviews" className="submenu-item">
+                      <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
+                      Historial de pacientes
+                    </Link>
+                    <hr/>
+                    <Link to="/doctor/edit-recommendations" className="submenu-item">
+                      <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
+                      Editar recomendaciones
+                    </Link>
+                    <hr/>
+                  </>
+                )}
+
+                {role === 'patient' && (
+                  <>
+                    <Link to="/app/history" className="submenu-item">
+                      <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
+                      Historial
+                    </Link>
+                    <hr/>
+                    <Link to="/app/upload" className="submenu-item">
+                      <FontAwesomeIcon icon={faFile} style={{ marginRight: "1rem" }} />
+                      Subir archivo
+                    </Link>
+                    <hr/>
+                    <Link to="/app/specialists" className="submenu-item">
+                      <FontAwesomeIcon icon={faCircleInfo} style={{ marginRight: "1rem" }} />
+                      Especialistas
+                    </Link>
+                    <hr/>
+                  </>
+                )}
+
+                <div className="submenu-item logout-header" onClick={onLogout}>
+                  <FontAwesomeIcon icon={faRightFromBracket} style={{ marginLeft: "auto" }} />
+                  Salir
                 </div>
-              </CSSTransition>
-            </>
+              </div>
+            </CSSTransition>
           )}
         </nav>
       </header>
