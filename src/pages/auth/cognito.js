@@ -29,26 +29,27 @@ function _sdkSession() {
 
 /**
  * Hidrata/refresh la sesión del SDK al arrancar la app.
- * Evita el “bucle” en el router porque esperamos a que Cognito resuelva.
+ * Úsalo en el bootstrap del router para evitar bucles de redirección.
  */
 export function initSession() {
   return new Promise((resolve) => {
     const u = _user();
     if (!u || !u.getSession) return resolve(false);
     u.getSession((_err, sess) => {
-      // Si hay refresh token, aquí Cognito intentará refrescar
       resolve(!!(sess && sess.isValid && sess.isValid()));
     });
   });
 }
 
-/* ========== Tu sesión local (opcional) ========== */
+/* ========== Sesión local (opcional) ========== */
 export function saveSession({ idToken, accessToken, refreshToken }) {
   const claims = jwtDecode(idToken);
   const exp = claims.exp; // unix seconds
+  // 👇 Usar grupos de Cognito como fuente de verdad; fallback a custom:role y luego 'patient'
   const role =
+    (Array.isArray(claims['cognito:groups']) && claims['cognito:groups'][0]) ||
     claims['custom:role'] ||
-    (Array.isArray(claims['cognito:groups']) ? claims['cognito:groups'][0] : 'patient');
+    'patient';
 
   const session = { idToken, accessToken, refreshToken, exp, claims, role };
   localStorage.setItem(KEY, JSON.stringify(session));
@@ -77,17 +78,21 @@ export function getSession() {
 
   const s = _sdkSession();
   if (!s) return null;
+
+  const idTok = s.getIdToken();
+  const claims = idTok.payload || {};
+  const role =
+    (Array.isArray(claims['cognito:groups']) && claims['cognito:groups'][0]) ||
+    claims['custom:role'] ||
+    'patient';
+
   return {
-    idToken: s.getIdToken().getJwtToken(),
+    idToken: idTok.getJwtToken(),
     accessToken: s.getAccessToken().getJwtToken(),
     refreshToken: s.getRefreshToken().getToken(),
-    exp: s.getIdToken().payload?.exp,
-    claims: s.getIdToken().payload,
-    role:
-      s.getIdToken().payload?.['custom:role'] ||
-      (Array.isArray(s.getIdToken().payload?.['cognito:groups'])
-        ? s.getIdToken().payload['cognito:groups'][0]
-        : 'patient'),
+    exp: claims.exp,
+    claims,
+    role,
   };
 }
 
@@ -128,10 +133,10 @@ export function signIn({ email, password }) {
       },
       onFailure: (err) => {
         const map = {
-          NotAuthorizedException:        'Usuario o contraseña incorrectos.',
-          UserNotFoundException:         'No existe una cuenta con ese correo.',
-          UserNotConfirmedException:     'Debes confirmar tu correo.',
-          PasswordResetRequiredException:'Debes restablecer tu contraseña.',
+          NotAuthorizedException:         'Usuario o contraseña incorrectos.',
+          UserNotFoundException:          'No existe una cuenta con ese correo.',
+          UserNotConfirmedException:      'Debes confirmar tu correo.',
+          PasswordResetRequiredException: 'Debes restablecer tu contraseña.',
         };
         reject(new Error(map[err?.code] || err?.message || 'Error al autenticar'));
       },
@@ -140,12 +145,11 @@ export function signIn({ email, password }) {
   });
 }
 
-// REGISTRO
-export function signUp({ email, password, name, role = 'patient' }) {
+// REGISTRO — NO enviar custom:role (el admin asigna grupos después)
+export function signUp({ email, password, name }) {
   return new Promise((resolve, reject) => {
     const attrs = [ new CognitoUserAttribute({ Name: 'email', Value: email }) ];
     if (name) attrs.push(new CognitoUserAttribute({ Name: 'name', Value: name }));
-    if (role) attrs.push(new CognitoUserAttribute({ Name: 'custom:role', Value: String(role) }));
 
     pool.signUp(email, password, attrs, null, (err, result) => {
       if (err) {
@@ -153,8 +157,7 @@ export function signUp({ email, password, name, role = 'patient' }) {
           InvalidPasswordException: 'La contraseña no cumple la política del usuario.',
           UsernameExistsException:  'Ya existe una cuenta con ese correo.',
         };
-        reject(new Error(map[err?.code] || err?.message || 'No se pudo registrar'));
-        return;
+        return reject(new Error(map[err?.code] || err?.message || 'No se pudo registrar'));
       }
       resolve({
         userSub: result.userSub,
@@ -180,7 +183,9 @@ export function confirmSignUp({ email, code }) {
 export function resendCode({ email }) {
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool: pool });
-    user.resendConfirmationCode((err, data) => err ? reject(new Error(err?.message || 'No se pudo reenviar el código')) : resolve(data));
+    user.resendConfirmationCode((err, data) =>
+      err ? reject(new Error(err?.message || 'No se pudo reenviar el código')) : resolve(data)
+    );
   });
 }
 export function forgotPassword({ email }) {
