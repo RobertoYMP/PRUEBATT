@@ -9,8 +9,7 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 export default function Register() {
   const nav = useNavigate()
   const [form, setForm] = useState({
-    nombre:'', apellido:'', email:'', password:'', confirm:'', edad:'', sexo:'Mujer',
-    role:'patient' // 👈 opcional (para pruebas). En prod puedes ocultarlo y asignar por grupos.
+    nombre:'', apellido:'', email:'', password:'', confirm:'', edad:'', sexo:'Mujer'
   })
   const [error, setError] = useState('')
   const [msg, setMsg] = useState('')
@@ -25,7 +24,7 @@ export default function Register() {
     e.preventDefault()
     setError(''); setMsg('')
     if (form.password !== form.confirm) {
-      setError('Las contraseñas no coinciden')
+      setError('Las contraseñas no coinciden'); 
       return
     }
     setLoading(true)
@@ -33,8 +32,7 @@ export default function Register() {
       await signUp({
         email: form.email,
         password: form.password,
-        name: `${form.nombre} ${form.apellido}`.trim(), // atributo "name" en Cognito
-        role: form.role // 👈 si usas custom:role; si usas Groups, puedes quitar esto
+        name: `${form.nombre} ${form.apellido}`.trim(),
       })
       setMsg('Usuario creado. Revisa tu correo y escribe el código de confirmación.')
       setStep('confirm')
@@ -118,17 +116,6 @@ export default function Register() {
                     <option>Otro</option>
                   </select>
                 </div>
-              </div>
-
-              {/* 👇 Selector de rol: útil para pruebas con custom:role.
-                  Si usas Cognito Groups, quítalo del UI y asigna rol por CLI/Consola. */}
-              <div className="field">
-                <label>Rol (solo pruebas):</label>
-                <select value={form.role} onChange={e=>set('role', e.target.value)}>
-                  <option value="patient">Paciente</option>
-                  <option value="doctor">Médico</option>
-                  <option value="admin">Admin</option>
-                </select>
               </div>
 
               <button className="button-primary register-button" type="submit" disabled={loading}>
