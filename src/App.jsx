@@ -27,7 +27,7 @@ import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 
 // helpers de cognito
-import { isSessionValid, getRole, signOut } from './pages/auth/cognito'
+import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
 
 // Destino por rol
 function targetByRole(role) {
@@ -36,34 +36,39 @@ function targetByRole(role) {
   return '/app'
 }
 
-// 👇 versión buena: permite /login?force=1
+// Espera a que Cognito hidrate/refresh la sesión antes de decidir
+function useAuthReady() {
+  const [ready, setReady] = React.useState(false);
+  React.useEffect(() => { initSession().finally(() => setReady(true)); }, []);
+  return ready;
+}
+
+// Públicas de auth (permiten ?force=1)
 function PublicAuth({ children }) {
+  const ready = useAuthReady();
+  if (!ready) return null; // evita decisiones prematuras (bucle)
   const { search } = useLocation();
   const q = new URLSearchParams(search);
-  const force = q.has('force') || q.has('guest'); // ?force=1
+  const force = q.has('force') || q.has('guest');
   if (!force && isSessionValid()) {
     return <Navigate to={targetByRole(getRole())} replace />
   }
   return children
 }
 
-// Protege y valida rol
+// Protegidas y con rol
 function RoleRoute({ role, children }) {
-  if (!isSessionValid()) {
-    return <Navigate to="/login" replace />
-  }
+  const ready = useAuthReady();
+  if (!ready) return null;
+  if (!isSessionValid()) return <Navigate to="/login" replace />
   const r = getRole()
-  if (role && r !== role) {
-    return <Navigate to={targetByRole(r)} replace />
-  }
+  if (role && r !== role) return <Navigate to={targetByRole(r)} replace />
   return children
 }
 
 // /logout
 function Logout() {
-  React.useEffect(() => {
-    signOut()
-  }, [])
+  React.useEffect(() => { signOut() }, [])
   return <Navigate to="/login" replace />
 }
 
