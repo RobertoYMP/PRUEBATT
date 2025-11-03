@@ -33,11 +33,11 @@ export default function Login() {
 
       // 2) “cinturón y tirantes”: si por alguna razón el router no empuja,
       //   forzamos el cambio de URL (útil en S3/CloudFront con reglas de rewrite)
-      setTimeout(() => {
+    /*  setTimeout(() => {
         if (location.pathname !== dest) {
           window.location.assign(dest);
         }
-      }, 100);
+      }, 100);*/
     } catch (err) {
       // Mensaje legible
       const msg =
