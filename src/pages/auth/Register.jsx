@@ -18,9 +18,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
 
-  // NUEVO: estado del tooltip del campo contraseña
-  const [showPwdTip, setShowPwdTip] = useState(false)
-
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
 
   async function onSubmit(e){
@@ -99,63 +96,7 @@ export default function Register() {
 
               <div className="stack-2" style={{gap:16}}>
                 <div style={{flex:1}}>
-                  {/* === NUEVO: Campo de contraseña con ? centrado y tooltip === */}
-                  <div className="field" style={{ position:'relative' }}>
-                    <label>Contraseña:</label>
-
-                    {/* wrapper relativo para centrar el ? respecto al input */}
-                    <div style={{ position:'relative' }}>
-                      <input
-                        type="password"
-                        value={form.password}
-                        onChange={e=>set('password',e.target.value)}
-                        required
-                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$"
-                        title="Mínimo 8 caracteres, con mayúscula, minúscula, número y carácter especial."
-                        style={{ width:'100%', paddingRight:36 }}
-                        onFocus={()=>setShowPwdTip(true)}
-                        onBlur={()=>setShowPwdTip(false)}
-                      />
-
-                      <button
-                        type="button"
-                        aria-label="Requisitos de la contraseña"
-                        onMouseEnter={()=>setShowPwdTip(true)}
-                        onMouseLeave={()=>setShowPwdTip(false)}
-                        style={{
-                          position:'absolute',
-                          right:10,
-                          top:'calc(50% + 2px)',   // ajusta aquí si lo quieres 1–3px más abajo/arriba
-                          transform:'translateY(-50%)',
-                          width:22, height:22, borderRadius:'999px', border:'none',
-                          fontWeight:700, lineHeight:'22px', textAlign:'center',
-                          cursor:'help', background:'#1b3a4e', color:'#fff', padding:0
-                        }}
-                      >?</button>
-                    </div>
-
-                    {showPwdTip && (
-                      <div
-                        style={{
-                          position:'absolute', right:0, top:'calc(100% + 8px)',
-                          minWidth:240, background:'#fff', border:'1px solid #d5dee6',
-                          borderRadius:10, boxShadow:'0 12px 30px rgba(0,0,0,.12)',
-                          padding:'10px 12px', zIndex:10, fontSize:'0.9rem'
-                        }}
-                        role="tooltip"
-                      >
-                        <strong>Requisitos:</strong>
-                        <ul style={{ margin:'6px 0 0', paddingLeft:18 }}>
-                          <li>8+ caracteres</li>
-                          <li>1 mayúscula</li>
-                          <li>1 minúscula</li>
-                          <li>1 número</li>
-                          <li>1 carácter especial</li>
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                  {/* === FIN NUEVO === */}
+                  <FormField label="Contraseña:" type="password" value={form.password} onChange={e=>set('password',e.target.value)} required />
                 </div>
                 <div style={{flex:1}}>
                   <FormField label="Confirmación de contraseña:" type="password" value={form.confirm} onChange={e=>set('confirm',e.target.value)} required />
