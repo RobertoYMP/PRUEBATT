@@ -18,7 +18,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
 
-  // NUEVO: estado para mostrar/ocultar el tooltip de la contraseña
+  // NUEVO: estado del tooltip del campo contraseña
   const [showPwdTip, setShowPwdTip] = useState(false)
 
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
@@ -99,32 +99,40 @@ export default function Register() {
 
               <div className="stack-2" style={{gap:16}}>
                 <div style={{flex:1}}>
-                  {/* === NUEVO: Campo de contraseña con ? emergente sobre el mismo recuadro === */}
+                  {/* === NUEVO: Campo de contraseña con ? centrado y tooltip === */}
                   <div className="field" style={{ position:'relative' }}>
                     <label>Contraseña:</label>
-                    <input
-                      type="password"
-                      value={form.password}
-                      onChange={e=>set('password',e.target.value)}
-                      required
-                      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$"
-                      title="Mínimo 8 caracteres, con mayúscula, minúscula, número y carácter especial."
-                      style={{ width:'100%', paddingRight:36 }}
-                      onFocus={()=>setShowPwdTip(true)}
-                      onBlur={()=>setShowPwdTip(false)}
-                    />
-                    <button
-                      type="button"
-                      aria-label="Requisitos de la contraseña"
-                      onMouseEnter={()=>setShowPwdTip(true)}
-                      onMouseLeave={()=>setShowPwdTip(false)}
-                      style={{
-                        position:'absolute', right:10, top:'50%', transform:'translateY(-50%)',
-                        width:22, height:22, borderRadius:'999px', border:'none',
-                        fontWeight:700, lineHeight:'22px', textAlign:'center',
-                        cursor:'help', background:'#1b3a4e', color:'#fff', padding:0
-                      }}
-                    >?</button>
+
+                    {/* wrapper relativo para centrar el ? respecto al input */}
+                    <div style={{ position:'relative' }}>
+                      <input
+                        type="password"
+                        value={form.password}
+                        onChange={e=>set('password',e.target.value)}
+                        required
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                        title="Mínimo 8 caracteres, con mayúscula, minúscula, número y carácter especial."
+                        style={{ width:'100%', paddingRight:36 }}
+                        onFocus={()=>setShowPwdTip(true)}
+                        onBlur={()=>setShowPwdTip(false)}
+                      />
+
+                      <button
+                        type="button"
+                        aria-label="Requisitos de la contraseña"
+                        onMouseEnter={()=>setShowPwdTip(true)}
+                        onMouseLeave={()=>setShowPwdTip(false)}
+                        style={{
+                          position:'absolute',
+                          right:10,
+                          top:'calc(50% + 2px)',   // ajusta aquí si lo quieres 1–3px más abajo/arriba
+                          transform:'translateY(-50%)',
+                          width:22, height:22, borderRadius:'999px', border:'none',
+                          fontWeight:700, lineHeight:'22px', textAlign:'center',
+                          cursor:'help', background:'#1b3a4e', color:'#fff', padding:0
+                        }}
+                      >?</button>
+                    </div>
 
                     {showPwdTip && (
                       <div
