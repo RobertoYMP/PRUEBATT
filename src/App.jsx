@@ -25,6 +25,8 @@ import PatientProfile from './pages/admin/PatientProfile/PatientProfile.jsx'
 import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile.jsx'
 import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
+import Forgot from './pages/auth/Forgot.jsx';
+import ResetPassword from './pages/auth/ResetPassword.jsx';
 
 // ⬇️ Importa initSession para “hidratar” Cognito al arrancar
 import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
@@ -89,6 +91,8 @@ export default function App() {
             <Route path="/register" element={<PublicAuth><Register /></PublicAuth>} />
             <Route path="/forgot"   element={<PublicAuth><ForgotPassword /></PublicAuth>} />
             <Route path="/reset"    element={<PublicAuth><ResetPassword /></PublicAuth>} />
+            <Route path="/forgot" element={<Forgot />} />
+            <Route path="/reset" element={<ResetPassword />} /> 
 
             {/* logout */}
             <Route path="/logout" element={<Logout />} />
