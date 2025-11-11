@@ -8,11 +8,19 @@ export function usePrediction(autoFetch = true) {
     if (state?.result) return state.result;
     try {
       const raw = localStorage.getItem('lastPrediction');
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          // limpiamos basura previa
+          localStorage.removeItem('lastPrediction');
+        }
+      }
     } catch {}
     if (typeof window !== 'undefined' && window.MODEL_DEMO) return window.MODEL_DEMO;
     return null;
   });
+
   const [loading, setLoading] = useState(!result && autoFetch);
   const [error, setError] = useState('');
 
@@ -28,7 +36,10 @@ export function usePrediction(autoFetch = true) {
           try { localStorage.setItem('lastPrediction', JSON.stringify(r)); } catch {}
         }
       } catch (e) {
-        if (!cancelled) setError(e?.message || 'No fue posible obtener el resultado');
+        if (!cancelled) {
+          // mensaje legible del backend (no el de JSON.parse)
+          setError(typeof e?.message === 'string' ? e.message : 'No fue posible obtener el resultado');
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
