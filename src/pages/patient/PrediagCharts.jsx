@@ -1,16 +1,6 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
-
-function useModelResult() {
-  const { state } = useLocation()
-  if (state?.result) return state.result
-  try {
-    const raw = localStorage.getItem('lastPrediction')
-    if (raw) return JSON.parse(raw)
-  } catch {}
-  return null
-}
+import { usePrediction } from '../../hooks/usePrediction'
 
 function tripletData(min, val, max) {
   const rows = []
@@ -21,13 +11,16 @@ function tripletData(min, val, max) {
 }
 
 export default function PrediagCharts(){
-  const result = useModelResult()
-  const detalles = Array.isArray(result?.detalles) ? result.detalles : []
+  const { detalles, loading, error } = usePrediction(true)
 
   return (
     <div className="card stack">
       <h2>Resultados en formato gráfico</h2>
       <p>Cada tarjeta muestra el mínimo, el valor del usuario y el máximo de referencia.</p>
+
+      {loading && <p>Cargando…</p>}
+      {error && <p className="badge critico">Error: {error}</p>}
+      {!loading && !error && detalles.length === 0 && <p>No hay parámetros para graficar.</p>}
 
       <div className="grid" style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:'1rem'}}>
         {detalles.map((d, i) => {
