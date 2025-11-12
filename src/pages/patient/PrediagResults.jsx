@@ -1,67 +1,163 @@
-import React, { useEffect, useState } from 'react'
-import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient' // ← ruta relativa correcta
-import { deriveStatus, safeArray } from '../../lib/prediag'
-import { useLocation } from 'react-router-dom'
+// src/pages/patient/PrediagResults.jsx
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
+import { getLatestByPk } from '../../api/historyClient';
+
+const REGION = import.meta.env.VITE_COG_REGION;
+const IDENTITY_POOL_ID = import.meta.env.VITE_IDENTITY_POOL_ID;
+
+// Obtiene el identityId actual (pk) desde el Identity Pool
+async function getIdentityId() {
+  const creds = fromCognitoIdentityPool({
+    clientConfig: { region: REGION },
+    identityPoolId: IDENTITY_POOL_ID
+  });
+  const c = await creds();
+  return c.identityId; // us-east-2:xxxx-...
+}
 
 export default function PrediagResults() {
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [pred, setPred] = useState(null)
-  const loc = useLocation()
-  const sk = new URLSearchParams(loc.search).get('key')
+  const [params] = useSearchParams();
+  const [pk, setPk] = useState(params.get('pk') || '');
+  const [data, setData] = useState(null);   // { prediction: ... } | null
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
+    let alive = true;
+
     (async () => {
       try {
-        setLoading(true); setError('')
-        const data = sk ? await fetchPredictionByKey(sk) : await fetchLatestPrediction()
-        setPred(data || null)
-      } catch (e) { setError(String(e?.message || e)) }
-      finally { setLoading(false) }
-    })()
-  }, [sk])
+        setLoading(true);
+        const _pk = pk || await getIdentityId();
+        if (alive && !pk) setPk(_pk);
+        const res = await getLatestByPk(_pk);
+        if (!alive) return;
+        setData(res || { prediction: null });
+      } catch (e) {
+        if (!alive) return;
+        setErr(e.message || String(e));
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
 
-  if (loading) return <div className="card"><h2>Resultados del prediagnóstico</h2><p>Cargando…</p></div>
-  if (error)   return <div className="card"><h2>Resultados del prediagnóstico</h2><div className="alert error">Error: {error}</div></div>
-  if (!pred)   return <div className="card"><h2>Resultados del prediagnóstico</h2><p>No hay datos aún.</p></div>
+    return () => { alive = false; };
+  }, [pk]);
 
-  const status = deriveStatus(pred)
-  const detalles = safeArray(pred.detalles)
+  const pred = data?.prediction || null;
+
+  const estadoPill = useMemo(() => {
+    if (!pred) return { text: 'EN PROCESO', className: 'bg-yellow-200' };
+    // Si tienes una lógica de estado global, cámbiala aquí:
+    const tieneAlto = (pred.resumen?.altos?.length || 0) > 0;
+    return tieneAlto
+      ? { text: 'REVISIÓN SUGERIDA', className: 'bg-red-200' }
+      : { text: 'ESTADO ESTABLE', className: 'bg-green-200' };
+  }, [pred]);
+
+  const disabledLinks = loading || !pred;
 
   return (
-    <div className="card">
-      <h2>Resultados del prediagnóstico</h2>
-      <div className="badge" style={{background: status.color}}>{status.label}</div>
+    <div className="prediag-wrapper" style={{ padding: 24 }}>
+      <div className="card" style={{
+        borderRadius: 20, padding: 24, border: '6px solid transparent',
+        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg,#86a8a2,#7ea4b9) border-box'
+      }}>
+        <h1 style={{ fontFamily: 'Caslon 2000, serif', fontSize: 42, margin: 0 }}>
+          Resultados del prediagnóstico
+        </h1>
 
-      <h3>Datos del paciente</h3>
-      <p>Paciente · Edad 32 · Sexo {pred.sexo || '—'}</p>
-      <p>Fecha: {new Date().toLocaleDateString()}</p>
-
-      <h3>Tabla de resultados</h3>
-      {detalles.length === 0 ? (
-        <p>No hay datos de parámetros en este resultado.</p>
-      ) : (
-        <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th>Parámetro</th><th>Valor</th><th>Rango</th><th>Estado</th></tr></thead>
-            <tbody>
-              {detalles.map((d,i)=>(
-                <tr key={i}>
-                  <td>{d.Parametro}</td>
-                  <td>{d.Valor} {d.Unidad || ''}</td>
-                  <td>{d.Min} – {d.Max}</td>
-                  <td>{d.Estado} {d.Severidad ? `(${d.Severidad})` : ''}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div style={{ marginTop: 18 }}>
+          <span style={{
+            display: 'inline-block', padding: '8px 16px', borderRadius: 999,
+            fontWeight: 700
+          }} className={estadoPill.className}>
+            {estadoPill.text}
+          </span>
         </div>
-      )}
 
-      <div style={{marginTop:16, display:'flex', gap:24}}>
-        <a href={sk ? `/patient/prediagcharts?key=${encodeURIComponent(sk)}` : '/patient/prediagcharts'}>Ver resultados en formato gráfico</a>
-        <a href={sk ? `/patient/recommendations?key=${encodeURIComponent(sk)}` : '/patient/recommendations'}>Ver recomendaciones</a>
+        {err && (
+          <p style={{ marginTop: 16, color: '#a33' }}>
+            Error: {err}
+          </p>
+        )}
+
+        {/* Datos del paciente */}
+        <section style={{ marginTop: 24 }}>
+          <h2 style={{ fontSize: 28, margin: '8px 0' }}>Datos del paciente</h2>
+          {loading ? (
+            <p>Cargando…</p>
+          ) : pred ? (
+            <p>
+              {/* Edad: si la tienes en otro lado, colócala aquí */}
+              Sexo: <strong>{pred.sexo || '—'}</strong>
+            </p>
+          ) : (
+            <p>No hay datos aún.</p>
+          )}
+        </section>
+
+        {/* Tabla de resultados */}
+        <section style={{ marginTop: 18 }}>
+          <h2 style={{ fontSize: 28, margin: '8px 0' }}>Tabla de resultados</h2>
+          {loading && <p>Cargando…</p>}
+          {!loading && pred && Array.isArray(pred.detalles) && pred.detalles.length > 0 ? (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd', padding: 8 }}>Parámetro</th>
+                    <th style={{ textAlign: 'right', borderBottom: '1px solid #ddd', padding: 8 }}>Valor</th>
+                    <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd', padding: 8 }}>Unidad</th>
+                    <th style={{ textAlign: 'center', borderBottom: '1px solid #ddd', padding: 8 }}>Rango</th>
+                    <th style={{ textAlign: 'center', borderBottom: '1px solid #ddd', padding: 8 }}>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pred.detalles.map((r, i) => (
+                    <tr key={i}>
+                      <td style={{ padding: 8 }}>{r.Parametro}</td>
+                      <td style={{ padding: 8, textAlign: 'right' }}>{r.Valor}</td>
+                      <td style={{ padding: 8 }}>{r.Unidad}</td>
+                      <td style={{ padding: 8, textAlign: 'center' }}>{r.Min} – {r.Max}</td>
+                      <td style={{ padding: 8, textAlign: 'center' }}>{r.Estado}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : !loading && <p>No hay datos de parámetros en este resultado.</p>}
+        </section>
+
+        {/* Enlaces persistentes (si no hay datos, quedan deshabilitados visualmente) */}
+        <div style={{ display: 'flex', gap: 24, marginTop: 24 }}>
+          <Link
+            to={disabledLinks ? '#' : `/app/prediag/graph?pk=${encodeURIComponent(pk)}`}
+            aria-disabled={disabledLinks}
+            style={{
+              pointerEvents: disabledLinks ? 'none' : 'auto',
+              opacity: disabledLinks ? 0.5 : 1,
+              textDecoration: 'none', fontWeight: 600
+            }}
+          >
+            Ver resultados en formato gráfico
+          </Link>
+
+          <Link
+            to={disabledLinks ? '#' : `/app/prediag/recs?pk=${encodeURIComponent(pk)}`}
+            aria-disabled={disabledLinks}
+            style={{
+              pointerEvents: disabledLinks ? 'none' : 'auto',
+              opacity: disabledLinks ? 0.5 : 1,
+              textDecoration: 'none', fontWeight: 600
+            }}
+          >
+            Ver recomendaciones
+          </Link>
+        </div>
       </div>
     </div>
-  )
+  );
 }
