@@ -10,11 +10,11 @@ function authHeader() {
 async function parseResponse(res) {
   const ctype = res.headers.get('content-type') || ''
   if (!res.ok) {
-    const txt = await res.text().catch(()=>'')
+    const txt = await res.text().catch(()=> '')
     throw new Error(txt || `HTTP ${res.status}`)
   }
   if (ctype.includes('application/json')) return res.json()
-  const txt = await res.text().catch(()=>'')
+  const txt = await res.text().catch(()=> '')
   throw new Error(txt || 'La respuesta no es JSON')
 }
 
@@ -69,8 +69,24 @@ export async function fetchPredictionByKey(sk) {
   return normalizePrediction(item?.prediction)
 }
 
+// NUEVO: obtener explícitamente la última por PK (devuelve { prediction: ... } con pred normalizada)
+export async function getLatestByPk(pk) {
+  const res = await fetch(`${BASE}/history/latest?pk=${encodeURIComponent(pk)}`, {
+    headers: { 'Content-Type': 'application/json', ...authHeader() }
+  })
+  const item = await parseResponse(res) // { prediction: ... } | { prediction: null }
+  return { ...item, prediction: normalizePrediction(item?.prediction) }
+}
+
+// Opcional: helper para obtener el PK actual (cache → /history/list)
+export async function getPk({ preferCache = true } = {}) {
+  let pk = preferCache ? pkFromCache() : null
+  if (!pk) pk = await pkFromList(BASE)
+  return pk
+}
+
+// Mantengo la firma original: usa cache/list y devuelve SOLO la prediction normalizada
 export async function fetchLatestPrediction() {
-  // Obtener pk de cache o de /history/list
   let pk = pkFromCache()
   if (!pk) pk = await pkFromList(BASE)
   if (!pk) throw new Error('No se pudo determinar tu PK (identityId). Sube un PDF o inicia sesión de nuevo.')
@@ -81,3 +97,6 @@ export async function fetchLatestPrediction() {
   const item = await parseResponse(res)
   return normalizePrediction(item?.prediction)
 }
+
+// Útil para depurar
+export const __debug = { BASE }
