@@ -1,6 +1,9 @@
 import React from 'react'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { usePrediction } from '../../hooks/usePrediction'
+import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
+import { safeArray } from '../../lib/prediag'
+
 
 function tripletData(min, val, max) {
   const rows = []
