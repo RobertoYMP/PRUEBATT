@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
+import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient' // ← ruta relativa correcta
 import { deriveStatus, safeArray } from '../../lib/prediag'
 import { useLocation } from 'react-router-dom'
 
@@ -8,8 +8,6 @@ export default function PrediagResults() {
   const [error, setError] = useState('')
   const [pred, setPred] = useState(null)
   const loc = useLocation()
-
-  // Si venimos de "Visualizar" con ?key=... usamos ese; si no, latest por PK
   const sk = new URLSearchParams(loc.search).get('key')
 
   useEffect(() => {
@@ -18,11 +16,8 @@ export default function PrediagResults() {
         setLoading(true); setError('')
         const data = sk ? await fetchPredictionByKey(sk) : await fetchLatestPrediction()
         setPred(data || null)
-      } catch (e) {
-        setError(String(e?.message || e))
-      } finally {
-        setLoading(false)
-      }
+      } catch (e) { setError(String(e?.message || e)) }
+      finally { setLoading(false) }
     })()
   }, [sk])
 
@@ -36,7 +31,6 @@ export default function PrediagResults() {
   return (
     <div className="card">
       <h2>Resultados del prediagnóstico</h2>
-
       <div className="badge" style={{background: status.color}}>{status.label}</div>
 
       <h3>Datos del paciente</h3>
@@ -49,11 +43,9 @@ export default function PrediagResults() {
       ) : (
         <div className="table-wrap">
           <table className="table">
-            <thead>
-              <tr><th>Parámetro</th><th>Valor</th><th>Rango</th><th>Estado</th></tr>
-            </thead>
+            <thead><tr><th>Parámetro</th><th>Valor</th><th>Rango</th><th>Estado</th></tr></thead>
             <tbody>
-              {detalles.map((d, i) => (
+              {detalles.map((d,i)=>(
                 <tr key={i}>
                   <td>{d.Parametro}</td>
                   <td>{d.Valor} {d.Unidad || ''}</td>
