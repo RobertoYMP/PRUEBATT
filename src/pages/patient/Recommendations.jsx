@@ -1,5 +1,8 @@
 import React from 'react'
 import { usePrediction } from '../../hooks/usePrediction'
+import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
+import { safeArray } from '../../lib/prediag'
+
 
 function sevToOrder(sev='ok'){
   const s = String(sev).toLowerCase()
