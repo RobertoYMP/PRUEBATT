@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { getLatestByPk } from '../../api/historyClient';
+import { fetchLatestPrediction } from '../../api/historyClient';
 
 const REGION = import.meta.env.VITE_COG_REGION;
 const IDENTITY_POOL_ID = import.meta.env.VITE_IDENTITY_POOL_ID;
