@@ -1,90 +1,74 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { usePrediction } from '../../hooks/usePrediction'
-
-function sevToBadgeClass(sev = 'ok') {
-  const s = String(sev).toLowerCase()
-  if (['grave','severo','severa','high'].includes(s)) return 'grave'
-  if (['leve','moderado','moderada','medium'].includes(s)) return 'critico'
-  return 'estable'
-}
-function globalStatus(detalles = []) {
-  const severidades = detalles.map(d => String(d.Severidad || 'ok').toLowerCase())
-  if (severidades.some(s => ['grave','severo','severa','high'].includes(s))) return {label:'ESTADO GRAVE', cls:'grave'}
-  if (severidades.some(s => ['leve','moderado','moderada','medium'].includes(s))) return {label:'ESTADO CRÍTICO', cls:'critico'}
-  return {label:'ESTADO ESTABLE', cls:'estable'}
-}
+import React, { useEffect, useState } from 'react'
+import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
+import { deriveStatus, safeArray } from '../../lib/prediag'
+import { useLocation } from 'react-router-dom'
 
 export default function PrediagResults() {
-  const { result, detalles, loading, error } = usePrediction(true)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [pred, setPred] = useState(null)
+  const loc = useLocation()
 
-  const paciente = {
-    nombre: 'Paciente',
-    edad: 32,
-    sexo: result?.sexo || '—',
-    fecha: new Date().toLocaleDateString()
-  }
+  // Si venimos de "Visualizar" con ?key=... usamos ese; si no, latest por PK
+  const sk = new URLSearchParams(loc.search).get('key')
 
-  const g = globalStatus(detalles)
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true); setError('')
+        const data = sk ? await fetchPredictionByKey(sk) : await fetchLatestPrediction()
+        setPred(data || null)
+      } catch (e) {
+        setError(String(e?.message || e))
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [sk])
+
+  if (loading) return <div className="card"><h2>Resultados del prediagnóstico</h2><p>Cargando…</p></div>
+  if (error)   return <div className="card"><h2>Resultados del prediagnóstico</h2><div className="alert error">Error: {error}</div></div>
+  if (!pred)   return <div className="card"><h2>Resultados del prediagnóstico</h2><p>No hay datos aún.</p></div>
+
+  const status = deriveStatus(pred)
+  const detalles = safeArray(pred.detalles)
 
   return (
-    <div className="stack">
-      <div className="card">
-        <h2>Resultados del prediagnóstico</h2>
+    <div className="card">
+      <h2>Resultados del prediagnóstico</h2>
 
-        {loading && <p>Cargando resultados…</p>}
-        {error && <p className="badge critico">Error: {error}</p>}
+      <div className="badge" style={{background: status.color}}>{status.label}</div>
 
-        {!loading && !error && (
-          <>
-            <p className={`badge ${g.cls}`} style={{display:'inline-block'}}>{g.label}</p>
+      <h3>Datos del paciente</h3>
+      <p>Paciente · Edad 32 · Sexo {pred.sexo || '—'}</p>
+      <p>Fecha: {new Date().toLocaleDateString()}</p>
 
-            <h3>Datos del paciente</h3>
-            <p>{paciente.nombre} · Edad {paciente.edad} · Sexo {paciente.sexo}</p>
-            <p>Fecha: {paciente.fecha}</p>
+      <h3>Tabla de resultados</h3>
+      {detalles.length === 0 ? (
+        <p>No hay datos de parámetros en este resultado.</p>
+      ) : (
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr><th>Parámetro</th><th>Valor</th><th>Rango</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+              {detalles.map((d, i) => (
+                <tr key={i}>
+                  <td>{d.Parametro}</td>
+                  <td>{d.Valor} {d.Unidad || ''}</td>
+                  <td>{d.Min} – {d.Max}</td>
+                  <td>{d.Estado} {d.Severidad ? `(${d.Severidad})` : ''}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-            <h3>Tabla de resultados</h3>
-            {detalles.length === 0 ? (
-              <p>No hay datos de parámetros en este resultado.</p>
-            ) : (
-              <div className="table-wrap">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Parámetro</th>
-                      <th>Valor</th>
-                      <th>Rango</th>
-                      <th>Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {detalles.map((r,i)=> {
-                      const estado = r.Estado || 'normal'
-                      const sev = r.Severidad || 'ok'
-                      const badge = sevToBadgeClass(sev)
-                      const rango = (r.Min!=null && r.Max!=null)
-                        ? `${r.Min}–${r.Max} ${r.Unidad||''}`.trim()
-                        : '—'
-                      return (
-                        <tr key={i}>
-                          <td>{r.Parametro}</td>
-                          <td>{r.Valor}{r.Unidad ? ` ${r.Unidad}` : ''}</td>
-                          <td>{rango}</td>
-                          <td><span className={`badge ${badge}`} style={{textTransform:'uppercase'}}>{estado}{sev!=='ok' ? ` · ${sev}` : ''}</span></td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      <div className="row">
-        <Link className="btn" to="/app/charts">Ver resultados en formato gráfico</Link>
-        <Link className="btn secondary" to="/app/recommendations">Ver recomendaciones</Link>
+      <div style={{marginTop:16, display:'flex', gap:24}}>
+        <a href={sk ? `/patient/prediagcharts?key=${encodeURIComponent(sk)}` : '/patient/prediagcharts'}>Ver resultados en formato gráfico</a>
+        <a href={sk ? `/patient/recommendations?key=${encodeURIComponent(sk)}` : '/patient/recommendations'}>Ver recomendaciones</a>
       </div>
     </div>
   )
