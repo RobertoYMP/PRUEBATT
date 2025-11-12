@@ -7,6 +7,7 @@ import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf } fro
 
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 
 import { getIdToken } from '../../auth/cognito';
 
@@ -49,47 +50,59 @@ export default function Upload() {
 
       // 1) ID token de Cognito (User Pools)
       const idToken = await getIdToken();
-      if (!idToken) { setLoading(false); nav('/login'); return; }
+      if (!idToken) { setLoading(false); return nav('/login'); }
 
-      // 2) Credenciales federadas (Identity Pool)
+      // 2) Resolver proveedor del User Pool para usar LOGINS en el Identity Pool
       const payload  = parseJwt(idToken);
-      const provider = payload?.iss?.replace('https://', ''); // ej: cognito-idp.us-east-2.amazonaws.com/POOL_ID
+      const provider = payload?.iss?.replace(/^https?:\/\//, ''); // p.ej. cognito-idp.us-east-2.amazonaws.com/us-east-2_XXXX
       if (!provider) { setLoading(false); return setError('No se pudo resolver el proveedor de identidad.'); }
 
+      // 3) Credenciales del Identity Pool AUTENTICADAS (clave para evitar "Unauthenticated access...")
       const credentials = fromCognitoIdentityPool({
-        clientConfig: { region: REGION },
+        client: new CognitoIdentityClient({ region: REGION }),
         identityPoolId: IDENTITY_POOL_ID,
         logins: { [provider]: idToken },
       });
 
-      // 3) S3 client
+      // 4) S3 client con dichas credenciales
       const s3 = new S3Client({ region: REGION, credentials });
 
-      // 4) identityId resuelto por el provider
+      // 5) Obtén el IdentityId resuelto (PK de Dynamo y prefijo S3)
       const resolved   = await s3.config.credentials();
       const identityId = resolved.identityId;
+      if (!identityId) throw new Error('No se pudo resolver tu IdentityId');
 
-      // 5) Key con prefijo/sufijo esperados por el trigger
+      // 6) Key esperada por el trigger: private/{identityId}/... .pdf
       const safe    = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
       const withPdf = /\.pdf$/i.test(safe) ? safe : `${safe}.pdf`;
       const key     = `private/${identityId}/${Date.now()}-${withPdf}`;
 
-      // ⬇️ 6) **Evitar streams**: convertir a bytes para que el SDK no llame getReader()
+      // 7) Evitar streams (algunos navegadores llaman getReader); mejor bytes puros
       const bodyBytes = new Uint8Array(await file.arrayBuffer());
 
       await s3.send(new PutObjectCommand({
         Bucket: UPLOADS_BUCKET,
         Key: key,
-        Body: bodyBytes,                // <- aquí el cambio clave
-        ContentType: 'application/pdf', // fuerza el tipo
+        Body: bodyBytes,
+        ContentType: 'application/pdf',
       }));
+
+      // Guardar para que la vista de resultados/historial pueda inferir PK/SK
+      localStorage.setItem('hematec.identityId', identityId);
+      localStorage.setItem('hematec.lastUploadKey', key);
+      localStorage.setItem('hematec.lastUploadAt', String(Date.now()));
 
       setLoading(false);
       nav('/app/results');
     } catch (err) {
       console.error(err);
       setLoading(false);
-      setError(err?.message || 'Ocurrió un error al subir el archivo.');
+      // Mensaje más claro para el caso típico de identity pool
+      if (String(err?.message || '').includes('Unauthenticated access is not supported')) {
+        setError('Tu sesión no está autenticada con el Identity Pool. Vuelve a iniciar sesión e inténtalo de nuevo.');
+      } else {
+        setError(err?.message || 'Ocurrió un error al subir el archivo.');
+      }
     }
   }
 
