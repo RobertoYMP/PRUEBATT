@@ -1,164 +1,108 @@
 // src/pages/patient/PrediagResults.jsx
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
-import { getLatestByPk } from '../../api/historyClient';
-import { fetchLatestPrediction } from '../../api/historyClient';
-
-const REGION = import.meta.env.VITE_COG_REGION;
-const IDENTITY_POOL_ID = import.meta.env.VITE_IDENTITY_POOL_ID;
-
-// Obtiene el identityId actual (pk) desde el Identity Pool
-async function getIdentityId() {
-  const creds = fromCognitoIdentityPool({
-    clientConfig: { region: REGION },
-    identityPoolId: IDENTITY_POOL_ID
-  });
-  const c = await creds();
-  return c.identityId; // us-east-2:xxxx-...
-}
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { fetchLatestPrediction } from '../../api/historyClient'
 
 export default function PrediagResults() {
-  const [params] = useSearchParams();
-  const [pk, setPk] = useState(params.get('pk') || '');
-  const [data, setData] = useState(null);   // { prediction: ... } | null
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [prediction, setPrediction] = useState(null)
 
   useEffect(() => {
-    let alive = true;
-
-    (async () => {
+    let mounted = true
+    ;(async () => {
+      setLoading(true)
+      setError('')
       try {
-        setLoading(true);
-        const _pk = pk || await getIdentityId();
-        if (alive && !pk) setPk(_pk);
-        const res = await getLatestByPk(_pk);
-        if (!alive) return;
-        setData(res || { prediction: null });
-      } catch (e) {
-        if (!alive) return;
-        setErr(e.message || String(e));
+        const pred = await fetchLatestPrediction()
+        if (!mounted) return
+        setPrediction(pred) // puede ser null si aún va en proceso
+      } catch (err) {
+        if (!mounted) return
+        setError(err?.message || String(err))
       } finally {
-        if (alive) setLoading(false);
+        if (mounted) setLoading(false)
       }
-    })();
+    })()
+    return () => { mounted = false }
+  }, [])
 
-    return () => { alive = false; };
-  }, [pk]);
+  const renderEstado = () => {
+    if (loading) return <p>Consultando…</p>
+    if (error) return <p style={{ color: '#b10808' }}>Error: {error}</p>
+    if (!prediction) return <p><strong>EN PROCESO</strong></p>
+    return null
+  }
 
-  const pred = data?.prediction || null;
+  const datosPaciente = () => {
+    if (!prediction) return <p>No hay datos aún.</p>
+    // Si más adelante guardas metadata de paciente en DDB, mapea aquí.
+    return (
+      <ul>
+        <li>Sexo detectado: <strong>{prediction.sexo || '—'}</strong></li>
+        <li>Cluster: <strong>{prediction.cluster ?? '—'}</strong></li>
+      </ul>
+    )
+  }
 
-  const estadoPill = useMemo(() => {
-    if (!pred) return { text: 'EN PROCESO', className: 'bg-yellow-200' };
-    // Si tienes una lógica de estado global, cámbiala aquí:
-    const tieneAlto = (pred.resumen?.altos?.length || 0) > 0;
-    return tieneAlto
-      ? { text: 'REVISIÓN SUGERIDA', className: 'bg-red-200' }
-      : { text: 'ESTADO ESTABLE', className: 'bg-green-200' };
-  }, [pred]);
+  const tablaResultados = () => {
+    if (!prediction) return <p>No hay datos de parámetros en este resultado.</p>
 
-  const disabledLinks = loading || !pred;
+    const det = Array.isArray(prediction.detalles) ? prediction.detalles : []
+    if (!det.length) return <p>No hay datos de parámetros en este resultado.</p>
+
+    return (
+      <div style={{ overflowX: 'auto' }}>
+        <table className="results-table">
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Valor</th>
+              <th>Unidad</th>
+              <th>Ref. Mín</th>
+              <th>Ref. Máx</th>
+              <th>Estado</th>
+              <th>Severidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {det.map((r, i) => (
+              <tr key={`${r.Parametro}-${i}`}>
+                <td>{r.Parametro}</td>
+                <td>{r.Valor}</td>
+                <td>{r.Unidad || '—'}</td>
+                <td>{r.Min ?? '—'}</td>
+                <td>{r.Max ?? '—'}</td>
+                <td>{r.Estado || '—'}</td>
+                <td>{r.Severidad || '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
 
   return (
-    <div className="prediag-wrapper" style={{ padding: 24 }}>
-      <div className="card" style={{
-        borderRadius: 20, padding: 24, border: '6px solid transparent',
-        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg,#86a8a2,#7ea4b9) border-box'
-      }}>
-        <h1 style={{ fontFamily: 'Caslon 2000, serif', fontSize: 42, margin: 0 }}>
-          Resultados del prediagnóstico
-        </h1>
+    <div className="card results-card">
+      <h1>Resultados del prediagnóstico</h1>
 
-        <div style={{ marginTop: 18 }}>
-          <span style={{
-            display: 'inline-block', padding: '8px 16px', borderRadius: 999,
-            fontWeight: 700
-          }} className={estadoPill.className}>
-            {estadoPill.text}
-          </span>
-        </div>
+      {renderEstado()}
 
-        {err && (
-          <p style={{ marginTop: 16, color: '#a33' }}>
-            Error: {err}
-          </p>
-        )}
+      <section>
+        <h2>Datos del paciente</h2>
+        {datosPaciente()}
+      </section>
 
-        {/* Datos del paciente */}
-        <section style={{ marginTop: 24 }}>
-          <h2 style={{ fontSize: 28, margin: '8px 0' }}>Datos del paciente</h2>
-          {loading ? (
-            <p>Cargando…</p>
-          ) : pred ? (
-            <p>
-              {/* Edad: si la tienes en otro lado, colócala aquí */}
-              Sexo: <strong>{pred.sexo || '—'}</strong>
-            </p>
-          ) : (
-            <p>No hay datos aún.</p>
-          )}
-        </section>
+      <section>
+        <h2>Tabla de resultados</h2>
+        {tablaResultados()}
+      </section>
 
-        {/* Tabla de resultados */}
-        <section style={{ marginTop: 18 }}>
-          <h2 style={{ fontSize: 28, margin: '8px 0' }}>Tabla de resultados</h2>
-          {loading && <p>Cargando…</p>}
-          {!loading && pred && Array.isArray(pred.detalles) && pred.detalles.length > 0 ? (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd', padding: 8 }}>Parámetro</th>
-                    <th style={{ textAlign: 'right', borderBottom: '1px solid #ddd', padding: 8 }}>Valor</th>
-                    <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd', padding: 8 }}>Unidad</th>
-                    <th style={{ textAlign: 'center', borderBottom: '1px solid #ddd', padding: 8 }}>Rango</th>
-                    <th style={{ textAlign: 'center', borderBottom: '1px solid #ddd', padding: 8 }}>Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pred.detalles.map((r, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: 8 }}>{r.Parametro}</td>
-                      <td style={{ padding: 8, textAlign: 'right' }}>{r.Valor}</td>
-                      <td style={{ padding: 8 }}>{r.Unidad}</td>
-                      <td style={{ padding: 8, textAlign: 'center' }}>{r.Min} – {r.Max}</td>
-                      <td style={{ padding: 8, textAlign: 'center' }}>{r.Estado}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : !loading && <p>No hay datos de parámetros en este resultado.</p>}
-        </section>
-
-        {/* Enlaces persistentes (si no hay datos, quedan deshabilitados visualmente) */}
-        <div style={{ display: 'flex', gap: 24, marginTop: 24 }}>
-          <Link
-            to={disabledLinks ? '#' : `/app/prediag/graph?pk=${encodeURIComponent(pk)}`}
-            aria-disabled={disabledLinks}
-            style={{
-              pointerEvents: disabledLinks ? 'none' : 'auto',
-              opacity: disabledLinks ? 0.5 : 1,
-              textDecoration: 'none', fontWeight: 600
-            }}
-          >
-            Ver resultados en formato gráfico
-          </Link>
-
-          <Link
-            to={disabledLinks ? '#' : `/app/prediag/recs?pk=${encodeURIComponent(pk)}`}
-            aria-disabled={disabledLinks}
-            style={{
-              pointerEvents: disabledLinks ? 'none' : 'auto',
-              opacity: disabledLinks ? 0.5 : 1,
-              textDecoration: 'none', fontWeight: 600
-            }}
-          >
-            Ver recomendaciones
-          </Link>
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+        <Link to="/app/results/chart" className="text-link">Ver resultados en formato gráfico</Link>
+        <Link to="/app/results/reco" className="text-link">Ver recomendaciones</Link>
       </div>
     </div>
-  );
+  )
 }
