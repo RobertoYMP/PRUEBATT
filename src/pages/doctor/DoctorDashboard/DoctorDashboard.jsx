@@ -48,7 +48,14 @@ export default function DoctorDashboard(){
           </tbody>
         </table>
       </div>
-      <button onClick={addForCurrentUser}>Notificar</button>
+            <button
+        type="button"
+        className="notify-button"
+        onClick={addForCurrentUser}
+      >
+        Notificar
+      </button>
+
     </div>
   )
 }
