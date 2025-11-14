@@ -16,6 +16,12 @@
     word-break: break-word;
 }
 
+.specialists-cards-container {
+    display: flex;             
+    justify-content: center;    
+    gap: 4rem;                
+}
+
 .specialist-card {
     background-color: #fff;
     box-shadow: var(--box-shadow);
