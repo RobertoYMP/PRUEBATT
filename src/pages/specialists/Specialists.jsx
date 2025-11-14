@@ -12,9 +12,6 @@ export default function Specialists(){
     { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
     { nombre:'Dr. Juan López', especialidad:'Hematología', tel:'55 9876 5432', email:'juan@example.com' },
     { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
-    { nombre:'Dr. Juan López', especialidad:'Hematología', tel:'55 9876 5432', email:'juan@example.com' },
-    { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
-    { nombre:'Dr. Juan López', especialidad:'Hematología', tel:'55 9876 5432', email:'juan@example.com' },
   ]
 
   return (
