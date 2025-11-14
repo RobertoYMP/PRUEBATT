@@ -24,53 +24,44 @@
     align-items: center;
 }
 
-.critical-header {
+.doctordashboard-container > div:nth-of-type(1) {
     margin: 0 auto 1.5rem;
     padding: 0.75rem 3rem;
-    background: rgba(220, 53, 69, 0.12);   /* rojo muy suave */
-    color: #b33b3b;                        /* rojo no tan fuerte */
-    border-radius: 999px;                  /* pastilla */
+    background: rgba(220, 53, 69, 0.10);    /* rojo MUY suave */
+    border-radius: 999px;                   /* forma de pastilla */
+    color: #b33b3b;                          /* rojo no tan fuerte */
     font-weight: 600;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: .08em;
-    border: 1px solid rgba(179, 59, 59, 0.25);
+    border: 1px solid rgba(179, 59, 59, 0.30);
 }
 
-/* ---------- NUEVO: botón de "Notificar..." bonito y más pequeño ---------- */
-/* Envuelve el botón en un div con className="notify-row", o añade esta clase
-   al contenedor donde está el botón de notificar. */
-.notify-row {
-    display: flex;
-    justify-content: center;
-    margin-top: .75rem;
-}
-
-.notify-row button,
-.notify-row input[type="button"],
-.notify-row input[type="submit"] {
+.doctordashboard-container input[value^="Notificar"] {
+    display: block;
+    width: auto;                     /* deja de ocupar todo el ancho */
+    min-width: 220px;
+    max-width: 260px;
+    margin: 0.75rem auto 0;          /* centrado horizontal */
     padding: 0.55rem 1.8rem;
     border-radius: var(--default-radius);
     border: none;
-    background: var(--color-secundary);
+    background: var(--color-secundary);   /* seguimos tu paleta */
     color: #fff;
     font-weight: 600;
     font-size: 0.95rem;
+    text-align: center;
     cursor: pointer;
     box-shadow: var(--box-shadow);
-    max-width: 260px;
 }
 
-.notify-row button:hover,
-.notify-row input[type="button"]:hover,
-.notify-row input[type="submit"]:hover {
+/* Hover y active para que se sienta botón real */
+.doctordashboard-container input[value^="Notificar"]:hover {
     background: var(--secondary-strong);
     transform: translateY(-1px);
 }
 
-.notify-row button:active,
-.notify-row input[type="button"]:active,
-.notify-row input[type="submit"]:active {
+.doctordashboard-container input[value^="Notificar"]:active {
     transform: translateY(0);
     box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
 }
