@@ -41,9 +41,7 @@
 
 .upload-file {
     align-content: center;
-
-    /* NUEVO: centramos el bloque verde dentro de su columna */
-    display: flex;
+    display: flex;              /* centrar bloque verde en la columna */
     justify-content: center;
     align-items: center;
 }
@@ -57,9 +55,7 @@
     height: 80%;
     align-content: center;
     justify-items: anchor-center;
-
-    /* NUEVO: centramos el marco punteado dentro del verde */
-    display: flex;
+    display: flex;              /* centrar el marco punteado */
     justify-content: center;
     align-items: center;
 }
@@ -76,9 +72,7 @@
     border-width: 0.25rem;
     border-color: var(--light-blue);
     align-content: center;
-
-    /* NUEVO: centramos lo gris (file-cta) dentro del marco punteado */
-    display: flex;
+    display: flex;              /* centrar lo gris dentro del marco */
     justify-content: center;
     align-items: center;
 }
@@ -87,9 +81,6 @@
     display: grid;
     gap: 12px;
     max-width: 460px;
-
-    /* NUEVO: que todo el contenido interno se centre */
-    width: 100%;
     margin: 0 auto;
 }
 
@@ -119,8 +110,6 @@
     color: white;
     text-align: center;
     cursor: pointer;
-
-    /* NUEVO: el rectángulo gris se centra y no se pega a un lado */
     max-width: 420px;
     margin: 0 auto;
 }
@@ -163,4 +152,10 @@
 
 .button-upload-container .button-primary, .button-upload-container .button-secondary {
     border-radius: var(--default-radius);
+}
+
+/* 🔹 NUEVO: que el verde y el marco se adapten a lo gris, sin espacio extra */
+.blue-content,
+.dashed-container {
+    height: auto;
 }
