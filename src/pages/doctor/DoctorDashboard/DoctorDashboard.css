@@ -43,44 +43,43 @@
 
 /* ===================================================== */
 /*  Botón "Notificar..." – estilo tipo "Realizar..."     */
-/*  (último input de texto dentro del dashboard)         */
 /* ===================================================== */
 
-.doctordashboard-container input[type="text"]:last-of-type {
+.doctordashboard-container input[value^="Notificar"] {
     display: block;
     margin: 0.75rem auto 0;          /* centrado */
-    padding: 0.7rem 2.4rem;          /* tamaño parecido al botón verde */
-    width: auto !important;
+    padding: 0.7rem 2.4rem;          /* tamaño similar al botón verde */
+    width: auto;
     min-width: 220px;
     max-width: 260px;
 
-    border-radius: 999px !important; /* pastilla */
-    border: none !important;
-    outline: none !important;
+    border-radius: 999px;            /* pastilla */
+    border: none;
+    outline: none;
 
-    background: var(--color-secundary) !important;
-    color: #fff !important;
+    background: var(--color-secundary);
+    color: #fff;
     font-weight: 600;
     font-size: 0.95rem;
     text-align: center;
     cursor: pointer;
-    box-shadow: var(--box-shadow) !important;
+    box-shadow: var(--box-shadow);
 
     caret-color: transparent;        /* que no se vea el cursor de texto */
 }
 
-/* hover / focus / active */
-.doctordashboard-container input[type="text"]:last-of-type:hover {
-    background: var(--secondary-strong) !important;
+/* hover / focus / active suaves */
+.doctordashboard-container input[value^="Notificar"]:hover {
+    background: var(--secondary-strong);
     transform: translateY(-1px);
 }
 
-.doctordashboard-container input[type="text"]:last-of-type:focus {
-    outline: none !important;
+.doctordashboard-container input[value^="Notificar"]:focus {
+    outline: none;
     box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
 
-.doctordashboard-container input[type="text"]:last-of-type:active {
+.doctordashboard-container input[value^="Notificar"]:active {
     transform: translateY(0);
     box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
 }
