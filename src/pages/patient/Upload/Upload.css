@@ -41,6 +41,10 @@
 
 .upload-file {
     align-content: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .blue-content {
@@ -52,6 +56,11 @@
     height: 80%;
     align-content: center;
     justify-items: anchor-center;
+
+    /* 🔹 NUEVO: centrar contenido interno */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .dashed-container {
@@ -66,12 +75,20 @@
     border-width: 0.25rem;
     border-color: var(--light-blue);
     align-content: center;
+
+    /* 🔹 NUEVO: centramos lo gris dentro del borde punteado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .stack {
     display: grid;
     gap: 12px;
     max-width: 460px;
+
+    /* 🔹 NUEVO: que se centre horizontalmente */
+    margin: 0 auto;
 }
 
 .file-input-hidden {
