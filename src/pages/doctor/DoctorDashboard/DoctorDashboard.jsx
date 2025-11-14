@@ -48,9 +48,7 @@ export default function DoctorDashboard(){
           </tbody>
         </table>
       </div>
-
-      <p>* Ejemplo de como se crea una notificación</p>
-      <button onClick={addForCurrentUser}>Notificar a 123 (yo)</button>
+      <button onClick={addForCurrentUser}>Notificar</button>
     </div>
   )
 }
