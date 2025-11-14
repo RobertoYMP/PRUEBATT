@@ -42,44 +42,60 @@
 }
 
 /* ===================================================== */
-/*  Botón "Notificar..." – estilo tipo "Realizar..."     */
+/*  Botón "Notificar" – pequeño, centrado, con degradado */
+/*  similar al de "Iniciar sesión"                       */
 /* ===================================================== */
 
-.doctordashboard-container input[value^="Notificar"] {
+.doctordashboard-container .notify-button,
+.doctordashboard-container input[type="submit"][value^="Notificar"],
+.doctordashboard-container input[value^="Notificar"],
+.doctordashboard-container button[value^="Notificar"] {
     display: block;
-    margin: 0.75rem auto 0;          /* centrado */
-    padding: 0.7rem 2.4rem;          /* tamaño similar al botón verde */
+    margin: 1.5rem auto 2rem;        /* centrado y con espacio arriba/abajo */
+    padding: 0.55rem 2.4rem;         /* tamaño pequeño */
     width: auto;
-    min-width: 220px;
-    max-width: 260px;
+    min-width: 180px;
+    max-width: 220px;
 
     border-radius: 999px;            /* pastilla */
     border: none;
     outline: none;
 
-    background: var(--color-secundary);
+    /* degradado tipo botón de Iniciar Sesión */
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secundary));
     color: #fff;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 1rem;
     text-align: center;
+    text-transform: none;
     cursor: pointer;
     box-shadow: var(--box-shadow);
 
     caret-color: transparent;        /* que no se vea el cursor de texto */
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
 /* hover / focus / active suaves */
-.doctordashboard-container input[value^="Notificar"]:hover {
-    background: var(--secondary-strong);
+.doctordashboard-container .notify-button:hover,
+.doctordashboard-container input[type="submit"][value^="Notificar"]:hover,
+.doctordashboard-container input[value^="Notificar"]:hover,
+.doctordashboard-container button[value^="Notificar"]:hover {
+    filter: brightness(0.95);
     transform: translateY(-1px);
 }
 
-.doctordashboard-container input[value^="Notificar"]:focus {
+.doctordashboard-container .notify-button:focus,
+.doctordashboard-container input[type="submit"][value^="Notificar"]:focus,
+.doctordashboard-container input[value^="Notificar"]:focus,
+.doctordashboard-container button[value^="Notificar"]:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
 
-.doctordashboard-container input[value^="Notificar"]:active {
+.doctordashboard-container .notify-button:active,
+.doctordashboard-container input[type="submit"][value^="Notificar"]:active,
+.doctordashboard-container input[value^="Notificar"]:active,
+.doctordashboard-container button[value^="Notificar"]:active {
     transform: translateY(0);
     box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
 }
