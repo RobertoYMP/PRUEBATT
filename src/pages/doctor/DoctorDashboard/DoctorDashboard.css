@@ -2,15 +2,21 @@
     margin-top: var(--big-padding);
 }
 
+/* Título: "¡Es un placer tenerte aquí, Roberto!" */
 .doctordashboard-container h2 {
     text-align: center;
     margin-bottom: 3rem;
 }
 
+/* ========================= */
+/*   Header de filtros       */
+/* ========================= */
+
 .doctordashboard-container .header-container {
     display: grid;
     grid-template-columns: repeat(2, auto);
     margin-bottom: var(--big-padding);
+    column-gap: 2rem;
 }
 
 .input-search {
@@ -22,12 +28,14 @@
     justify-content: end;
     grid-template-columns: 20% 50%;
     align-items: center;
+    column-gap: 0.75rem;
 }
 
-/* ===================================================== */
-/*  PACIENTES EN ESTADO CRÍTICO – rojo suave y pastilla  */
-/* ===================================================== */
+/* ============================================ */
+/*  Pastilla: PACIENTES EN ESTADO CRÍTICO       */
+/* ============================================ */
 
+.doctordashboard-container .informative,
 .doctordashboard-container > div:nth-of-type(1) {
     margin: 0 auto 1.5rem;
     padding: 0.75rem 3rem;
@@ -41,18 +49,47 @@
     border: 1px solid rgba(179, 59, 59, 0.30);
 }
 
-/* ===================================================== */
-/*  Botón "Notificar" – pequeño, centrado, con degradado */
-/*  similar al de "Iniciar sesión"                       */
-/* ===================================================== */
+/* ========================= */
+/*   Tabla de pacientes      */
+/* ========================= */
 
-.doctordashboard-container .notify-button,
-.doctordashboard-container input[type="submit"][value^="Notificar"],
-.doctordashboard-container input[value^="Notificar"],
-.doctordashboard-container button[value^="Notificar"] {
-    display: block;
-    margin: 1.5rem auto 2rem;        /* centrado y con espacio arriba/abajo */
-    padding: 0.55rem 2.4rem;         /* tamaño pequeño */
+.table-wrap {
+    width: 100%;
+    margin-top: 1rem;
+    overflow-x: auto;
+}
+
+.doctordashboard-container .global-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.doctordashboard-container .global-table thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+.doctordashboard-container .global-table tbody td {
+    padding: 0.75rem 1rem;
+}
+
+/* Centramos los iconos de descarga y ojo */
+.doctordashboard-container .download-file,
+.doctordashboard-container .visualize-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========================= */
+/*   Botón "Notificar"       */
+/* ========================= */
+
+.doctordashboard-container .notify-button {
+    display: block;                  /* se centra con margin auto */
+    margin: 1.5rem auto 2rem;        /* centrado y con espacio */
+    
+    padding: 0.55rem 2.6rem;         /* tamaño pequeño */
     width: auto;
     min-width: 180px;
     max-width: 220px;
@@ -61,41 +98,31 @@
     border: none;
     outline: none;
 
-    /* degradado tipo botón de Iniciar Sesión */
+    /* degradado tipo botón "Iniciar Sesión" */
     background: linear-gradient(90deg, var(--color-primary), var(--color-secundary));
     color: #fff;
     font-weight: 600;
     font-size: 1rem;
     text-align: center;
-    text-transform: none;
     cursor: pointer;
     box-shadow: var(--box-shadow);
 
-    caret-color: transparent;        /* que no se vea el cursor de texto */
+    caret-color: transparent;
     transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
-/* hover / focus / active suaves */
-.doctordashboard-container .notify-button:hover,
-.doctordashboard-container input[type="submit"][value^="Notificar"]:hover,
-.doctordashboard-container input[value^="Notificar"]:hover,
-.doctordashboard-container button[value^="Notificar"]:hover {
+/* hover / focus / active */
+.doctordashboard-container .notify-button:hover {
     filter: brightness(0.95);
     transform: translateY(-1px);
 }
 
-.doctordashboard-container .notify-button:focus,
-.doctordashboard-container input[type="submit"][value^="Notificar"]:focus,
-.doctordashboard-container input[value^="Notificar"]:focus,
-.doctordashboard-container button[value^="Notificar"]:focus {
+.doctordashboard-container .notify-button:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
 
-.doctordashboard-container .notify-button:active,
-.doctordashboard-container input[type="submit"][value^="Notificar"]:active,
-.doctordashboard-container input[value^="Notificar"]:active,
-.doctordashboard-container button[value^="Notificar"]:active {
+.doctordashboard-container .notify-button:active {
     transform: translateY(0);
     box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
 }
