@@ -42,6 +42,7 @@
 .upload-file {
     align-content: center;
 
+    /* NUEVO: centramos el bloque verde dentro de su columna */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,7 +58,7 @@
     align-content: center;
     justify-items: anchor-center;
 
-    /* 🔹 NUEVO: centrar contenido interno */
+    /* NUEVO: centramos el marco punteado dentro del verde */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,7 +77,7 @@
     border-color: var(--light-blue);
     align-content: center;
 
-    /* 🔹 NUEVO: centramos lo gris dentro del borde punteado */
+    /* NUEVO: centramos lo gris (file-cta) dentro del marco punteado */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,7 +88,8 @@
     gap: 12px;
     max-width: 460px;
 
-    /* 🔹 NUEVO: que se centre horizontalmente */
+    /* NUEVO: que todo el contenido interno se centre */
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -117,6 +119,10 @@
     color: white;
     text-align: center;
     cursor: pointer;
+
+    /* NUEVO: el rectángulo gris se centra y no se pega a un lado */
+    max-width: 420px;
+    margin: 0 auto;
 }
 
 .file-cta:hover { background: var(--secondary-strong); }
