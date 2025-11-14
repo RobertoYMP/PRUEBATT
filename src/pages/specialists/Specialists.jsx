@@ -9,9 +9,8 @@ export default function Specialists(){
   const [showPopup, setShowPopup] = useState(true);
 
   const items = [
-    { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
-    { nombre:'Dr. Juan López', especialidad:'Hematología', tel:'55 9876 5432', email:'juan@example.com' },
-    { nombre:'Dra. Ana Pérez', especialidad:'Hematología', tel:'55 1234 5678', email:'ana@example.com' },
+    { nombre:'Dra. Salma Cruz', especialidad:'Internista', tel:'55 6966 8934', email:'samcruz@hotmail.com' },
+    { nombre:'Dra. Karla Medina', especialidad:'Medica Cirujana', tel:'55 9876 5432', email:'karlamc@gmail.com' },
   ]
 
   return (
