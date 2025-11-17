@@ -94,14 +94,14 @@ export default function Register() {
                 required
               />
 
-<div className="button-upload-container add-margin-top" style={{ display:'flex', flexWrap:'wrap', gap:12 }}>
-        <button className="button-secondary" onClick={() => nav(-1)}>Regresar</button>
-          <div style={{ flexBasis:'100%' }} />
-          <Link className="button-secondary" to="/app/manual-input"> Capturar valores manualmente</Link>
-        <button className="button-primary" form="uploadForm" type="submit" disabled={loading} aria-busy={loading}  style={{ margin:'12px auto 0', minWidth:260 }}>
-          {loading ? 'Subiendo…' : 'Realizar prediagnóstico'}
-        </button>
-      </div>
+              <div className="stack-2" style={{gap:16}}>
+                <div style={{flex:1}}>
+                  <FormField label="Contraseña:" type="password" value={form.password} onChange={e=>set('password',e.target.value)} required />
+                </div>
+                <div style={{flex:1}}>
+                  <FormField label="Confirmación de contraseña:" type="password" value={form.confirm} onChange={e=>set('confirm',e.target.value)} required />
+                </div>
+              </div>
 
               <div className="stack-2">
                 <div style={{flex:1}} className="field">
