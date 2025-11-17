@@ -148,10 +148,11 @@ export default function Upload() {
       </div>
 
       <hr />
-      <div className="button-upload-container add-margin-top">
+      <div className="button-upload-container add-margin-top" style={{ display:'flex', flexWrap:'wrap', gap:12 }}>
         <button className="button-secondary" onClick={() => nav(-1)}>Regresar</button>
+          <div style={{ flexBasis:'100%' }} />
           <Link className="button-secondary" to="/app/manual-input"> Capturar valores manualmente</Link>
-        <button className="button-primary" form="uploadForm" type="submit" disabled={loading} aria-busy={loading}>
+        <button className="button-primary" form="uploadForm" type="submit" disabled={loading} aria-busy={loading}  style={{ margin:'12px auto 0', minWidth:260 }}>
           {loading ? 'Subiendo…' : 'Realizar prediagnóstico'}
         </button>
       </div>
