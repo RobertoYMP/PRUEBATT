@@ -17,7 +17,6 @@ export default function Register() {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
-  const [confirming, setConfirming] = useState(false)const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
 
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
 
