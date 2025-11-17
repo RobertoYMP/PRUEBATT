@@ -17,6 +17,7 @@ export default function Register() {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
+  const [confirming, setConfirming] = useState(false)const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
 
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
 
@@ -94,14 +95,34 @@ export default function Register() {
                 required
               />
 
-              <div className="stack-2" style={{gap:16}}>
-                <div style={{flex:1}}>
-                  <FormField label="Contraseña:" type="password" value={form.password} onChange={e=>set('password',e.target.value)} required />
-                </div>
-                <div style={{flex:1}}>
-                  <FormField label="Confirmación de contraseña:" type="password" value={form.confirm} onChange={e=>set('confirm',e.target.value)} required />
-                </div>
-              </div>
+<div className="stack-2" style={{gap:16}}>
+  <div style={{flex:1}}>
+    <FormField 
+      label="Contraseña:" 
+      type="password" 
+      value={form.password} 
+      onChange={e=>set('password',e.target.value)} 
+      required 
+      onFocus={() => setShowPasswordRequirements(true)}
+      onBlur={() => setShowPasswordRequirements(false)}
+    />
+    {showPasswordRequirements && (
+      <div className="password-requirements-modal">
+        <h4>Requisitos de contraseña:</h4>
+        <ul>
+          <li>8+ caracteres</li>
+          <li>1 mayúscula</li>
+          <li>1 minúscula</li>
+          <li>1 número</li>
+          <li>1 carácter especial</li>
+        </ul>
+      </div>
+    )}
+  </div>
+  <div style={{flex:1}}>
+    <FormField label="Confirmación de contraseña:" type="password" value={form.confirm} onChange={e=>set('confirm',e.target.value)} required />
+  </div>
+</div>
 
               <div className="stack-2">
                 <div style={{flex:1}} className="field">
