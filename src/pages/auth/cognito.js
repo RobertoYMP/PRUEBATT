@@ -146,10 +146,28 @@ export function signIn({ email, password }) {
 }
 
 // REGISTRO — NO enviar custom:role (el admin asigna grupos después)
-export function signUp({ email, password, name }) {
+// 👇 Ahora acepta "edad" y la envía como atributo personalizado custom:edad
+export function signUp({ email, password, name, edad }) {
   return new Promise((resolve, reject) => {
-    const attrs = [ new CognitoUserAttribute({ Name: 'email', Value: email }) ];
-    if (name) attrs.push(new CognitoUserAttribute({ Name: 'name', Value: name }));
+    const attrs = [
+      new CognitoUserAttribute({ Name: 'email', Value: email }),
+    ];
+
+    if (name) {
+      attrs.push(
+        new CognitoUserAttribute({ Name: 'name', Value: name })
+      );
+    }
+
+    // Atributo personalizado de edad (debes tener "custom:edad" creado en el User Pool)
+    if (edad) {
+      attrs.push(
+        new CognitoUserAttribute({
+          Name: 'custom:edad',
+          Value: String(edad),
+        })
+      );
+    }
 
     pool.signUp(email, password, attrs, null, (err, result) => {
       if (err) {
