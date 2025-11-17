@@ -17,6 +17,8 @@ export default function Register() {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
+  const [showAgeRequirements, setShowAgeRequirements] = useState(false)
 
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
 
@@ -29,9 +31,14 @@ export default function Register() {
       return
     }
 
-    if (!form.edad) {
+    const age = parseInt(form.edad, 10);
+    if (Number.isNaN(age)) {
       setError('La edad es obligatoria');
-      return
+      return;
+    }
+    if (age < 25 || age > 44) {
+      setError('La edad debe estar entre 25 y 44 años');
+      return;
     }
 
     setLoading(true)
@@ -40,7 +47,7 @@ export default function Register() {
         email: form.email,
         password: form.password,
         name: `${form.nombre} ${form.apellido}`.trim(),
-        edad: form.edad,       // 👈 mandamos la edad al flujo de registro
+        edad: age, // 👈 mandamos la edad a Cognito
       })
       setMsg('Usuario creado. Revisa tu correo y escribe el código de confirmación.')
       setStep('confirm')
@@ -114,13 +121,27 @@ export default function Register() {
 
               <div className="stack-2" style={{gap:16}}>
                 <div style={{flex:1}}>
-                  <FormField
-                    label="Contraseña:"
-                    type="password"
-                    value={form.password}
-                    onChange={e=>set('password',e.target.value)}
-                    required
+                  <FormField 
+                    label="Contraseña:" 
+                    type="password" 
+                    value={form.password} 
+                    onChange={e=>set('password',e.target.value)} 
+                    required 
+                    onFocus={() => setShowPasswordRequirements(true)}
+                    onBlur={() => setShowPasswordRequirements(false)}
                   />
+                  {showPasswordRequirements && (
+                    <div className="password-requirements-modal">
+                      <h4>Requisitos de contraseña:</h4>
+                      <ul>
+                        <li>8+ caracteres</li>
+                        <li>1 mayúscula</li>
+                        <li>1 minúscula</li>
+                        <li>1 número</li>
+                        <li>1 carácter especial</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <div style={{flex:1}}>
                   <FormField
@@ -136,20 +157,28 @@ export default function Register() {
               <div className="stack-2">
                 <div style={{flex:1}} className="field">
                   <label>Edad:</label>
-                  <input
+                  <input 
                     type="number"
-                    min="0"
+                    min="25"
+                    max="44"
                     value={form.edad}
                     onChange={e=>set('edad',e.target.value)}
+                    onFocus={() => setShowAgeRequirements(true)}
+                    onBlur={() => setShowAgeRequirements(false)}
                     required
                   />
+                  {showAgeRequirements && (
+                    <div className="password-requirements-modal">
+                      <h4>Rango de edad permitido:</h4>
+                      <ul>
+                        <li>25 a 44 años</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <div style={{flex:1}} className="field">
                   <label>Sexo:</label>
-                  <select
-                    value={form.sexo}
-                    onChange={e=>set('sexo',e.target.value)}
-                  >
+                  <select value={form.sexo} onChange={e=>set('sexo',e.target.value)}>
                     <option>Mujer</option>
                     <option>Hombre</option>
                     <option>Otro</option>
