@@ -8,7 +8,7 @@ import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf } fro
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
-
+import { Link } from 'react-router-dom';
 import { getIdToken } from '../../auth/cognito';
 
 // Helpers de entorno
@@ -150,6 +150,7 @@ export default function Upload() {
       <hr />
       <div className="button-upload-container add-margin-top">
         <button className="button-secondary" onClick={() => nav(-1)}>Regresar</button>
+          <Link className="button-secondary" to="/app/manual-input"> Capturar valores manualmente</Link>
         <button className="button-primary" form="uploadForm" type="submit" disabled={loading} aria-busy={loading}>
           {loading ? 'Subiendo…' : 'Realizar prediagnóstico'}
         </button>
