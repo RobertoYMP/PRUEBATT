@@ -1,7 +1,7 @@
 // src/pages/patient/PrediagCharts.jsx
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
 import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
 
 function tripletData(min, val, max) {
@@ -40,6 +40,15 @@ export default function PrediagCharts() {
     return () => { mounted = false }
   }, [params])
 
+  // Lista de los 25 elementos
+  const elementos = [
+    "LEUCOCITOS", "ERITROCITOS", "HEMOGLOBINA", "HEMATOCRITO", "VOLUMEN CORPUSCULAR MEDIO",
+    "HEMOGLOBINA CORPUSCULAR MEDIA", "CONC. MEDIA DE HB CORPUSCULAR", "ANCHO DE DISTRIBUCIÓN ERITROCITARIA (D.E.)",
+    "ANCHO DE DISTRIBUCIÓN ERITROCITARIA (C.V.)", "PLAQUETAS", "VOLUMEN PLAQUETARIO MEDIO", "NRBC", "NRBC%",
+    "IG", "IG%", "LINFOCITOS (%)", "MONOCITOS (%)", "EOSINÓFILOS (%)", "BASÓFILOS (%)", "NEUTRÓFILOS (%)",
+    "LINFOCITOS", "MONOCITOS", "EOSINÓFILOS", "BASÓFILOS", "NEUTRÓFILOS"
+  ]
+
   return (
     <div className="card stack">
       <h2>Resultados en formato gráfico</h2>
@@ -63,9 +72,27 @@ export default function PrediagCharts() {
                   <LineChart data={data}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis />
+                    <YAxis orientation="left" />
                     <Tooltip />
-                    <Line type="monotone" dataKey="v" stroke="currentColor" dot />
+                    {/* Línea de referencia para el valor mínimo */}
+                    {d.Min != null && (
+                      <ReferenceLine 
+                        y={d.Min} 
+                        stroke="#ff6b6b" 
+                        strokeDasharray="3 3" 
+                        label={{ value: 'Mín', position: 'left', fill: '#ff6b6b' }}
+                      />
+                    )}
+                    {/* Línea de referencia para el valor máximo */}
+                    {d.Max != null && (
+                      <ReferenceLine 
+                        y={d.Max} 
+                        stroke="#ff6b6b" 
+                        strokeDasharray="3 3" 
+                        label={{ value: 'Máx', position: 'left', fill: '#ff6b6b' }}
+                      />
+                    )}
+                    <Line type="monotone" dataKey="v" stroke="#4dabf7" dot={{ r: 6 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -77,6 +104,18 @@ export default function PrediagCharts() {
             </div>
           )
         })}
+      </div>
+
+      {/* Mostrar los 25 elementos en la parte inferior */}
+      <div style={{ marginTop: '2rem', padding: '1rem', borderTop: '1px solid #ccc' }}>
+        <h3>Los 25 Elementos de Biometría Hemática:</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.5rem', marginTop: '1rem' }}>
+          {elementos.map((elemento, index) => (
+            <div key={index} style={{ padding: '0.5rem', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+              {elemento}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
