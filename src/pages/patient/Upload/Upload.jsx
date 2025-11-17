@@ -151,7 +151,7 @@ export default function Upload() {
       <div className="button-upload-container add-margin-top">
         <button className="button-secondary" onClick={() => nav(-1)}>Regresar</button>
           <Link className="button-secondary" to="/app/manual-input"> Capturar valores manualmente</Link>
-        <button className="button-primary" form="uploadForm" type="submit" disabled={loading} aria-busy={loading}>
+        <button className="button-primary" form="uploadForm" type="submit" disabled={loading} aria-busy={loading} style={{ display: 'block', margin: '16px auto 0' }}>
           {loading ? 'Subiendo…' : 'Realizar prediagnóstico'}
         </button>
       </div>
