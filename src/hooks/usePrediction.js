@@ -1,6 +1,7 @@
+// src/hooks/usePrediction.js
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchLatestPrediction } from '../api/history';
+import { fetchLatestPrediction } from '../api/historyClient';  // 👈 cambiar aquí
 
 export function usePrediction(autoFetch = true) {
   const { state } = useLocation();
@@ -12,7 +13,6 @@ export function usePrediction(autoFetch = true) {
         try {
           return JSON.parse(raw);
         } catch {
-          // limpiamos basura previa
           localStorage.removeItem('lastPrediction');
         }
       }
@@ -30,14 +30,13 @@ export function usePrediction(autoFetch = true) {
     (async () => {
       try {
         setLoading(true);
-        const r = await fetchLatestPrediction();
+        const r = await fetchLatestPrediction();  // 👈 ahora llama al cliente nuevo
         if (!cancelled && r) {
           setResult(r);
           try { localStorage.setItem('lastPrediction', JSON.stringify(r)); } catch {}
         }
       } catch (e) {
         if (!cancelled) {
-          // mensaje legible del backend (no el de JSON.parse)
           setError(typeof e?.message === 'string' ? e.message : 'No fue posible obtener el resultado');
         }
       } finally {
