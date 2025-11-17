@@ -17,24 +17,30 @@ export default function Register() {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
-  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
-  const [showAgeRequirements, setShowAgeRequirements] = useState(false)
 
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
 
   async function onSubmit(e){
     e.preventDefault()
     setError(''); setMsg('')
+
     if (form.password !== form.confirm) {
       setError('Las contraseñas no coinciden'); 
       return
     }
+
+    if (!form.edad) {
+      setError('La edad es obligatoria');
+      return
+    }
+
     setLoading(true)
     try {
       await signUp({
         email: form.email,
         password: form.password,
         name: `${form.nombre} ${form.apellido}`.trim(),
+        edad: form.edad,       // 👈 mandamos la edad al flujo de registro
       })
       setMsg('Usuario creado. Revisa tu correo y escribe el código de confirmación.')
       setStep('confirm')
@@ -81,10 +87,20 @@ export default function Register() {
             <form onSubmit={onSubmit} className="stack top-margin">
               <div className="stack-2" style={{gap:16}}>
                 <div style={{flex:1}}>
-                  <FormField label="Nombre:" value={form.nombre} onChange={e=>set('nombre',e.target.value)} required />
+                  <FormField
+                    label="Nombre:"
+                    value={form.nombre}
+                    onChange={e=>set('nombre',e.target.value)}
+                    required
+                  />
                 </div>
                 <div style={{flex:1}}>
-                  <FormField label="Apellido:" value={form.apellido} onChange={e=>set('apellido',e.target.value)} required />
+                  <FormField
+                    label="Apellido:"
+                    value={form.apellido}
+                    onChange={e=>set('apellido',e.target.value)}
+                    required
+                  />
                 </div>
               </div>
 
@@ -98,55 +114,42 @@ export default function Register() {
 
               <div className="stack-2" style={{gap:16}}>
                 <div style={{flex:1}}>
-                  <FormField 
-                    label="Contraseña:" 
-                    type="password" 
-                    value={form.password} 
-                    onChange={e=>set('password',e.target.value)} 
-                    required 
-                    onFocus={() => setShowPasswordRequirements(true)}
-                    onBlur={() => setShowPasswordRequirements(false)}
+                  <FormField
+                    label="Contraseña:"
+                    type="password"
+                    value={form.password}
+                    onChange={e=>set('password',e.target.value)}
+                    required
                   />
-                  {showPasswordRequirements && (
-                    <div className="password-requirements-modal">
-                      <h4>Requisitos de contraseña:</h4>
-                      <ul>
-                        <li>8+ caracteres</li>
-                        <li>1 mayúscula</li>
-                        <li>1 minúscula</li>
-                        <li>1 número</li>
-                        <li>1 carácter especial</li>
-                      </ul>
-                    </div>
-                  )}
                 </div>
                 <div style={{flex:1}}>
-                  <FormField label="Confirmación de contraseña:" type="password" value={form.confirm} onChange={e=>set('confirm',e.target.value)} required />
+                  <FormField
+                    label="Confirmación de contraseña:"
+                    type="password"
+                    value={form.confirm}
+                    onChange={e=>set('confirm',e.target.value)}
+                    required
+                  />
                 </div>
               </div>
 
               <div className="stack-2">
                 <div style={{flex:1}} className="field">
                   <label>Edad:</label>
-                  <input 
-                    type="number" 
-                    value={form.edad} 
-                    onChange={e=>set('edad',e.target.value)} 
-                    onFocus={() => setShowAgeRequirements(true)}
-                    onBlur={() => setShowAgeRequirements(false)}
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.edad}
+                    onChange={e=>set('edad',e.target.value)}
+                    required
                   />
-                  {showAgeRequirements && (
-                    <div className="password-requirements-modal">
-                      <h4>Rango de edad permitido:</h4>
-                      <ul>
-                        <li>25 a 44 años</li>
-                      </ul>
-                    </div>
-                  )}
                 </div>
                 <div style={{flex:1}} className="field">
                   <label>Sexo:</label>
-                  <select value={form.sexo} onChange={e=>set('sexo',e.target.value)}>
+                  <select
+                    value={form.sexo}
+                    onChange={e=>set('sexo',e.target.value)}
+                  >
                     <option>Mujer</option>
                     <option>Hombre</option>
                     <option>Otro</option>
