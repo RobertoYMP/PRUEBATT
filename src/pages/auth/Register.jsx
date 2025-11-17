@@ -17,6 +17,8 @@ export default function Register() {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
+  const [showAgeRequirements, setShowAgeRequirements] = useState(false)
 
   function set(k,v){ setForm(s=>({...s,[k]:v})) }
 
@@ -96,7 +98,27 @@ export default function Register() {
 
               <div className="stack-2" style={{gap:16}}>
                 <div style={{flex:1}}>
-                  <FormField label="Contraseña:" type="password" value={form.password} onChange={e=>set('password',e.target.value)} required />
+                  <FormField 
+                    label="Contraseña:" 
+                    type="password" 
+                    value={form.password} 
+                    onChange={e=>set('password',e.target.value)} 
+                    required 
+                    onFocus={() => setShowPasswordRequirements(true)}
+                    onBlur={() => setShowPasswordRequirements(false)}
+                  />
+                  {showPasswordRequirements && (
+                    <div className="password-requirements-modal">
+                      <h4>Requisitos de contraseña:</h4>
+                      <ul>
+                        <li>8+ caracteres</li>
+                        <li>1 mayúscula</li>
+                        <li>1 minúscula</li>
+                        <li>1 número</li>
+                        <li>1 carácter especial</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <div style={{flex:1}}>
                   <FormField label="Confirmación de contraseña:" type="password" value={form.confirm} onChange={e=>set('confirm',e.target.value)} required />
@@ -106,7 +128,21 @@ export default function Register() {
               <div className="stack-2">
                 <div style={{flex:1}} className="field">
                   <label>Edad:</label>
-                  <input type="number" value={form.edad} onChange={e=>set('edad',e.target.value)} />
+                  <input 
+                    type="number" 
+                    value={form.edad} 
+                    onChange={e=>set('edad',e.target.value)} 
+                    onFocus={() => setShowAgeRequirements(true)}
+                    onBlur={() => setShowAgeRequirements(false)}
+                  />
+                  {showAgeRequirements && (
+                    <div className="password-requirements-modal">
+                      <h4>Rango de edad permitido:</h4>
+                      <ul>
+                        <li>25 a 44 años</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <div style={{flex:1}} className="field">
                   <label>Sexo:</label>
