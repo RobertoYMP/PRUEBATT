@@ -77,7 +77,7 @@ export default function History(){
                         onClick={() => onVisualizar(x.key)}
                         disabled={!x.key || workingKey === x.key}
                         style={{
-                          backgroundColor: '#6c757d',
+                          backgroundColor: '#1e88e5',
                           color: 'white',
                           border: 'none',
                           padding: '8px 16px',
@@ -91,13 +91,13 @@ export default function History(){
                         }}
                         onMouseOver={(e) => {
                           if (!e.currentTarget.disabled) {
-                            e.currentTarget.style.backgroundColor = '#545b62';
+                            e.currentTarget.style.backgroundColor = '#1565c0';
                             e.currentTarget.style.transform = 'translateY(-1px)';
                           }
                         }}
                         onMouseOut={(e) => {
                           if (!e.currentTarget.disabled) {
-                            e.currentTarget.style.backgroundColor = '#6c757d';
+                            e.currentTarget.style.backgroundColor = '#1e88e5';
                             e.currentTarget.style.transform = 'translateY(0)';
                           }
                         }}
