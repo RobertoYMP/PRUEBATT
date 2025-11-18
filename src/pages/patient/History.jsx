@@ -72,9 +72,36 @@ export default function History(){
                     <td><span className={`badge ${statusBadgeCls(x.estado)} complete`}>{x.estado}</span></td>
                     <td title={x.examen}>{x.examen}</td>
                     <td>
-                      <button className="btn secondary"
+                      <button 
+                        className="visualizar-btn"
                         onClick={() => onVisualizar(x.key)}
-                        disabled={!x.key || workingKey === x.key}>
+                        disabled={!x.key || workingKey === x.key}
+                        style={{
+                          backgroundColor: '#007bff',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '4px',
+                          cursor: workingKey === x.key ? 'not-allowed' : 'pointer',
+                          opacity: workingKey === x.key ? 0.6 : 1,
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          transition: 'all 0.2s ease',
+                          minWidth: '100px'
+                        }}
+                        onMouseOver={(e) => {
+                          if (!e.currentTarget.disabled) {
+                            e.currentTarget.style.backgroundColor = '#0056b3';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (!e.currentTarget.disabled) {
+                            e.currentTarget.style.backgroundColor = '#007bff';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                          }
+                        }}
+                      >
                         {workingKey === x.key ? 'Abriendo…' : 'Visualizar'}
                       </button>
                     </td>
