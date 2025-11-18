@@ -4,7 +4,7 @@ import { fetchHistoryList, fetchPredictionByKey } from '../../api/history'
 
 function statusBadgeCls(st = 'PROCESSING') {
   const s = String(st).toUpperCase()
-  if (s === 'PREDICTED' || s === 'DONE') return 'estable'
+  if (s === 'PREDICTED' || s === 'COMPLETED') return 'estable'
   if (s === 'ERROR' || s === 'FAILED')   return 'grave'
   return 'critico'
 }
