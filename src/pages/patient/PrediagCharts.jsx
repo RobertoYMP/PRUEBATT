@@ -165,7 +165,7 @@ export default function PrediagCharts() {
         }}
       >
         <h3 style={{ marginBottom: '0.75rem', textAlign: 'center' }}>
-          Los 25 elementos de la biometría hemática
+          Los 25 elementos de la biometría hemática considerados para el prediagnostico
         </h3>
         <div
           style={{
