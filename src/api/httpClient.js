@@ -1,31 +1,47 @@
 // src/api/httpClient.js
 import { getIdToken } from '../pages/auth/cognito';
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+// Construimos la base de la API incluyendo el stage, si existe
+const RAW_BASE  = import.meta.env.VITE_API_BASE || '';
+const RAW_STAGE = import.meta.env.VITE_API_STAGE || '';
+
+// Normalizamos para evitar dobles // o faltas de /
+const BASE_NO_SLASH = RAW_BASE.replace(/\/+$/, '');
+const STAGE_CLEAN   = RAW_STAGE.replace(/^\/+/, ''); // quita "/" al inicio
+
+// Si hay stage, queda ...amazonaws.com/prod, si no, solo ...amazonaws.com
+const API_BASE = STAGE_CLEAN
+  ? `${BASE_NO_SLASH}/${STAGE_CLEAN}`
+  : BASE_NO_SLASH;
 
 /**
  * apiFetch: helper genérico para llamar a tu API
- * - concatena VITE_API_BASE + path
- * - agrega el idToken de Cognito en el header Authorization
- * - maneja errores sencillos y devuelve JSON
+ * - concatena API_BASE + path
+ * - agrega el idToken de Cognito en Authorization
+ * - maneja errores y devuelve JSON
  */
 export async function apiFetch(path, options = {}) {
   const token = getIdToken?.();
+
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {})
   };
 
   if (token) {
-    // 🔁 Ajusta esto según cómo espera el token tu API Gateway.
-    // Si tu Lambda ya usa el token "pelón", deja así:
+    // Si tu Lambda espera el token "pelón", deja esto:
     headers['Authorization'] = token;
 
-    // Si tu API espera "Bearer <token>", usa esta en su lugar:
+    // Si algún día cambias a `Bearer <token>`, sería:
     // headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const url = `${API_BASE}${path}`;
+  const cleanPath = String(path || '').startsWith('/')
+    ? path
+    : `/${path || ''}`;
+
+  const url = `${API_BASE}${cleanPath}`;
+
   const res = await fetch(url, {
     ...options,
     headers
@@ -37,7 +53,7 @@ export async function apiFetch(path, options = {}) {
   try {
     data = text ? JSON.parse(text) : null;
   } catch {
-    // si no es JSON, data se queda en null
+    // no es JSON, dejamos data = null
   }
 
   if (!res.ok) {
