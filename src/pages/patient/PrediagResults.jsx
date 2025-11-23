@@ -101,7 +101,7 @@ export default function PrediagResults() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
         <Link to="/app/charts" className="text-link">Ver resultados en formato gráfico</Link>
-        <Link to="/app/results/reco" className="text-link">Ver recomendaciones</Link>
+        <Link to="/app/recommendations" className="text-link">Ver recomendaciones</Link>
       </div>
     </div>
   )
