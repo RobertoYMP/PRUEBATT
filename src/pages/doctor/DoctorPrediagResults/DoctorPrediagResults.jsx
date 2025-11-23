@@ -1,18 +1,15 @@
-// src/pages/doctor/DoctorPrediagResults.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { fetchPredictionByKey } from '../../api/historyClient';
+// 👇 IMPORT CORRECTO: sube 3 niveles hasta src, luego api
+import { fetchPredictionByKey } from '../../../api/historyClient';
 
-// Esta vista es casi igual a PrediagResults.jsx, pero:
-// - usa una "key" que viene en la URL o en el state del <Link>
-// - está pensada para el rol de doctor
-
+// Vista de prediagnóstico para el doctor, usando la clave (SK / s3Key)
 export default function DoctorPrediagResults() {
-  // /doctor/prediag/:key → obtenemos :key desde la URL
+  // URL: /doctor/prediag/:key
   const { key } = useParams();
   const location = useLocation();
 
-  // Si el Link mandó state.predictionKey, se usa eso; si no, toma :key
+  // Si el <Link> mandó state.predictionKey, usamos eso; si no, usamos :key
   const predictionKey = location.state?.predictionKey || key;
 
   const [loading, setLoading] = useState(true);
@@ -27,7 +24,7 @@ export default function DoctorPrediagResults() {
         setLoading(true);
         setError('');
         const resp = await fetchPredictionByKey(predictionKey);
-        // fetchPredictionByKey normalmente regresa { prediction: {...} }
+        // historyClient generalmente regresa { prediction: {...} }
         const pred = resp?.prediction || resp;
         if (!mounted) return;
         setPrediction(pred || null);
@@ -65,7 +62,6 @@ export default function DoctorPrediagResults() {
 
       {prediction && (
         <>
-          {/* Datos generales del paciente / estudio */}
           <section style={{ marginTop: 16 }}>
             <h2>Datos del paciente</h2>
             <ul>
@@ -92,7 +88,6 @@ export default function DoctorPrediagResults() {
             </ul>
           </section>
 
-          {/* Tabla de parámetros */}
           <section style={{ marginTop: 24 }}>
             <h2>Tabla de resultados</h2>
 
@@ -134,7 +129,6 @@ export default function DoctorPrediagResults() {
             )}
           </section>
 
-          {/* Recomendaciones destacadas (si las hay) */}
           {Array.isArray(prediction.recomendaciones_destacadas) &&
             prediction.recomendaciones_destacadas.length > 0 && (
               <section style={{ marginTop: 24 }}>
