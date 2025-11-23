@@ -26,107 +26,120 @@ export default function Recommendations(){
     .sort((a,b) => sevToOrder(b.Severidad) - sevToOrder(a.Severidad))
 
   return (
+    // CONTENEDOR AMPLIO, SIN .card PARA QUE NO TENGA MAX-WIDTH
     <div
-      className="card stack"
+      className="stack"
       style={{
         width: '100%',
-        padding: '2.5rem 4vw 3rem',
-        borderRadius: '32px',
-        backgroundImage: 'linear-gradient(#ffffff,#ffffff),linear-gradient(135deg,#1b3a4e,#8facbf)',
-        backgroundOrigin: 'border-box',
-        backgroundClip: 'padding-box, border-box',
-        border: '6px solid transparent',
+        padding: '2.5rem 5vw 4rem',
         boxSizing: 'border-box'
       }}
     >
-      <h2
-        style={{
-          textAlign: 'center',
-          marginBottom: '2rem'
-        }}
-      >
-        Recomendaciones
-      </h2>
-
-      {loading && <p>Cargando…</p>}
-      {error && <p className="badge critico">Error: {error}</p>}
-
-      {/* Cuadro AVISO */}
+      {/* MARCO GRANDE */}
       <div
-        className="card"
         style={{
           width: '100%',
-          padding: '1.75rem 2rem',
-          borderRadius: '28px',
-          backgroundImage: 'linear-gradient(#f9fbfd,#f9fbfd),linear-gradient(135deg,#1b3a4e,#8facbf)',
+          padding: '2.5rem 3vw 3rem',
+          borderRadius: '32px',
+          backgroundImage: 'linear-gradient(#ffffff,#ffffff),linear-gradient(135deg,#1b3a4e,#8facbf)',
           backgroundOrigin: 'border-box',
           backgroundClip: 'padding-box, border-box',
-          border: '5px solid transparent',
-          minHeight: '180px',
+          border: '6px solid transparent',
           boxSizing: 'border-box'
         }}
       >
-        <p style={{ lineHeight: 1.5 }}>
-          <strong>Aviso:</strong>{' '}
-          {nota || 'Contenido educativo; no sustituye valoración médica.'}
-        </p>
-      </div>
-
-      {/* Cuadro PRIORITARIAS */}
-      {dest.length > 0 && (
-        <div
-          className="card stack"
+        <h2
           style={{
-            width: '100%',
-            marginTop: '2rem',
+            textAlign: 'center',
+            marginBottom: '2rem'
+          }}
+        >
+          Recomendaciones
+        </h2>
+
+        {loading && <p>Cargando…</p>}
+        {error && <p className="badge critico">Error: {error}</p>}
+
+        {/* CUADRO AVISO */}
+        <div
+          style={{
+            width: '65%',
+            minWidth: '260px',
+            maxWidth: '900px',
+            margin: '0 auto',
             padding: '1.75rem 2rem',
             borderRadius: '28px',
             backgroundImage: 'linear-gradient(#f9fbfd,#f9fbfd),linear-gradient(135deg,#1b3a4e,#8facbf)',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
             border: '5px solid transparent',
+            minHeight: '180px',
             boxSizing: 'border-box'
           }}
         >
-          <h3 style={{ marginBottom: '0.75rem' }}>Prioritarias</h3>
-          <ul style={{ paddingLeft: '1.25rem', lineHeight: 1.6 }}>
-            {dest.map((r,i)=><li key={i}>{r}</li>)}
-          </ul>
+          <p style={{ lineHeight: 1.5 }}>
+            <strong>Aviso:</strong>{' '}
+            {nota || 'Contenido educativo; no sustituye valoración médica.'}
+          </p>
         </div>
-      )}
 
-      {/* POR PARÁMETRO */}
-      <div className="stack" style={{ marginTop: '2.5rem' }}>
-        <h3>Por parámetro</h3>
-        {(!loading && !error && específicas.length === 0) ? (
-          <p>No hay hallazgos relevantes. Mantén hábitos saludables.</p>
-        ) : (
-          <ul className="stack" style={{ gap:'0.75rem', padding: 0 }}>
-            {específicas.map((d, i) => (
-              <li
-                key={i}
-                className="card"
-                style={{
-                  listStyle: 'none',
-                  padding:'0.75rem 1rem',
-                  borderRadius: '18px',
-                  backgroundColor: 'var(--color-surface-2)'
-                }}
-              >
-                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', gap:8}}>
-                  <strong>{d.Parametro}</strong>
-                  <span className={`badge ${sevToBadge(d.Severidad)}`} style={{textTransform:'uppercase'}}>
-                    {d.Estado} · {d.Severidad}
-                  </span>
-                </div>
-                <div style={{fontSize:13, opacity:.85, marginTop:4}}>
-                  Valor: <strong>{d.Valor}{d.Unidad ? ` ${d.Unidad}` : ''}</strong> · Referencia: {d.Min ?? '—'}–{d.Max ?? '—'}
-                </div>
-                {d.Recomendacion && <p style={{marginTop:6}}>{d.Recomendacion}</p>}
-              </li>
-            ))}
-          </ul>
+        {/* CUADRO PRIORITARIAS */}
+        {dest.length > 0 && (
+          <div
+            style={{
+              width: '65%',
+              minWidth: '260px',
+              maxWidth: '900px',
+              margin: '2.5rem auto 0',
+              padding: '1.75rem 2rem',
+              borderRadius: '28px',
+              backgroundImage: 'linear-gradient(#f9fbfd,#f9fbfd),linear-gradient(135deg,#1b3a4e,#8facbf)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              border: '5px solid transparent',
+              boxSizing: 'border-box'
+            }}
+          >
+            <h3 style={{ marginBottom: '0.75rem' }}>Prioritarias</h3>
+            <ul style={{ paddingLeft: '1.25rem', lineHeight: 1.6 }}>
+              {dest.map((r,i)=><li key={i}>{r}</li>)}
+            </ul>
+          </div>
         )}
+
+        {/* POR PARÁMETRO */}
+        <div className="stack" style={{ marginTop: '2.5rem' }}>
+          <h3>Por parámetro</h3>
+          {(!loading && !error && específicas.length === 0) ? (
+            <p>No hay hallazgos relevantes. Mantén hábitos saludables.</p>
+          ) : (
+            <ul className="stack" style={{ gap:'0.75rem', padding: 0 }}>
+              {específicas.map((d, i) => (
+                <li
+                  key={i}
+                  className="card"
+                  style={{
+                    listStyle: 'none',
+                    padding:'0.75rem 1rem',
+                    borderRadius: '18px',
+                    backgroundColor: 'var(--color-surface-2)'
+                  }}
+                >
+                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', gap:8}}>
+                    <strong>{d.Parametro}</strong>
+                    <span className={`badge ${sevToBadge(d.Severidad)}`} style={{textTransform:'uppercase'}}>
+                      {d.Estado} · {d.Severidad}
+                    </span>
+                  </div>
+                  <div style={{fontSize:13, opacity:.85, marginTop:4}}>
+                    Valor: <strong>{d.Valor}{d.Unidad ? ` ${d.Unidad}` : ''}</strong> · Referencia: {d.Min ?? '—'}–{d.Max ?? '—'}
+                  </div>
+                  {d.Recomendacion && <p style={{marginTop:6}}>{d.Recomendacion}</p>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   )
