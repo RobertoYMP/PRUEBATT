@@ -6,7 +6,7 @@ import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-
 import { useNotifications } from "../../../context/NotificationContext";
 import { getSession } from '../../auth/cognito'
 
-// 👇 IMPORT CORRECTO (sube 3 niveles hasta src, luego api)
+
 import { fetchCriticalPatients } from '../../../api/doctorClient'
 
 export default function DoctorDashboard(){
