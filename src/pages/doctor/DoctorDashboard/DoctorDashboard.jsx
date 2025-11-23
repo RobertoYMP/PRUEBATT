@@ -1,14 +1,15 @@
-// src/pages/doctor/DoctorDashboard.jsx
-import React, { useEffect, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import './DoctorDashboard.css';
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import './DoctorDashboard.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useNotifications } from "../../../context/NotificationContext";
-import { getSession } from '../../auth/cognito';
-import { fetchCriticalPatients } from '../../api/doctorClient';
+import { getSession } from '../../auth/cognito'
 
-export default function DoctorDashboard() {
+// 👇 IMPORT CORRECTO (sube 3 niveles hasta src, luego api)
+import { fetchCriticalPatients } from '../../../api/doctorClient'
+
+export default function DoctorDashboard(){
   const { addNotification } = useNotifications();
 
   const [rows, setRows] = useState([]);
@@ -18,12 +19,12 @@ export default function DoctorDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const claims = getSession()?.claims || {};
+  const claims = getSession()?.claims || {}
   const displayName =
     claims.name ||
     [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
     claims.email ||
-    'Doctor';
+    'Doctor'
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +45,7 @@ export default function DoctorDashboard() {
     return () => { cancelled = true; };
   }, []);
 
-  // Filtro por nombre y fecha (solo front)
+  // Filtro por nombre y fecha
   useEffect(() => {
     const lower = search.toLowerCase();
     const filteredRows = rows.filter(r => {
@@ -117,9 +118,9 @@ export default function DoctorDashboard() {
                   <td>
                     <FontAwesomeIcon
                       icon={faCalendarDays}
-                      style={{ color: "var(--color-primary)", paddingRight: "0.5rem" }}
+                      style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}
                     />
-                    {new Date(r.fecha).toLocaleDateString('es-MX')}
+                    {r.fecha ? new Date(r.fecha).toLocaleDateString('es-MX') : '—'}
                   </td>
                   <td>{r.paciente}</td>
                   <td>
@@ -131,20 +132,20 @@ export default function DoctorDashboard() {
                     >
                       <FontAwesomeIcon
                         icon={faFileArrowDown}
-                        style={{ color: "var(--color-secundary)", fontSize: "40px" }}
+                        style={{color: "var(--color-secundary)", fontSize: "40px"}}
                       />
                     </button>
                   </td>
                   <td>
                     <Link
-                      to={`/doctor/prediag/${encodeURIComponent(r.predictionKey)}`}
-                      state={{ predictionKey: r.predictionKey }}
+                      to={`/doctor/prediag/${encodeURIComponent(r.s3Key || r.id)}`}
+                      state={{ predictionKey: r.s3Key || r.id }}
                       className='visualize-button'
                       title="Ver prediagnóstico"
                     >
                       <FontAwesomeIcon
                         icon={faEye}
-                        style={{ color: "var(--color-secundary)", fontSize: "40px" }}
+                        style={{color: "var(--color-secundary)", fontSize: "40px"}}
                         className='icon-button'
                       />
                     </Link>
@@ -164,5 +165,5 @@ export default function DoctorDashboard() {
         Notificar
       </button>
     </div>
-  );
+  )
 }
