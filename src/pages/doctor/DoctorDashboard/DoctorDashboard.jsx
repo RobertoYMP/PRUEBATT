@@ -1,22 +1,72 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import './DoctorDashboard.css'
+// src/pages/doctor/DoctorDashboard.jsx
+import React, { useEffect, useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import './DoctorDashboard.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useNotifications } from "../../../context/NotificationContext";
-import { getSession } from '../../auth/cognito'
+import { getSession } from '../../auth/cognito';
+import { fetchCriticalPatients } from '../../api/doctorClient';
 
-export default function DoctorDashboard(){
-  const rows = [
-    { fecha:'04/05/2025', paciente:'Nombre del paciente', examen:'Biometría Hemática' },
-    { fecha:'04/05/2024', paciente:'Nombre del paciente', examen:'Biometría Hemática' },
-  ]
-
+export default function DoctorDashboard() {
   const { addNotification } = useNotifications();
-  const addForCurrentUser = () => { addNotification(123, "🚨 Nuevo paciente en estado crítico", { borderLeft: "4px solid #d9534f" }); };
 
-  const claims = getSession()?.claims || {}
-  const displayName = claims.name || [claims.given_name, claims.family_name].filter(Boolean).join(' ') || claims.email || 'Doctor'
+  const [rows, setRows] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [search, setSearch] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const claims = getSession()?.claims || {};
+  const displayName =
+    claims.name ||
+    [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
+    claims.email ||
+    'Doctor';
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await fetchCriticalPatients();
+        if (cancelled) return;
+        setRows(data);
+      } catch (err) {
+        if (cancelled) return;
+        setError(err?.message || 'Error al cargar pacientes críticos');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Filtro por nombre y fecha (solo front)
+  useEffect(() => {
+    const lower = search.toLowerCase();
+    const filteredRows = rows.filter(r => {
+      const matchName = !lower || (r.paciente || '').toLowerCase().includes(lower);
+      const matchDate = !dateFilter || (r.fecha || '').slice(0,10) === dateFilter;
+      return matchName && matchDate;
+    });
+    setFiltered(filteredRows);
+  }, [rows, search, dateFilter]);
+
+  const addForCurrentUser = () => {
+    addNotification(
+      123,
+      "🚨 Nuevo paciente en estado crítico",
+      { borderLeft: "4px solid #d9534f" }
+    );
+  };
+
+  const handleDownload = (url) => {
+    if (!url) return;
+    window.open(url, '_blank', 'noopener');
+  };
 
   return (
     <div className="doctordashboard-container">
@@ -25,37 +75,94 @@ export default function DoctorDashboard(){
 
       <div className='header-container'>
         <div className='field input-search'>
-          <input type="text" placeholder='Buscar paciente'/>
+          <input
+            type="text"
+            placeholder='Buscar paciente'
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
         </div>
         <div className='date-container'>
           Fecha:
-          <div className='field'><input type="date" /></div>
+          <div className='field'>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={e => setDateFilter(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
       <div className="table-wrap">
-        <table className="global-table">
-          <thead><tr><th>Fecha</th><th>Paciente</th><th>Examen</th><th>Ver prediagnóstico</th></tr></thead>
-          <tbody>
-            {rows.map((r,i)=>(
-              <tr key={i}>
-                <td><FontAwesomeIcon icon={faCalendarDays} style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}/> {r.fecha}</td>
-                <td>{r.paciente}</td>
-                <td><div className='download-file'><FontAwesomeIcon icon={faFileArrowDown} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></div></td>
-                <td><Link to="/doctor/edit-recommendations" className='visualize-button'><FontAwesomeIcon icon={faEye} style={{color: "var(--color-secundary)", fontSize: "40px"}} className='icon-button'/></Link></td>
+        {loading && <p>Cargando pacientes críticos…</p>}
+        {error && <p className="badge critico">{error}</p>}
+        {!loading && !error && filtered.length === 0 && (
+          <p>No hay pacientes críticos con prediagnóstico listo.</p>
+        )}
+
+        {!loading && !error && filtered.length > 0 && (
+          <table className="global-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Paciente</th>
+                <th>Examen</th>
+                <th>Ver prediagnóstico</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((r, i) => (
+                <tr key={r.id || i}>
+                  <td>
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      style={{ color: "var(--color-primary)", paddingRight: "0.5rem" }}
+                    />
+                    {new Date(r.fecha).toLocaleDateString('es-MX')}
+                  </td>
+                  <td>{r.paciente}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className='download-file icon-button'
+                      onClick={() => handleDownload(r.downloadUrl)}
+                      title="Descargar archivo original"
+                    >
+                      <FontAwesomeIcon
+                        icon={faFileArrowDown}
+                        style={{ color: "var(--color-secundary)", fontSize: "40px" }}
+                      />
+                    </button>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/doctor/prediag/${encodeURIComponent(r.predictionKey)}`}
+                      state={{ predictionKey: r.predictionKey }}
+                      className='visualize-button'
+                      title="Ver prediagnóstico"
+                    >
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        style={{ color: "var(--color-secundary)", fontSize: "40px" }}
+                        className='icon-button'
+                      />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-            <button
+
+      <button
         type="button"
         className="notify-button"
         onClick={addForCurrentUser}
       >
         Notificar
       </button>
-
     </div>
-  )
+  );
 }
