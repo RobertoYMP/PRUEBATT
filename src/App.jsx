@@ -26,6 +26,9 @@ import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile
 import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 
+// ⬇️ NUEVO: vista de prediagnóstico para el doctor
+import DoctorPrediagResults from './pages/doctor/DoctorPrediagResults.jsx'
+
 // ⬇️ Importa initSession para “hidratar” Cognito al arrancar
 import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
 
@@ -94,30 +97,94 @@ export default function App() {
             <Route path="/logout" element={<Logout />} />
 
             {/* Paciente */}
-            <Route path="/app"                 element={<RoleRoute role="patient"><Dashboard /></RoleRoute>} />
-            <Route path="/app/upload"          element={<RoleRoute role="patient"><Upload /></RoleRoute>} />
-            <Route path="/app/history"         element={<RoleRoute role="patient"><History /></RoleRoute>} />
-            <Route path="/app/notifications"   element={<RoleRoute role="patient"><Notifications /></RoleRoute>} />
-            <Route path="/app/specialists"     element={<RoleRoute role="patient"><Specialists /></RoleRoute>} />
-            <Route path="/app/results"         element={<RoleRoute role="patient"><PrediagResults /></RoleRoute>} />
-            <Route path="/app/charts"          element={<RoleRoute role="patient"><PrediagCharts /></RoleRoute>} />
-            <Route path="/app/recommendations" element={<RoleRoute role="patient"><Recommendations /></RoleRoute>} />
-            <Route path="/app/manual"          element={<RoleRoute role="patient"><ManualEntry /></RoleRoute>} />
+            <Route
+              path="/app"
+              element={<RoleRoute role="patient"><Dashboard /></RoleRoute>}
+            />
+            <Route
+              path="/app/upload"
+              element={<RoleRoute role="patient"><Upload /></RoleRoute>}
+            />
+            <Route
+              path="/app/history"
+              element={<RoleRoute role="patient"><History /></RoleRoute>}
+            />
+            <Route
+              path="/app/notifications"
+              element={<RoleRoute role="patient"><Notifications /></RoleRoute>}
+            />
+            <Route
+              path="/app/specialists"
+              element={<RoleRoute role="patient"><Specialists /></RoleRoute>}
+            />
+            <Route
+              path="/app/results"
+              element={<RoleRoute role="patient"><PrediagResults /></RoleRoute>}
+            />
+            <Route
+              path="/app/charts"
+              element={<RoleRoute role="patient"><PrediagCharts /></RoleRoute>}
+            />
+            <Route
+              path="/app/recommendations"
+              element={<RoleRoute role="patient"><Recommendations /></RoleRoute>}
+            />
+            <Route
+              path="/app/manual"
+              element={<RoleRoute role="patient"><ManualEntry /></RoleRoute>}
+            />
 
             {/* Doctor */}
-            <Route path="/doctor"                      element={<RoleRoute role="doctor"><DoctorDashboard /></RoleRoute>} />
-            <Route path="/doctor/history-reviews"      element={<RoleRoute role="doctor"><HistoryReviews /></RoleRoute>} />
-            <Route path="/doctor/edit-recommendations" element={<RoleRoute role="doctor"><EditRecommendations /></RoleRoute>} />
+            <Route
+              path="/doctor"
+              element={<RoleRoute role="doctor"><DoctorDashboard /></RoleRoute>}
+            />
+            <Route
+              path="/doctor/history-reviews"
+              element={<RoleRoute role="doctor"><HistoryReviews /></RoleRoute>}
+            />
+            <Route
+              path="/doctor/edit-recommendations"
+              element={<RoleRoute role="doctor"><EditRecommendations /></RoleRoute>}
+            />
+            {/* NUEVA ruta: ver prediagnóstico específico del doctor */}
+            <Route
+              path="/doctor/prediag/:key"
+              element={<RoleRoute role="doctor"><DoctorPrediagResults /></RoleRoute>}
+            />
 
             {/* Admin */}
-            <Route path="/admin/users"               element={<RoleRoute role="admin"><Users /></RoleRoute>} />
-            <Route path="/admin/new-specialist"      element={<RoleRoute role="admin"><NewSpecialist /></RoleRoute>} />
-            <Route path="/admin/edit-specialist"     element={<RoleRoute role="admin"><EditSpecialist /></RoleRoute>} />
-            <Route path="/admin/patient-profile"     element={<RoleRoute role="admin"><PatientProfile /></RoleRoute>} />
-            <Route path="/admin/specialist-profile"  element={<RoleRoute role="admin"><SpecialistProfile /></RoleRoute>} />
+            <Route
+              path="/admin/users"
+              element={<RoleRoute role="admin"><Users /></RoleRoute>}
+            />
+            <Route
+              path="/admin/new-specialist"
+              element={<RoleRoute role="admin"><NewSpecialist /></RoleRoute>}
+            />
+            <Route
+              path="/admin/edit-specialist"
+              element={<RoleRoute role="admin"><EditSpecialist /></RoleRoute>}
+            />
+            <Route
+              path="/admin/patient-profile"
+              element={<RoleRoute role="admin"><PatientProfile /></RoleRoute>}
+            />
+            <Route
+              path="/admin/specialist-profile"
+              element={<RoleRoute role="admin"><SpecialistProfile /></RoleRoute>}
+            />
 
             {/* 404 */}
-            <Route path="*" element={<div className="card"><h2>404</h2><p>Página no encontrada.</p></div>} />
+            <Route
+              path="*"
+              element={
+                <div className="card">
+                  <h2>404</h2>
+                  <p>Página no encontrada.</p>
+                </div>
+              }
+            />
           </Routes>
         </main>
         <Footer />
