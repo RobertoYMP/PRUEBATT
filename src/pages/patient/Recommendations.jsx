@@ -29,35 +29,41 @@ export default function Recommendations(){
     <div
       className="card stack"
       style={{
-        maxWidth: '720px',
-        margin: '3rem auto 4rem',
-        padding: '2.5rem 3rem',
+        width: '100%',
+        padding: '2.5rem 4vw 3rem',
         borderRadius: '32px',
         backgroundImage: 'linear-gradient(#ffffff,#ffffff),linear-gradient(135deg,#1b3a4e,#8facbf)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
-        border: '6px solid transparent'
+        border: '6px solid transparent',
+        boxSizing: 'border-box'
       }}
     >
-      <h2 style={{ textAlign: 'center', marginBottom: '1.75rem' }}>Recomendaciones</h2>
+      <h2
+        style={{
+          textAlign: 'center',
+          marginBottom: '2rem'
+        }}
+      >
+        Recomendaciones
+      </h2>
 
       {loading && <p>Cargando…</p>}
       {error && <p className="badge critico">Error: {error}</p>}
 
-      {/* Cuadro de AVISO, grande como en el mockup */}
+      {/* Cuadro AVISO */}
       <div
         className="card"
         style={{
-          marginTop: '0.5rem',
+          width: '100%',
           padding: '1.75rem 2rem',
           borderRadius: '28px',
           backgroundImage: 'linear-gradient(#f9fbfd,#f9fbfd),linear-gradient(135deg,#1b3a4e,#8facbf)',
           backgroundOrigin: 'border-box',
           backgroundClip: 'padding-box, border-box',
           border: '5px solid transparent',
-          minHeight: '220px',
-          display: 'flex',
-          alignItems: 'flex-start'
+          minHeight: '180px',
+          boxSizing: 'border-box'
         }}
       >
         <p style={{ lineHeight: 1.5 }}>
@@ -66,18 +72,20 @@ export default function Recommendations(){
         </p>
       </div>
 
-      {/* Cuadro de PRIORITARIAS, mismo estilo que el de arriba */}
+      {/* Cuadro PRIORITARIAS */}
       {dest.length > 0 && (
         <div
           className="card stack"
           style={{
-            marginTop: '1.75rem',
+            width: '100%',
+            marginTop: '2rem',
             padding: '1.75rem 2rem',
             borderRadius: '28px',
             backgroundImage: 'linear-gradient(#f9fbfd,#f9fbfd),linear-gradient(135deg,#1b3a4e,#8facbf)',
             backgroundOrigin: 'border-box',
             backgroundClip: 'padding-box, border-box',
-            border: '5px solid transparent'
+            border: '5px solid transparent',
+            boxSizing: 'border-box'
           }}
         >
           <h3 style={{ marginBottom: '0.75rem' }}>Prioritarias</h3>
@@ -87,18 +95,19 @@ export default function Recommendations(){
         </div>
       )}
 
-      {/* Sección por parámetro (queda debajo de los cuadros anteriores) */}
-      <div className="stack" style={{ marginTop: '2rem' }}>
+      {/* POR PARÁMETRO */}
+      <div className="stack" style={{ marginTop: '2.5rem' }}>
         <h3>Por parámetro</h3>
         {(!loading && !error && específicas.length === 0) ? (
           <p>No hay hallazgos relevantes. Mantén hábitos saludables.</p>
         ) : (
-          <ul className="stack" style={{gap:'0.75rem'}}>
+          <ul className="stack" style={{ gap:'0.75rem', padding: 0 }}>
             {específicas.map((d, i) => (
               <li
                 key={i}
                 className="card"
                 style={{
+                  listStyle: 'none',
                   padding:'0.75rem 1rem',
                   borderRadius: '18px',
                   backgroundColor: 'var(--color-surface-2)'
