@@ -27,7 +27,7 @@ import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 
 // ⬇️ NUEVO: vista de prediagnóstico para el doctor
-import DoctorPrediagResults from './pages/doctor/DoctorPrediagResults.jsx'
+import DoctorPrediagResults from './pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx'
 
 // ⬇️ Importa initSession para “hidratar” Cognito al arrancar
 import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
