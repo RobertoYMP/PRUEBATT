@@ -7,8 +7,6 @@ import { faCircleUser, faChevronDown, faBell, faBars, faRightFromBracket, faFile
 import { CSSTransition } from 'react-transition-group';
 import NotificationList from "../Notification/NotificationList";
 import { useNotifications } from "../../context/NotificationContext";
-
-// ⬇️ Usa helpers reales de Cognito
 import { isSessionValid, getSession, signOut } from '../../pages/auth/cognito'
 
 export default function Header() {
