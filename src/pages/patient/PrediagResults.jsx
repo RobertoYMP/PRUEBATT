@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
-import { useNotifications } from '../../context/NotificationContext'   
+import { useNotifications } from '../../context/NotificationContext'
 
 export default function PrediagResults() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [prediction, setPrediction] = useState(null)
-  const { addNotification } = useNotifications()                     
+  const [notified, setNotified] = useState(false)    
+  const { addNotification } = useNotifications()
 
   useEffect(() => {
     let mounted = true
@@ -28,17 +29,22 @@ export default function PrediagResults() {
     })()
     return () => { mounted = false }
   }, [])
-  useEffect(() => {
-    if (!prediction) return  
 
+  // 🔔 NOTIFICACIÓN CUANDO YA HAY PREDICCIÓN
+  useEffect(() => {
+    if (!prediction || notified) return   // 👈 si ya notificamos, no repetir
+
+    console.log('[PrediagResults] prediction lista, enviando notificación...')
     const notifId = `patient-analysis-${Date.now()}`
 
     addNotification(
       notifId,
       '✅ Se completó el análisis de tu estudio de biometría hemática',
-      { borderLeft: '4px solid #28a745' }   
+      { borderLeft: '4px solid #28a745' }
     )
-  }, [prediction, addNotification])
+
+    setNotified(true)
+  }, [prediction, notified, addNotification])
 
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
@@ -49,7 +55,6 @@ export default function PrediagResults() {
 
   const datosPaciente = () => {
     if (!prediction) return <p>No hay datos aún.</p>
-    // Si más adelante guardas metadata de paciente en DDB, mapea aquí.
     return (
       <ul>
         <li>Sexo detectado: <strong>{prediction.sexo || '—'}</strong></li>
