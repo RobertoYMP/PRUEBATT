@@ -6,7 +6,7 @@ export default function Button({as: Component = "button", to, typeButton, width,
             <Component
                 to={to} 
                 className={typeButton} 
-                style={{width: width, height: height, borderRadius: borderRadius}}
+                style={{minWidth: width, height: height, borderRadius: borderRadius}}
                 onClick={onClick}
             >
                 {content}

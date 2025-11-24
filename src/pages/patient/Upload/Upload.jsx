@@ -162,7 +162,7 @@ export default function Upload() {
   </button>
   
   <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-    <Link className="button-secondary" to="/app/manual-input">
+    <Link className="button-secondary" to="/app/manual">
       Capturar valores manualmente
     </Link>
     <button 
