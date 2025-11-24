@@ -1,48 +1,29 @@
 // src/pages/patient/Notifications.jsx
-import React, { useEffect, useState } from 'react'
-import { fetchLatestPrediction } from '../../api/historyClient'
+import React from 'react'
+import { usePrediction } from '../../hooks/usePrediction'
 
 export default function Notifications() {
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [prediction, setPrediction] = useState(null)
+  // 👇 Usamos el hook, pero SIN volver a llamar a la API (autoFetch = false)
+  const { result } = usePrediction(false)
 
-  useEffect(() => {
-    let mounted = true
-    ;(async () => {
-      setLoading(true)
-      setError('')
-      try {
-        // 👉 Pedimos el último resultado del usuario
-        const pred = await fetchLatestPrediction()
-        if (!mounted) return
-        // Si aún no hay análisis terminado, pred será null
-        setPrediction(pred || null)
-      } catch (err) {
-        if (!mounted) return
-        setError(err?.message || String(err))
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    })()
-    return () => { mounted = false }
-  }, [])
+  // Si no hay ningún resultado guardado, no hay de qué avisar
+  if (!result) {
+    return (
+      <div className="card stack">
+        <h2>Notificaciones</h2>
+        <p>Sin notificaciones</p>
+      </div>
+    )
+  }
 
-  let contenido
+  // Si sí hay resultado, significa que al menos un análisis ya se hizo
+  const fecha = result.updatedAt || result.createdAt || null
+  const fechaTexto = fecha ? new Date(fecha).toLocaleString() : ''
 
-  if (loading) {
-    contenido = <p>Cargando…</p>
-  } else if (error) {
-    contenido = <p style={{ color: '#b10808' }}>Error: {error}</p>
-  } else if (!prediction) {
-    // 👉 No hay análisis completado aún
-    contenido = <p>Sin notificaciones</p>
-  } else {
-    // 👉 Ya hubo al menos un análisis completado: mostramos la notificación
-    const fecha = prediction.updatedAt || prediction.createdAt || null
-    const fechaTexto = fecha ? new Date(fecha).toLocaleString() : ''
+  return (
+    <div className="card stack">
+      <h2>Notificaciones</h2>
 
-    contenido = (
       <div className="notif-card">
         <p>
           <strong>✅ Se realizó el análisis de tu estudio de biometría hemática.</strong>
@@ -53,13 +34,6 @@ export default function Notifications() {
           </p>
         )}
       </div>
-    )
-  }
-
-  return (
-    <div className="card stack">
-      <h2>Notificaciones</h2>
-      {contenido}
     </div>
   )
 }
