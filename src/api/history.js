@@ -1,12 +1,12 @@
 // src/api/history.js
-import { getIdentityId } from '../pages/auth/identity.js';  // <-- importa el helper
-
 function authHeader() {
   try {
     const raw = localStorage.getItem('hematec.session');
     const idToken = raw ? JSON.parse(raw).idToken : null;
     return idToken ? { Authorization: `Bearer ${idToken}` } : {};
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 
 const RAW_BASE = (import.meta.env.VITE_API_BASE || '').trim();
@@ -19,27 +19,56 @@ function url(path) {
   return `${API_BASE}${p}`;
 }
 
-async function parseResponse(res, endpoint='') {
+async function parseResponse(res, endpoint = '') {
   const ctype = res.headers.get('content-type') || '';
-  const txt = await res.text().catch(()=>'');
-
-  if (!res.ok) throw new Error(txt || `HTTP ${res.status}${endpoint ? ` en ${endpoint}` : ''}`);
+  const txt = await res.text().catch(() => '');
+  if (!res.ok) {
+    throw new Error(txt || `HTTP ${res.status}${endpoint ? ` en ${endpoint}` : ''}`);
+  }
   if (ctype.includes('application/json')) {
-    try { return JSON.parse(txt); } catch { throw new Error('La respuesta dice JSON pero no se pudo parsear'); }
+    try {
+      return JSON.parse(txt);
+    } catch {
+      throw new Error('La respuesta dice JSON pero no se pudo parsear');
+    }
   }
   throw new Error(txt || 'La respuesta no es JSON');
 }
 
 function normalizePrediction(pred) {
-  if (pred && typeof pred === 'string') { try { return JSON.parse(pred); } catch {} }
+  if (pred && typeof pred === 'string') {
+    try {
+      return JSON.parse(pred);
+    } catch {}
+  }
   return pred || null;
 }
 
-// =============== ENDPOINTS =================
+function getUserPkFromToken() {
+  try {
+    const raw = localStorage.getItem('hematec.session');
+    if (!raw) return null;
+    const { idToken } = JSON.parse(raw);
+    if (!idToken) return null;
+    const parts = idToken.split('.');
+    if (parts.length < 2) return null;
+    const payloadJson = atob(
+      parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    );
+    const payload = JSON.parse(payloadJson);
+    if (!payload.sub) return null;
+    return `USER#${payload.sub}`;
+  } catch {
+    return null;
+  }
+}
 
 export async function fetchHistoryList(pk) {
-  const _pk = pk || await getIdentityId().catch(()=>null);
-  const qs = _pk ? `?pk=${encodeURIComponent(_pk)}` : '';
+  const _pk = pk || getUserPkFromToken();
+  if (!_pk) {
+    throw new Error('No se pudo determinar el usuario para cargar el historial.');
+  }
+  const qs = `?pk=${encodeURIComponent(_pk)}`;
   const res = await fetch(url(`/history/list${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
@@ -55,8 +84,11 @@ export async function fetchPredictionByKey(sk) {
 }
 
 export async function fetchLatestPrediction(pk) {
-  const _pk = pk || await getIdentityId().catch(()=>null);
-  const qs = _pk ? `?pk=${encodeURIComponent(_pk)}` : '';
+  const _pk = pk || getUserPkFromToken();
+  if (!_pk) {
+    throw new Error('No se pudo determinar el usuario para obtener la última predicción.');
+  }
+  const qs = `?pk=${encodeURIComponent(_pk)}`;
   const res = await fetch(url(`/history/latest${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
