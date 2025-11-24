@@ -48,7 +48,6 @@ function normalizePrediction(pred) {
   return pred || null;
 }
 
-// Historial por paciente (PK = identityId)
 export async function fetchHistoryList(pk) {
   const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
