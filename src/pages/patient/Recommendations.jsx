@@ -36,7 +36,7 @@ export default function Recommendations(){
         background: 'linear-gradient(135deg, #1b3a4e, #8facbf)'
       }}
     >
-      {/* MARCO GRANDE CON BORDE REDONDEADO COMPLETO */}
+      {/* MARCO GRANDE CON BORDE REDONDEADO */}
       <div
         style={{
           width: '100%',
@@ -46,10 +46,11 @@ export default function Recommendations(){
           backgroundColor: '#ffffff',
           boxSizing: 'border-box',
           boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-          // Borde gradiente redondeado CORREGIDO
-          border: '4px solid',
-          borderImage: 'linear-gradient(135deg, #1b3a4e, #8facbf) 1',
-          borderImageSlice: 1
+          // Borde gradiente redondeado
+          border: '4px solid transparent',
+          backgroundImage: 'linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, #1b3a4e, #8facbf)',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box'
         }}
       >
         <h2
@@ -66,7 +67,7 @@ export default function Recommendations(){
         {loading && <p style={{textAlign: 'center'}}>Cargando…</p>}
         {error && <p className="badge critico" style={{textAlign: 'center'}}>Error: {error}</p>}
 
-        {/* CUADRO AVISO CON BORDE REDONDEADO COMPLETO */}
+        {/* CUADRO AVISO CON BORDE REDONDEADO */}
         <div
           style={{
             width: '90%',
@@ -76,10 +77,11 @@ export default function Recommendations(){
             backgroundColor: '#f8fafc',
             boxSizing: 'border-box',
             boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-            // Borde gradiente redondeado CORREGIDO
-            border: '3px solid',
-            borderImage: 'linear-gradient(135deg, #1b3a4e, #8facbf) 1',
-            borderImageSlice: 1
+            // Borde gradiente redondeado
+            border: '3px solid transparent',
+            backgroundImage: 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(135deg, #1b3a4e, #8facbf)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box'
           }}
         >
           <p style={{ 
@@ -94,7 +96,7 @@ export default function Recommendations(){
           </p>
         </div>
 
-        {/* CUADRO PRIORITARIAS CON BORDE REDONDEADO COMPLETO */}
+        {/* CUADRO PRIORITARIAS CON BORDE REDONDEADO */}
         {dest.length > 0 && (
           <div
             style={{
@@ -105,10 +107,11 @@ export default function Recommendations(){
               backgroundColor: '#f8fafc',
               boxSizing: 'border-box',
               boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-              // Borde gradiente redondeado CORREGIDO
-              border: '3px solid',
-              borderImage: 'linear-gradient(135deg, #1b3a4e, #8facbf) 1',
-              borderImageSlice: 1
+              // Borde gradiente redondeado
+              border: '3px solid transparent',
+              backgroundImage: 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(135deg, #1b3a4e, #8facbf)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box'
             }}
           >
             <h3 style={{ 
@@ -136,7 +139,7 @@ export default function Recommendations(){
           </div>
         )}
 
-        {/* POR PARÁMETRO - TARJETAS CON BORDES REDONDEADOS COMPLETOS */}
+        {/* POR PARÁMETRO - TARJETAS CON BORDES REDONDEADOS */}
         <div style={{ 
           marginTop: '2.5rem',
           width: '100%'
@@ -172,10 +175,11 @@ export default function Recommendations(){
                     backgroundColor: '#f8fafc',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                     transition: 'transform 0.2s ease',
-                    // Borde gradiente redondeado CORREGIDO
-                    border: '2px solid',
-                    borderImage: 'linear-gradient(135deg, #1b3a4e, #8facbf) 1',
-                    borderImageSlice: 1
+                    // Borde gradiente redondeado
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(#f8fafc, #f8fafc), linear-gradient(135deg, #1b3a4e, #8facbf)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box'
                   }}
                 >
                   <div style={{
