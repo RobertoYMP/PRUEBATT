@@ -1,3 +1,4 @@
+// src/main.jsx
 import { Buffer } from 'buffer';
 import process from 'process';
 
@@ -13,10 +14,14 @@ import './styles/theme.css';
 import './styles/typography.css';
 import './styles/global.css';
 
+import { NotificationProvider } from './context/NotificationContext';
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <NotificationProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </NotificationProvider>
   </React.StrictMode>
 );
