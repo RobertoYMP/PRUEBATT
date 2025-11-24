@@ -2,13 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
-import { useNotifications } from '../../context/NotificationContext'  
+import { useNotifications } from '../../context/NotificationContext'   // 👈 NUEVO
 
 export default function PrediagResults() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [prediction, setPrediction] = useState(null)
-  const { addNotification } = useNotifications()                     
+  const { addNotification } = useNotifications()                      // 👈 NUEVO
 
   useEffect(() => {
     let mounted = true
@@ -18,7 +18,7 @@ export default function PrediagResults() {
       try {
         const pred = await fetchLatestPrediction()
         if (!mounted) return
-        setPrediction(pred)
+        setPrediction(pred) // puede ser null si aún va en proceso
       } catch (err) {
         if (!mounted) return
         setError(err?.message || String(err))
@@ -29,26 +29,20 @@ export default function PrediagResults() {
     return () => { mounted = false }
   }, [])
 
+  // 👇 NUEVO: en cuanto haya prediction, mandamos la notificación
   useEffect(() => {
-    if (!prediction) return  
+    if (!prediction) return   // si aún no hay resultado, no hacemos nada
 
-    const studyId =
-      prediction.key ||
-      prediction.SK ||
-      prediction.id ||
-      'latest-study'
-
-    const notifKey = `analysis-notified-${studyId}`
-    if (sessionStorage.getItem(notifKey)) return
+    // id único para la notificación (no importa el valor, solo que sea consistente)
+    const notifId = `patient-analysis-${Date.now()}`
 
     addNotification(
-      studyId,
+      notifId,
       '✅ Se completó el análisis de tu estudio de biometría hemática',
-      { borderLeft: '4px solid #28a745' }
+      { borderLeft: '4px solid #28a745' }   // estilo verdecito
     )
-
-    sessionStorage.setItem(notifKey, '1')
   }, [prediction, addNotification])
+  // 👆 FIN de lo nuevo
 
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
@@ -59,6 +53,7 @@ export default function PrediagResults() {
 
   const datosPaciente = () => {
     if (!prediction) return <p>No hay datos aún.</p>
+    // Si más adelante guardas metadata de paciente en DDB, mapea aquí.
     return (
       <ul>
         <li>Sexo detectado: <strong>{prediction.sexo || '—'}</strong></li>
