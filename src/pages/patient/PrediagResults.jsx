@@ -2,13 +2,11 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
-import { useNotifications } from '../../context/NotificationContext'   // 👈 NUEVO
 
 export default function PrediagResults() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [prediction, setPrediction] = useState(null)
-  const { addNotification } = useNotifications()                      // 👈 NUEVO
 
   useEffect(() => {
     let mounted = true
@@ -28,21 +26,6 @@ export default function PrediagResults() {
     })()
     return () => { mounted = false }
   }, [])
-
-  // 👇 NUEVO: en cuanto haya prediction, mandamos la notificación
-  useEffect(() => {
-    if (!prediction) return   // si aún no hay resultado, no hacemos nada
-
-    // id único para la notificación (no importa el valor, solo que sea consistente)
-    const notifId = `patient-analysis-${Date.now()}`
-
-    addNotification(
-      notifId,
-      '✅ Se completó el análisis de tu estudio de biometría hemática',
-      { borderLeft: '4px solid #28a745' }   // estilo verdecito
-    )
-  }, [prediction, addNotification])
-  // 👆 FIN de lo nuevo
 
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
