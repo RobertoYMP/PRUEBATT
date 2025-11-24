@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
+import { useNotifications } from '../../context/NotificationContext'   
 
 export default function PrediagResults() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [prediction, setPrediction] = useState(null)
+  const { addNotification } = useNotifications()                     
 
   useEffect(() => {
     let mounted = true
@@ -26,6 +28,17 @@ export default function PrediagResults() {
     })()
     return () => { mounted = false }
   }, [])
+  useEffect(() => {
+    if (!prediction) return  
+
+    const notifId = `patient-analysis-${Date.now()}`
+
+    addNotification(
+      notifId,
+      '✅ Se completó el análisis de tu estudio de biometría hemática',
+      { borderLeft: '4px solid #28a745' }   
+    )
+  }, [prediction, addNotification])
 
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
