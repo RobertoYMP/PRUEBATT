@@ -1,4 +1,6 @@
 // src/api/history.js
+import { getIdentityId } from '../pages/auth/identity.js';
+
 function authHeader() {
   try {
     const raw = localStorage.getItem('hematec.session');
@@ -22,9 +24,11 @@ function url(path) {
 async function parseResponse(res, endpoint = '') {
   const ctype = res.headers.get('content-type') || '';
   const txt = await res.text().catch(() => '');
+
   if (!res.ok) {
     throw new Error(txt || `HTTP ${res.status}${endpoint ? ` en ${endpoint}` : ''}`);
   }
+
   if (ctype.includes('application/json')) {
     try {
       return JSON.parse(txt);
@@ -44,37 +48,15 @@ function normalizePrediction(pred) {
   return pred || null;
 }
 
-function getUserPkFromToken() {
-  try {
-    const raw = localStorage.getItem('hematec.session');
-    if (!raw) return null;
-    const { idToken } = JSON.parse(raw);
-    if (!idToken) return null;
-    const parts = idToken.split('.');
-    if (parts.length < 2) return null;
-    const payloadJson = atob(
-      parts[1].replace(/-/g, '+').replace(/_/g, '/')
-    );
-    const payload = JSON.parse(payloadJson);
-    if (!payload.sub) return null;
-    return `USER#${payload.sub}`;
-  } catch {
-    return null;
-  }
-}
-
+// Historial por paciente (PK = identityId)
 export async function fetchHistoryList(pk) {
-  const _pk = pk || getUserPkFromToken();
-  if (!_pk) {
-    throw new Error('No se pudo determinar el usuario para cargar el historial.');
-  }
+  const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
   const res = await fetch(url(`/history/list${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
   return parseResponse(res, '/history/list');
 }
-
 export async function fetchPredictionByKey(sk) {
   const res = await fetch(url(`/history/item?key=${encodeURIComponent(sk)}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
@@ -82,12 +64,8 @@ export async function fetchPredictionByKey(sk) {
   const item = await parseResponse(res, '/history/item');
   return normalizePrediction(item?.prediction);
 }
-
 export async function fetchLatestPrediction(pk) {
-  const _pk = pk || getUserPkFromToken();
-  if (!_pk) {
-    throw new Error('No se pudo determinar el usuario para obtener la última predicción.');
-  }
+  const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
   const res = await fetch(url(`/history/latest${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
