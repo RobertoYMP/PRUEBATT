@@ -19,7 +19,7 @@ export default function Dashboard(){
         <h2>¡Te damos la bienvenida, {displayName}!</h2>
       </div>
       <div className="dashboard-grid">
-        <article className="card upload-card" aria-label="Subir archivo de Biometría Hemática">
+        <article className="upload-card" aria-label="Subir archivo de Biometría Hemática">
           <div className="icon-badge">
             <FontAwesomeIcon icon={faFile} />
           </div>
@@ -34,7 +34,7 @@ export default function Dashboard(){
             borderRadius="var(--default-radius)"
           />
         </article>
-        <article className="card history-card" aria-label="Historial de resultados">
+        <article className="history-card" aria-label="Historial de resultados">
           <div className="icon-badge soft">
             <FontAwesomeIcon icon={faBars} />
           </div>

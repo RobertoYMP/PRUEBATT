@@ -116,12 +116,21 @@ export default function Upload() {
             <h3>Instrucciones</h3>
           </div>
           <div className="text-content">
-            Por favor, elige o arrastra aquí el archivo PDF…
+            Por favor selecciona o arrastra a esta área el archivo PDF correspondiente.
             <br /><br />
-            <FontAwesomeIcon icon={faHandPointRight} /> Debe ser el formato oficial de la clínica.
+            <FontAwesomeIcon 
+              icon={faHandPointRight} 
+              style={{ color: 'var(--color-primary)' }}
+            />{" "}
+            El documento debe corresponder al formato oficial emitido por la clínica.
             <br /><br />
-            <FontAwesomeIcon icon={faExclamation} /> <strong>Importante:</strong> Es un prediagnóstico automatizado.
+            <FontAwesomeIcon 
+              icon={faExclamation} 
+              style={{ color: '#d9534f' }}
+            />{" "}
+            <strong>Importante:</strong> El resultado generado es un prediagnóstico automatizado y no sustituye la evaluación médica profesional.
           </div>
+
           <div className="upload-line"></div>
         </div>
 

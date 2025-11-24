@@ -89,7 +89,7 @@
 
 .muted {
   color: color-mix(in oklab, var(--color-primary) 35%, #6b7280);
-  font-size: .95rem;
+  font-size: 16px;
 }
 
 .dashboard-grid {
@@ -97,33 +97,36 @@
   margin: var(--big-padding) auto;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1rem, 5vw, 7rem);
+  gap: clamp(1rem, 15vw, 7rem);
   align-items: stretch;
   min-height: 60dvh;
   place-content: center;
 }
 
-.card {
+.history-card, .upload-card {
   position: relative;
   border: none;
-  padding: clamp(1.1rem, 2.2vw, 1.75rem);
+  padding: 3rem 1rem;
   border-radius: calc(var(--default-radius) + 6px);
-  background: rgba(255, 255, 255, 0.92);
+  background: #fff;
   backdrop-filter: blur(6px);
   box-shadow: var(--box-shadow);
   display: grid;
   align-content: start;
-  gap: .65rem;
+  gap: .75rem;
   min-height: 16rem;
   transition: transform .2s ease, box-shadow .2s ease;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: var(--shadow);
 }
 
-.card:hover {
-  transform: translateY(-2px);
+.history-card:hover, .upload-card:hover {
+  transform: translateY(-5px);
   box-shadow: 0 12px 28px rgba(0,0,0,.08);
 }
 
-.card::before {
+.history-card::before, .upload-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -143,22 +146,33 @@
 }
 
 @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
-  .card::before {
+  .history-card::before, .upload-card {
     padding: 0;
     border: 1px solid color-mix(in oklab, var(--light-blue) 60%, #8facbf);
   }
 }
 
-.upload-card {
-    text-align: center;
-    justify-content: center;
-    background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.9));
+.history-card::after, .upload-card::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(143, 172, 191, 0.0) 35%,
+    rgba(143, 172, 191, 0.45) 50%,
+    rgba(143, 172, 191, 0.0) 65%,
+    transparent 100%
+  );
+  transform: translateX(-130%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 1s ease-out, opacity .25s ease-out;
 }
 
-.history-card {
-    text-align: center;
-    justify-content: center;
-    background: linear-gradient(180deg, rgba(44,81,106,.10), rgba(44,81,106,.06));
+.history-card:hover::after, .upload-card:hover::after {
+  transform: translateX(130%);
+  opacity: 1;
 }
 
 .icon-badge {
@@ -180,13 +194,13 @@
   color: white;
 }
 
-.card h3 {
+.history-card h3, .upload-card h3 {
   margin: .25rem 0 .15rem 0;
   color: var(--color-primary);
   letter-spacing: .2px;
 }
 
-.card :where(a, button) {
+.history-card :where(a, button), .upload-card :where(a, button) {
   margin-top: .5rem;
   justify-self: start;
   margin: auto;
