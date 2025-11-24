@@ -1,5 +1,3 @@
-// src/pages/auth/cognito.js
-// Polyfill para Vite: evita "global is not defined"
 if (typeof window !== 'undefined' && !window.global) window.global = window;
 
 import {
@@ -17,7 +15,6 @@ const pool = new CognitoUserPool({
   ClientId:   import.meta.env.VITE_COG_CLIENT_ID,
 });
 
-/* ========== Utilidades internas (SDK) ========== */
 function _user() {
   return pool.getCurrentUser() || null;
 }
@@ -27,10 +24,6 @@ function _sdkSession() {
   return s && s.isValid && s.isValid() ? s : null;
 }
 
-/**
- * Hidrata/refresh la sesión del SDK al arrancar la app.
- * Úsalo en el bootstrap del router para evitar bucles de redirección.
- */
 export function initSession() {
   return new Promise((resolve) => {
     const u = _user();
@@ -41,11 +34,9 @@ export function initSession() {
   });
 }
 
-/* ========== Sesión local (opcional) ========== */
 export function saveSession({ idToken, accessToken, refreshToken }) {
   const claims = jwtDecode(idToken);
-  const exp = claims.exp; // unix seconds
-  // 👇 Usar grupos de Cognito como fuente de verdad; fallback a custom:role y luego 'patient'
+  const exp = claims.exp;
   const role =
     (Array.isArray(claims['cognito:groups']) && claims['cognito:groups'][0]) ||
     claims['custom:role'] ||
@@ -61,14 +52,17 @@ function _local() {
 function _localValid() {
   const s = _local();
   if (!s) return false;
-  const skew = 30; // seg de holgura
+  const skew = 30;
   return s.exp * 1000 > Date.now() + skew * 1000;
 }
 export function clearSession() {
   localStorage.removeItem(KEY);
+  localStorage.removeItem('hematec.identity');
+  localStorage.removeItem('hematec.identityId');
+  localStorage.removeItem('hematec.lastUploadKey');
+  localStorage.removeItem('lastPrediction');
 }
 
-/* ========== API pública común ========== */
 export function isSessionValid() {
   return _localValid() || !!_sdkSession();
 }
@@ -116,8 +110,6 @@ export function getRole() {
   return getSession()?.role || 'patient';
 }
 
-/* ========== Flujos de auth ========== */
-// LOGIN
 export function signIn({ email, password }) {
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool: pool });
@@ -145,8 +137,6 @@ export function signIn({ email, password }) {
   });
 }
 
-// REGISTRO — NO enviar custom:role (el admin asigna grupos después)
-// 👇 Ahora acepta "edad" y la envía como atributo personalizado custom:edad
 export function signUp({ email, password, name, edad }) {
   return new Promise((resolve, reject) => {
     const attrs = [
@@ -159,7 +149,6 @@ export function signUp({ email, password, name, edad }) {
       );
     }
 
-    // Atributo personalizado de edad (debes tener "custom:edad" creado en el User Pool)
     if (edad) {
       attrs.push(
         new CognitoUserAttribute({
@@ -186,7 +175,6 @@ export function signUp({ email, password, name, edad }) {
   });
 }
 
-// CONFIRMAR REGISTRO
 export function confirmSignUp({ email, code }) {
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool: pool });
@@ -197,7 +185,6 @@ export function confirmSignUp({ email, code }) {
   });
 }
 
-// Opcionales
 export function resendCode({ email }) {
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: email, Pool: pool });
@@ -226,7 +213,6 @@ export function confirmPassword({ email, code, newPassword }) {
   });
 }
 
-// LOGOUT
 export function signOut() {
   try { _user()?.signOut(); } catch {}
   clearSession();
