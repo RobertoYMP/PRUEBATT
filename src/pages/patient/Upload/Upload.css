@@ -113,7 +113,10 @@
     cursor: pointer;
 }
 
-.file-cta:hover { background: linear-gradient(to right, var(--light-blue), var(--color-secundary)); }
+.file-cta:hover { 
+    background: linear-gradient(to right, var(--color-primary), var(--color-secundary), var(--light-blue)); 
+    transition: background 2s ease-in-out;
+}
 .file-cta:active { transform: translateY(1px); }
 .file-cta:focus-visible {
     outline: 0;
