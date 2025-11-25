@@ -1,7 +1,11 @@
+import React from "react";
+import { useNotifications } from "../../context/NotificationContext";
 import NotificationItem from "./NotificationItem";
-import './Notifications.css'
+import "./Notifications.css";
 
-export default function NotificationList({ notifications, removeNotification }) {
+export default function NotificationList() {
+  const { notifications, removeNotification } = useNotifications();
+
   return (
     <div className="notification-list">
       {notifications.length === 0 ? (
@@ -10,8 +14,10 @@ export default function NotificationList({ notifications, removeNotification }) 
         notifications.map((n, index) => (
           <NotificationItem
             key={n.id}
-            fecha={n.fecha}
-            mensaje={n.mensaje}
+            // 👇 nuevos nombres de campos
+            createdAt={n.createdAt}
+            text={n.text}
+            style={n.style}
             onDelete={() => removeNotification(index)}
           />
         ))
