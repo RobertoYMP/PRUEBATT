@@ -1,14 +1,17 @@
 // src/pages/patient/PrediagResults.jsx
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
-import { useNotifications } from '../../context/NotificationContext'   
+import { useNotifications } from '../../context/NotificationContext'
 
 export default function PrediagResults() {
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [error,   setError]   = useState('')
   const [prediction, setPrediction] = useState(null)
-  const { addNotification } = useNotifications()                     
+  const { addNotification, notifications } = useNotifications()
+
+  // Evita doble disparo si el componente re-renderiza rápido
+  const firedRef = useRef(false)
 
   useEffect(() => {
     let mounted = true
@@ -28,28 +31,38 @@ export default function PrediagResults() {
     })()
     return () => { mounted = false }
   }, [])
+
   useEffect(() => {
-    if (!prediction) return  
+    if (!prediction || firedRef.current) return
 
-    const notifId = `patient-analysis-${Date.now()}`
+    // 1) Id determinístico para deduplicar
+    const lastKey = localStorage.getItem('hematec.lastUploadKey') || ''
+    const fallback = `${prediction?.updatedAt || ''}|${prediction?.cluster ?? ''}`
+    const notifId = `analysis:${lastKey || fallback}`
 
+    // 2) Si ya existe, no volver a crearla
+    const already = notifications?.some(n => n.id === notifId)
+    if (already) { firedRef.current = true; return }
+
+    // 3) Crear UNA sola vez
     addNotification(
       notifId,
       '✅ Se completó el análisis de tu estudio de biometría hemática',
-      { borderLeft: '4px solid #28a745' }   
+      { borderLeft: '4px solid #28a745' }
     )
-  }, [prediction, addNotification])
-
+    firedRef.current = true
+  }, [prediction, notifications, addNotification])
+  
+  // --- resto de tu componente sin cambios ---
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
-    if (error) return <p style={{ color: '#b10808' }}>Error: {error}</p>
+    if (error)   return <p style={{ color: '#b10808' }}>Error: {error}</p>
     if (!prediction) return <p><strong>EN PROCESO</strong></p>
     return null
   }
 
   const datosPaciente = () => {
     if (!prediction) return <p>No hay datos aún.</p>
-    // Si más adelante guardas metadata de paciente en DDB, mapea aquí.
     return (
       <ul>
         <li>Sexo detectado: <strong>{prediction.sexo || '—'}</strong></li>
@@ -60,34 +73,23 @@ export default function PrediagResults() {
 
   const tablaResultados = () => {
     if (!prediction) return <p>No hay datos de parámetros en este resultado.</p>
-
     const det = Array.isArray(prediction.detalles) ? prediction.detalles : []
     if (!det.length) return <p>No hay datos de parámetros en este resultado.</p>
-
     return (
       <div style={{ overflowX: 'auto' }}>
         <table className="results-table">
           <thead>
             <tr>
-              <th>Parámetro</th>
-              <th>Valor</th>
-              <th>Unidad</th>
-              <th>Ref. Mín</th>
-              <th>Ref. Máx</th>
-              <th>Estado</th>
-              <th>Severidad</th>
+              <th>Parámetro</th><th>Valor</th><th>Unidad</th>
+              <th>Ref. Mín</th><th>Ref. Máx</th><th>Estado</th><th>Severidad</th>
             </tr>
           </thead>
           <tbody>
             {det.map((r, i) => (
               <tr key={`${r.Parametro}-${i}`}>
-                <td>{r.Parametro}</td>
-                <td>{r.Valor}</td>
-                <td>{r.Unidad || '—'}</td>
-                <td>{r.Min ?? '—'}</td>
-                <td>{r.Max ?? '—'}</td>
-                <td>{r.Estado || '—'}</td>
-                <td>{r.Severidad || '—'}</td>
+                <td>{r.Parametro}</td><td>{r.Valor}</td><td>{r.Unidad || '—'}</td>
+                <td>{r.Min ?? '—'}</td><td>{r.Max ?? '—'}</td>
+                <td>{r.Estado || '—'}</td><td>{r.Severidad || '—'}</td>
               </tr>
             ))}
           </tbody>
@@ -99,19 +101,9 @@ export default function PrediagResults() {
   return (
     <div className="card results-card">
       <h1>Resultados del prediagnóstico</h1>
-
       {renderEstado()}
-
-      <section>
-        <h2>Datos del paciente</h2>
-        {datosPaciente()}
-      </section>
-
-      <section>
-        <h2>Tabla de resultados</h2>
-        {tablaResultados()}
-      </section>
-
+      <section><h2>Datos del paciente</h2>{datosPaciente()}</section>
+      <section><h2>Tabla de resultados</h2>{tablaResultados()}</section>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
         <Link to="/app/charts" className="text-link">Ver resultados en formato gráfico</Link>
         <Link to="/app/recommendations" className="text-link">Ver recomendaciones</Link>
