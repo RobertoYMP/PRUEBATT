@@ -318,6 +318,84 @@ a:hover {
   text-align: center;
 }
 
+.information-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  height: 55px;
+  width: 55px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: linear-gradient(135deg, #1b3a4e, #5e829a);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  transition: transform .2s;
+  z-index: 9999;
+}
+
+.information-container:hover {
+  transform: scale(1.06);
+}
+
+/* Capa oscura */
+.glossary-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 9998;
+}
+
+/* Panel */
+.glossary-panel {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: white;
+  border-left: 4px solid #1b3a4e;
+  box-shadow: -4px 0 12px rgba(0,0,0,.1);
+  padding: 1.25rem;
+  transition: right .35s ease-out;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.glossary-panel.open {
+  right: 0;
+}
+
+.glossary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.glossary-content {
+  margin-top: .5rem;
+  overflow-y: auto;
+  padding-right: .5rem;
+}
+
+.glossary-content h4 {
+  margin: .75rem 0 .25rem;
+  color: #1b3a4e;
+  font-weight: 600;
+  font-size: 15px;
+}
 
 @media (max-width: 1279px){
   .container{ width: 1024px; max-width: 94%; }
