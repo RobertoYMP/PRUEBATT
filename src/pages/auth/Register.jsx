@@ -83,7 +83,7 @@ export default function Register() {
       <div className='register-card'>
         <div className='login-header'>
           <div className='login-tittle'>
-            <h2>Registro</h2>
+            <h2 className='session-title'>Registro</h2>
           </div>
         </div>
         <div className='body-login-card'>

@@ -580,12 +580,16 @@ a:hover {
 }
 
 .glossary-title::before,
-.glossary-title::after {
+.glossary-title::after, .session-title::before, .session-title::after {
   content: "";
   position: absolute;
   top: 50%;
   width: 0;
   height: 0;
+}
+
+.session-title {
+  color: #fff;
 }
 
 @keyframes glossaryFadeUp {

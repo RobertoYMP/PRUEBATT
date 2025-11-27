@@ -62,7 +62,7 @@ export default function Login() {
       <div className="login-card">
         <div className="login-header">
           <div className="login-tittle">
-            <h2>Iniciar Sesión</h2>
+            <h2 className='session-title'>Iniciar Sesión</h2>
           </div>
         </div>
 
