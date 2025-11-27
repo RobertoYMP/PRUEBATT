@@ -93,7 +93,7 @@ export default function ManualEntry() {
       } catch {}
 
       // ⬇️ aquí cambiamos la ruta para usar tu nueva pantalla de resultados
-      nav('/patient/prediag/results', { state: { result } })
+      nav('/src/pages/patient/PrediagResults', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
     } finally {
