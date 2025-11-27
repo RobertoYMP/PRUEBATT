@@ -114,27 +114,187 @@ export default function ManualEntry() {
 
       <div className={`glossary-panel ${open ? "open" : ""}`}>
         <div className="glossary-header">
-          <h2>Glosario</h2>
+          <h2>Glosario de biometría hemática</h2>
           <button className="close-btn" onClick={() => setOpen(false)}>
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
 
         <div className="glossary-content">
+          {/* PARÁMETROS PRINCIPALES */}
+          <h3>Parámetros principales</h3>
+
           <h4>Leucocitos (Leu)</h4>
-          <p>Células de defensa del cuerpo…</p>
+          <p>
+            Células de defensa del cuerpo. Ayudan a combatir infecciones,
+            virus, bacterias y otras amenazas.
+          </p>
 
           <h4>Eritrocitos (Eri)</h4>
-          <p>Glóbulos rojos…</p>
+          <p>
+            Glóbulos rojos. Transportan oxígeno desde los pulmones hacia el
+            resto del cuerpo.
+          </p>
 
           <h4>Hemoglobina (Hb)</h4>
-          <p>Proteína que transporta oxígeno…</p>
+          <p>
+            Proteína dentro de los glóbulos rojos que se encarga de transportar
+            el oxígeno. Es el principal indicador de anemia.
+          </p>
 
           <h4>Hematocrito (Hto)</h4>
-          <p>Porcentaje del volumen de sangre compuesto…</p>
+          <p>
+            Porcentaje del volumen de sangre que está formado por glóbulos
+            rojos. Indica si la sangre es “diluida” o “concentrada”.
+          </p>
 
-          <h4>VCM, HCM, CHCM, Plaquetas, etc.</h4>
-          <p>…</p>
+          {/* ÍNDICES ERITROCITARIOS */}
+          <h3>Índices eritrocitarios</h3>
+
+          <h4>Volumen Corpuscular Medio (VCM)</h4>
+          <p>
+            Tamaño promedio de los glóbulos rojos. Valores bajos se asocian a
+            células pequeñas (microcitosis) y valores altos a células grandes
+            (macrocitosis).
+          </p>
+
+          <h4>Hemoglobina Corpuscular Media (HCM)</h4>
+          <p>
+            Cantidad promedio de hemoglobina dentro de cada glóbulo rojo.
+          </p>
+
+          <h4>Concentración Media de Hb Corpuscular (CHCM)</h4>
+          <p>
+            Concentración de hemoglobina dentro de los glóbulos rojos. Ayuda a
+            identificar células “pálidas” (hipocrómicas).
+          </p>
+
+          <h4>Ancho de Distribución Eritrocitaria D.E.</h4>
+          <p>
+            Medida de la variación en el tamaño real de los glóbulos rojos.
+          </p>
+
+          <h4>Ancho de Distribución Eritrocitaria C.V.</h4>
+          <p>
+            Variación porcentual del tamaño de los glóbulos rojos. Valores
+            altos indican mucha diferencia entre células (anisocitosis).
+          </p>
+
+          {/* PLAQUETAS */}
+          <h3>Plaquetas</h3>
+
+          <h4>Plaquetas (Plaq)</h4>
+          <p>
+            Células encargadas de la coagulación. Previenen hemorragias y
+            ayudan a cerrar heridas.
+          </p>
+
+          <h4>Volumen Plaquetario Medio (VPM)</h4>
+          <p>
+            Tamaño promedio de las plaquetas. Las plaquetas grandes suelen ser
+            más jóvenes y las pequeñas más viejas o de menor producción.
+          </p>
+
+          {/* NRBC / IG */}
+          <h3>NRBC / IG</h3>
+
+          <h4>NRBC (glóbulos rojos nucleados)</h4>
+          <p>
+            Glóbulos rojos inmaduros. Normalmente no deben circular en sangre.
+            Pueden aparecer en situaciones graves o en estados de estrés del
+            organismo.
+          </p>
+
+          <h4>NRBC%</h4>
+          <p>
+            Porcentaje de glóbulos rojos inmaduros en sangre respecto al total
+            de células blancas.
+          </p>
+
+          <h4>IG (granulocitos inmaduros)</h4>
+          <p>
+            Granulocitos inmaduros, es decir, glóbulos blancos jóvenes que aún
+            no completan su desarrollo. Su presencia suele indicar infección
+            fuerte o inflamación.
+          </p>
+
+          <h4>IG%</h4>
+          <p>
+            Porcentaje de granulocitos inmaduros respecto al total de
+            leucocitos.
+          </p>
+
+          {/* DIFERENCIAL LEUCOCITARIA */}
+          <h3>Diferencial leucocitaria (%)</h3>
+
+          <h4>Linfocitos (Linf %)</h4>
+          <p>
+            Proporción de linfocitos dentro del total de leucocitos. Se
+            relaciona con infecciones virales y con la defensa inmunológica.
+          </p>
+
+          <h4>Monocitos (Mono %)</h4>
+          <p>
+            Porcentaje de monocitos. Células que ayudan a eliminar desechos,
+            bacterias y células dañadas.
+          </p>
+
+          <h4>Eosinófilos (Eos %)</h4>
+          <p>
+            Porcentaje de células que participan en alergias y en la defensa
+            contra parásitos.
+          </p>
+
+          <h4>Basófilos (Baso %)</h4>
+          <p>
+            Porcentaje de basófilos, células relacionadas con reacciones
+            alérgicas y con la liberación de histamina.
+          </p>
+
+          <h4>Neutrófilos (Neut %)</h4>
+          <p>
+            Porcentaje de neutrófilos, las células que combaten principalmente
+            infecciones bacterianas.
+          </p>
+
+          {/* RECUENTO ABSOLUTO */}
+          <h3>Recuento absoluto</h3>
+
+          <p>
+            Estos valores indican cuántas células hay por microlitro de sangre,
+            no un porcentaje.
+          </p>
+
+          <h4>Linfocitos (Linf)</h4>
+          <p>
+            Cantidad total de linfocitos. Es útil para valorar el estado general
+            del sistema inmunológico.
+          </p>
+
+          <h4>Monocitos (Mono)</h4>
+          <p>
+            Cantidad real de monocitos. Puede aumentar en infecciones
+            persistentes o inflamación crónica.
+          </p>
+
+          <h4>Eosinófilos (Eos)</h4>
+          <p>
+            Número total de eosinófilos. Suele elevarse en alergias, asma o
+            infecciones por parásitos.
+          </p>
+
+          <h4>Basófilos (Baso)</h4>
+          <p>
+            Recuento total de basófilos. Normalmente es muy bajo; puede
+            aumentar en alergias intensas o en ciertos trastornos
+            hematológicos.
+          </p>
+
+          <h4>Neutrófilos (Neut)</h4>
+          <p>
+            Cantidad real de neutrófilos. Es uno de los valores más importantes
+            para evaluar infecciones bacterianas.
+          </p>
         </div>
       </div>
 
