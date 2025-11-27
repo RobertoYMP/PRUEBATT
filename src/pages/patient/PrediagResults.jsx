@@ -146,7 +146,7 @@ export default function PrediagResults() {
 
     addNotification(
       notifId,
-      '✅ Se completó el análisis de tu estudio de biometría hemática',
+      'Se completó el análisis de tu estudio de biometría hemática',
       { borderLeft: '4px solid #28a745' }
     )
     firedRef.current = true
@@ -164,15 +164,6 @@ export default function PrediagResults() {
     return (
       <ul>
         <li>Sexo detectado: <strong>{prediction.sexo || '—'}</strong></li>
-        <li>Cluster: <strong>{prediction.cluster ?? '—'}</strong></li>
-        {prediction.estado_global && (
-          <li>Estado global: <strong>{prediction.estado_global}</strong></li>
-        )}
-        {prediction.nota && (
-          <li style={{ maxWidth: 640, marginTop: 8 }}>
-            <small><em>{prediction.nota}</em></small>
-          </li>
-        )}
       </ul>
     )
   }
