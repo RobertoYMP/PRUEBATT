@@ -145,15 +145,34 @@ export default function Upload() {
                   onChange={e => setFile(e.target.files?.[0] || null)}
                   className="file-input-hidden"
                 />
-                <label htmlFor="pdfInput" className="file-cta" aria-label="Selecciona un archivo PDF">
-                  <span className="file-cta__icon" aria-hidden="true"><FontAwesomeIcon icon={faFilePdf} /></span>
-                  <span className="file-cta__text">Selecciona archivo PDF</span>
+
+                <label
+                  htmlFor="pdfInput"
+                  className="file-cta"
+                  aria-label="Selecciona un archivo PDF"
+                >
+                  <span className="file-cta__icon" aria-hidden="true">
+                    <FontAwesomeIcon icon={faFilePdf} />
+                  </span>
+                  <span className="file-cta__text">
+                    {file ? 'Cambiar archivo PDF' : 'Selecciona archivo PDF'}
+                  </span>
                 </label>
+
+                {/* Nombre del archivo seleccionado */}
+                {file && (
+                  <div className="file-selected-name" aria-live="polite">
+                    <span className="file-selected-label">Archivo seleccionado:</span>
+                    <span className="file-selected-value">{file.name}</span>
+                  </div>
+                )}
+
                 <button type="submit" style={{ display: 'none' }} />
               </form>
             </div>
           </div>
         </div>
+
       </div>
 
       <hr />

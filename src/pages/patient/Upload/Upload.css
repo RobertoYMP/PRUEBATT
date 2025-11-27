@@ -184,6 +184,33 @@
   letter-spacing: .2px;
 }
 
+.file-selected-name {
+  margin-top: .65rem;
+  font-size: .85rem;
+  text-align: center;
+  color: #1b3a4e;
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+
+.file-selected-label {
+  font-weight: 600;
+  opacity: .8;
+}
+
+.file-selected-value {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: .82rem;
+  word-break: break-all;
+  padding: .25rem .6rem;
+  border-radius: 999px;
+  display: inline-block;
+  align-self: center;
+  background: rgba(255,255,255,.9);
+  border: 1px solid rgba(143,172,191,.6);
+}
+
 .add-margin-top {
     margin-top: 2rem;
 }
