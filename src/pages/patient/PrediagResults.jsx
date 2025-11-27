@@ -18,16 +18,9 @@ export default function PrediagResults() {
       setLoading(true)
       setError('')
       try {
-        const raw = await fetchLatestPrediction()
+        const pred = await fetchLatestPrediction()
         if (!mounted) return
-
-        console.log('LATEST PRED RAW =>', raw)
-
-        const predObj = raw && typeof raw === 'object' && raw.prediction !== undefined
-          ? raw.prediction
-          : raw
-
-        setPrediction(predObj || null)
+        setPrediction(pred)
       } catch (err) {
         if (!mounted) return
         setError(err?.message || String(err))
@@ -39,6 +32,12 @@ export default function PrediagResults() {
   }, [])
 
   useEffect(() => {
+    if (prediction) {
+      console.log('LATEST PRED RAW =>', prediction)
+    }
+  }, [prediction])
+
+  useEffect(() => {
     if (!prediction || firedRef.current) return
 
     const lastKey = localStorage.getItem('hematec.lastUploadKey') || ''
@@ -46,11 +45,14 @@ export default function PrediagResults() {
     const notifId = `analysis:${lastKey || fallback}`
 
     const already = notifications?.some(n => n.id === notifId)
-    if (already) { firedRef.current = true; return }
+    if (already) {
+      firedRef.current = true
+      return
+    }
 
     addNotification(
       notifId,
-      'Se completó el análisis de tu estudio de biometría hemática',
+      '✅ Se completó el análisis de tu estudio de biometría hemática',
       { borderLeft: '4px solid #28a745' }
     )
     firedRef.current = true
@@ -69,6 +71,14 @@ export default function PrediagResults() {
       <ul>
         <li>Sexo detectado: <strong>{prediction.sexo || '—'}</strong></li>
         <li>Cluster: <strong>{prediction.cluster ?? '—'}</strong></li>
+        {prediction.estado_global && (
+          <li>Estado global: <strong>{prediction.estado_global}</strong></li>
+        )}
+        {prediction.nota && (
+          <li style={{ maxWidth: 640, marginTop: 8 }}>
+            <small><em>{prediction.nota}</em></small>
+          </li>
+        )}
       </ul>
     )
   }
@@ -104,49 +114,43 @@ export default function PrediagResults() {
     )
   }
 
-  const patronesHematologicos = () => {
+  const renderPatrones = () => {
+    if (loading) return <p>Consultando…</p>
+    if (error)   return null
     if (!prediction) return <p>No hay datos de patrones todavía.</p>
 
     const patrones = Array.isArray(prediction.patrones_hematologicos)
       ? prediction.patrones_hematologicos
       : []
 
-    if (!patrones.length) {
-      return <p>No se identificaron patrones hematológicos relevantes con los parámetros analizados.</p>
+    const fromPred = !patrones.length && Array.isArray(prediction.prediagnostico)
+      ? prediction.prediagnostico.map((t, i) => ({
+          codigo: `pred-${i}`,
+          titulo: t,
+          descripcion: '',
+          severidad: 'informativo'
+        }))
+      : []
+
+    const list = patrones.length ? patrones : fromPred
+
+    if (!list.length) {
+      return (
+        <p>No se identificaron patrones hematológicos relevantes con los parámetros analizados.</p>
+      )
     }
 
     return (
-      <div className="patrones-card">
-        <ul>
-          {patrones.map((p, idx) => (
-            <li key={`${p.codigo || 'patron'}-${idx}`} style={{ marginBottom: 8 }}>
-              <strong>{p.titulo}</strong>
-              {p.severidad && (
-                <span style={{ marginLeft: 8, fontSize: '0.85rem', opacity: 0.8 }}>
-                  ({p.severidad})
-                </span>
-              )}
-              <div style={{ fontSize: '0.9rem', marginTop: 2 }}>
-                {p.descripcion}
-              </div>
-            </li>
-          ))}
-        </ul>
-        {prediction.patrones_resumen && (
-          <pre
-            style={{
-              whiteSpace: 'pre-wrap',
-              background: '#f7f9fb',
-              borderRadius: 8,
-              padding: 12,
-              marginTop: 12,
-              fontSize: '0.9rem'
-            }}
-          >
-            {prediction.patrones_resumen}
-          </pre>
-        )}
-      </div>
+      <ul>
+        {list.map((p, idx) => (
+          <li key={p.codigo || idx} style={{ marginBottom: 8 }}>
+            <strong>{p.titulo || p}</strong>
+            {p.descripcion && (
+              <span> — {p.descripcion}</span>
+            )}
+          </li>
+        ))}
+      </ul>
     )
   }
 
@@ -167,7 +171,7 @@ export default function PrediagResults() {
 
       <section>
         <h2>Patrones hematológicos identificados</h2>
-        {patronesHematologicos()}
+        {renderPatrones()}
       </section>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
