@@ -6,11 +6,38 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleInfo, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { postManualPrediction } from '../../api/historyClient'
 
+const REQUIRED_FIELDS = [
+  { key: 'leu',      label: 'Leu' },
+  { key: 'eri',      label: 'Eri' },
+  { key: 'hb',       label: 'Hb' },
+  { key: 'hto',      label: 'Hto' },
+  { key: 'vcm',      label: 'VCM' },
+  { key: 'hcm',      label: 'HCM' },
+  { key: 'chcm',     label: 'CHCM' },
+  { key: 'adeDE',    label: 'ADE (D.E.)' },
+  { key: 'adeCV',    label: 'ADE (C.V.)' },
+  { key: 'plaq',     label: 'Plaq' },
+  { key: 'vpm',      label: 'VPM' },
+  { key: 'nrbcc',    label: 'NRBC' },
+  { key: 'nrbccPct', label: 'NRBC %' },
+  { key: 'ig',       label: 'IG' },
+  { key: 'igPct',    label: 'IG %' },
+  { key: 'linfPct',  label: 'Linf %' },
+  { key: 'monoPct',  label: 'Mono %' },
+  { key: 'eosPct',   label: 'Eos %' },
+  { key: 'basoPct',  label: 'Baso %' },
+  { key: 'neutPct',  label: 'Neut %' },
+  { key: 'linf',     label: 'Linf' },
+  { key: 'mono',     label: 'Mono' },
+  { key: 'eos',      label: 'Eos' },
+  { key: 'baso',     label: 'Baso' },
+  { key: 'neut',     label: 'Neut' }
+]
+
 export default function ManualEntry() {
   const [open, setOpen] = useState(false)
 
   const [form, setForm] = useState({
-    // si después quieres que el usuario elija sexo, aquí ya está preparado
     sexo: 'Mujer',
     leu: '', eri: '', hb: '', hto: '',
     vcm: '', hcm: '', chcm: '', adeDE: '', adeCV: '',
@@ -33,6 +60,28 @@ export default function ManualEntry() {
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
+
+    const missing = REQUIRED_FIELDS.filter(f => {
+      const v = form[f.key]
+      return v === '' || v === null || v === undefined
+    })
+
+    if (missing.length > 0) {
+      const nombres = missing.map(f => f.label).join(', ')
+      setError(`Por favor llena todos los campos: ${nombres}`)
+      return
+    }
+
+    const invalid = REQUIRED_FIELDS.filter(f => {
+      const num = Number(form[f.key])
+      return !Number.isFinite(num)
+    })
+
+    if (invalid.length > 0) {
+      setError('Todos los campos deben contener un número válido (sin letras ni símbolos).')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -64,17 +113,14 @@ export default function ManualEntry() {
         "Neutrofilos": Number(form.neut),
       }
 
-      // Si tu Lambda necesita sexo, ya va incluido
       const payload = { sexo: form.sexo, metrics }
 
       const result = await postManualPrediction(payload)
 
-      // Guardamos para que PrediagResults pueda leerlo igual que los demás
       try {
         localStorage.setItem('lastPrediction', JSON.stringify(result))
       } catch {}
 
-      // Ajusta la ruta si tu results tiene otra
       nav('/app/results', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
@@ -85,7 +131,6 @@ export default function ManualEntry() {
 
   return (
     <>
-      {/* Botón flotante de glosario */}
       <div
         className="information-container"
         onClick={() => setOpen(true)}
