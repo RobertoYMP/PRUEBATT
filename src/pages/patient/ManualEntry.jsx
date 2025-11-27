@@ -89,7 +89,7 @@ export default function ManualEntry() {
       const result = await postManualPrediction(payload)
 
       try {
-        localStorage.setItem('lastPrediction', JSON.stringify(result))
+        localStorage.removeItem('lastPrediction')
       } catch {}
 
       // ⬇️ aquí cambiamos la ruta para usar tu nueva pantalla de resultados
