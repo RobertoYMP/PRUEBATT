@@ -6,34 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleInfo, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { postManualPrediction } from '../../api/historyClient'
 
-const REQUIRED_FIELDS = [
-  { key: 'leu',      label: 'Leu' },
-  { key: 'eri',      label: 'Eri' },
-  { key: 'hb',       label: 'Hb' },
-  { key: 'hto',      label: 'Hto' },
-  { key: 'vcm',      label: 'VCM' },
-  { key: 'hcm',      label: 'HCM' },
-  { key: 'chcm',     label: 'CHCM' },
-  { key: 'adeDE',    label: 'ADE (D.E.)' },
-  { key: 'adeCV',    label: 'ADE (C.V.)' },
-  { key: 'plaq',     label: 'Plaq' },
-  { key: 'vpm',      label: 'VPM' },
-  { key: 'nrbcc',    label: 'NRBC' },
-  { key: 'nrbccPct', label: 'NRBC %' },
-  { key: 'ig',       label: 'IG' },
-  { key: 'igPct',    label: 'IG %' },
-  { key: 'linfPct',  label: 'Linf %' },
-  { key: 'monoPct',  label: 'Mono %' },
-  { key: 'eosPct',   label: 'Eos %' },
-  { key: 'basoPct',  label: 'Baso %' },
-  { key: 'neutPct',  label: 'Neut %' },
-  { key: 'linf',     label: 'Linf' },
-  { key: 'mono',     label: 'Mono' },
-  { key: 'eos',      label: 'Eos' },
-  { key: 'baso',     label: 'Baso' },
-  { key: 'neut',     label: 'Neut' }
-]
-
 export default function ManualEntry() {
   const [open, setOpen] = useState(false)
 
@@ -60,29 +32,28 @@ export default function ManualEntry() {
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
+    setLoading(true)
 
-    const missing = REQUIRED_FIELDS.filter(f => {
-      const v = form[f.key]
-      return v === '' || v === null || v === undefined
-    })
+    // 🔎 CAMPOS OBLIGATORIOS
+    const requiredFields = [
+      'leu', 'eri', 'hb', 'hto',
+      'vcm', 'hcm', 'chcm', 'adeDE', 'adeCV',
+      'plaq', 'vpm',
+      'nrbcc', 'nrbccPct', 'ig', 'igPct',
+      'linfPct', 'monoPct', 'eosPct', 'basoPct', 'neutPct',
+      'linf', 'mono', 'eos', 'baso', 'neut'
+    ]
 
-    if (missing.length > 0) {
-      const nombres = missing.map(f => f.label).join(', ')
-      setError(`Por favor llena todos los campos: ${nombres}`)
-      return
-    }
-
-    const invalid = REQUIRED_FIELDS.filter(f => {
-      const num = Number(form[f.key])
-      return !Number.isFinite(num)
+    const invalid = requiredFields.filter((field) => {
+      const v = form[field]
+      return v === '' || v === null || v === undefined || Number.isNaN(Number(v))
     })
 
     if (invalid.length > 0) {
-      setError('Todos los campos deben contener un número válido (sin letras ni símbolos).')
+      setError('Por favor llena todos los campos numéricos antes de realizar el prediagnóstico.')
+      setLoading(false)
       return
     }
-
-    setLoading(true)
 
     try {
       const metrics = {
