@@ -1,3 +1,4 @@
+// src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
@@ -17,9 +18,16 @@ export default function PrediagResults() {
       setLoading(true)
       setError('')
       try {
-        const pred = await fetchLatestPrediction()
+        const raw = await fetchLatestPrediction()
         if (!mounted) return
-        setPrediction(pred.prediction)
+
+        console.log('LATEST PRED RAW =>', raw)
+
+        const predObj = raw && typeof raw === 'object' && raw.prediction !== undefined
+          ? raw.prediction
+          : raw
+
+        setPrediction(predObj || null)
       } catch (err) {
         if (!mounted) return
         setError(err?.message || String(err))
@@ -29,13 +37,6 @@ export default function PrediagResults() {
     })()
     return () => { mounted = false }
   }, [])
-
-  // 🔍 DEBUG: ver exactamente qué llega desde el backend
-  useEffect(() => {
-    if (prediction) {
-      console.log('PREDICTION RAW =>', prediction)
-    }
-  }, [prediction])
 
   useEffect(() => {
     if (!prediction || firedRef.current) return
@@ -49,12 +50,12 @@ export default function PrediagResults() {
 
     addNotification(
       notifId,
-      '✅ Se completó el análisis de tu estudio de biometría hemática',
+      'Se completó el análisis de tu estudio de biometría hemática',
       { borderLeft: '4px solid #28a745' }
     )
     firedRef.current = true
   }, [prediction, notifications, addNotification])
-
+  
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
     if (error)   return <p style={{ color: '#b10808' }}>Error: {error}</p>
