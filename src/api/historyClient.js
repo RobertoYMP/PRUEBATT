@@ -64,6 +64,32 @@ export async function fetchLatestPrediction() {
   return normalizePrediction(item?.prediction);
 }
 
+/* 👇 NUEVO: endpoint para prediagnóstico manual */
+export async function postManualPrediction(payload) {
+  const pk = await getIdentityId();
+  const url = `${BASE}/history/manual`;   // crea esta ruta en tu Lambda
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeader(),
+    },
+    body: JSON.stringify({ pk, ...payload }),
+  });
+
+  const item = await parseResponse(res);
+
+  // Soporta dos casos:
+  // 1) { prediction: "..."}  (igual que /history/item)
+  // 2) la predicción directa
+  if (item && Object.prototype.hasOwnProperty.call(item, 'prediction')) {
+    return normalizePrediction(item.prediction);
+  }
+  return normalizePrediction(item);
+}
+
+/* NO TOQUÉ NADA DE ESTO */
 export {
   fetchLatestPrediction as getLatestByPk,
   fetchPredictionByKey as getByKey,
