@@ -218,17 +218,53 @@
 }
 
 .button-upload-container {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    gap: 60%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.button-upload-secondary-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .button-upload-container .button-primary, .button-upload-container .button-secondary {
     border-radius: var(--default-radius);
 }
 
-/* 🔹 NUEVO: que el verde y el marco se adapten a lo gris, sin espacio extra */
 .blue-content,
 .dashed-container {
     height: auto;
+}
+
+@media (max-width: 1023px){
+    .upload-content {
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        justify-items: stretch;
+        padding: 0 1.25rem 0 0.5rem;
+    }
+
+    .button-upload-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .button-upload-primary {
+        order: 1;
+        width: 70%;
+    }
+
+    .button-upload-secondary-group {
+        order: 2;
+        margin-top: 1rem;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
 }

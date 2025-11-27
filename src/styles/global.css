@@ -611,6 +611,14 @@ a:hover {
     padding: 2rem; 
     border: none;
   }
+
+  h2::before, h2::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+  }
 }
 @media (max-width: 1023px){
   .container{ width: 100%; max-width: 92%; }

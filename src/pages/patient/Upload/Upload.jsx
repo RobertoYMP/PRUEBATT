@@ -177,35 +177,29 @@ export default function Upload() {
 
       <hr />
       
-<div className="button-upload-container" style={{ 
-  display: 'flex', 
-  justifyContent: 'space-between', 
-  alignItems: 'center',
-  flexWrap: 'wrap',
-  gap: '12px',
-  marginTop: '1rem'
-}}>
-  <button className="button-secondary" onClick={() => nav(-1)}>
-    Regresar
-  </button>
-  
-  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-    <Link className="button-secondary" to="/app/manual">
-      Capturar valores manualmente
-    </Link>
-    <button 
-      className="button-primary" 
-      form="uploadForm" 
-      type="submit" 
-      disabled={loading} 
-      aria-busy={loading}
-      style={{ minWidth: '260px' }}
-    >
-      {loading ? 'Subiendo…' : 'Realizar prediagnóstico'}
-    </button>
-  </div>
-</div>
-      
+      <div className="button-upload-container">
+        <div className="button-upload-secondary-group">
+          <button className="button-secondary" onClick={() => nav(-1)}>
+            Regresar
+          </button>
+
+          <Link className="button-secondary" to="/app/manual">
+            Capturar valores manualmente
+          </Link>
+        </div>
+
+        <button 
+          className="button-primary button-upload-primary"
+          form="uploadForm"
+          type="submit"
+          disabled={loading}
+          aria-busy={loading}
+          style={{ minWidth: '260px' }}
+        >
+          {loading ? 'Subiendo…' : 'Realizar prediagnóstico'}
+        </button>
+      </div>
+
       {error && <div className="badge critico complete" style={{ marginTop: '1rem' }}>{error}</div>}
     </div>
   );
