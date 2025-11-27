@@ -1,4 +1,3 @@
-// src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
@@ -31,6 +30,13 @@ export default function PrediagResults() {
     return () => { mounted = false }
   }, [])
 
+  // 🔍 DEBUG: ver exactamente qué llega desde el backend
+  useEffect(() => {
+    if (prediction) {
+      console.log('PREDICTION RAW =>', prediction)
+    }
+  }, [prediction])
+
   useEffect(() => {
     if (!prediction || firedRef.current) return
 
@@ -48,7 +54,7 @@ export default function PrediagResults() {
     )
     firedRef.current = true
   }, [prediction, notifications, addNotification])
-  
+
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
     if (error)   return <p style={{ color: '#b10808' }}>Error: {error}</p>
