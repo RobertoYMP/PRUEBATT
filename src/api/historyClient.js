@@ -73,53 +73,22 @@ export async function fetchLatestPrediction() {
 
 export async function postManualPrediction(payload) {
   const pk = await getIdentityId();
-  const url = `${BASE}/history/manual`;   // esta ruta va a tu Lambda manual
+  const url = `${BASE}/history/manual`;
 
   const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...authHeader(),
+      ...authHeader()
     },
-    body: JSON.stringify({ pk, ...payload }),
+    body: JSON.stringify({ pk, ...payload })
   });
 
-  const ctype = res.headers.get('content-type') || '';
-  let item = null;
+  const item = await parseResponse(res);
 
-  // Intentamos parsear JSON siempre que el servidor lo mande
-  if (ctype.includes('application/json')) {
-    try {
-      item = await res.json();
-    } catch {
-      item = null;
-    }
-  } else {
-    // Si no es JSON, tratamos el texto como mensaje de error
-    const txt = await res.text().catch(() => '');
-    if (!res.ok) {
-      throw new Error(txt || `HTTP ${res.status}`);
-    }
-    throw new Error(txt || 'La respuesta no es JSON');
-  }
-
-  // Si la Lambda respondió con error (statusCode 4xx / 5xx),
-  // usamos item.error como mensaje amigable
-  if (!res.ok) {
-    const msg = item?.error || `HTTP ${res.status}`;
-    throw new Error(msg);
-  }
-
-  // Soporta dos casos:
-  // 1) { prediction: "..."}  (igual que /history/item)
-  // 2) la predicción directa
-  let pred;
-  if (item && Object.prototype.hasOwnProperty.call(item, 'prediction')) {
-    pred = normalizePrediction(item.prediction);
-  } else {
-    pred = normalizePrediction(item);
-  }
-
+  // Tu Lambda /history/manual devuelve directamente el objeto prediction
+  // (no viene envuelto en { prediction: ... })
+  const pred = normalizePrediction(item);
   return pred;
 }
 
@@ -127,5 +96,5 @@ export async function postManualPrediction(payload) {
 export {
   fetchLatestPrediction as getLatestByPk,
   fetchPredictionByKey as getByKey,
-  fetchHistoryList as listByPk,
+  fetchHistoryList as listByPk
 };
