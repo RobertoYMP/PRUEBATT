@@ -107,9 +107,9 @@
   position: relative;
   border: none;
   padding: 3rem 1rem;
-  border-radius: calc(var(--default-radius) + 6px);
+  border-radius: calc(var(--default-radius) + 1rem);
   background: #fff;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(1rem);
   box-shadow: var(--box-shadow);
   display: grid;
   align-content: start;
@@ -118,12 +118,12 @@
   transition: transform .2s ease, box-shadow .2s ease;
   overflow: hidden;
   text-align: center;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .history-card:hover, .upload-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .history-card::before, .upload-card::before {
