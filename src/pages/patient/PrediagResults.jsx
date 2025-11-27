@@ -19,7 +19,7 @@ export default function PrediagResults() {
       try {
         const pred = await fetchLatestPrediction()
         if (!mounted) return
-        setPrediction(pred)
+        setPrediction(pred.prediction)
       } catch (err) {
         if (!mounted) return
         setError(err?.message || String(err))
