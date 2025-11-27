@@ -121,7 +121,6 @@ export default function ManualEntry() {
         </div>
 
         <div className="glossary-content">
-          {/* PARÁMETROS PRINCIPALES */}
           <h3>Parámetros principales</h3>
 
           <h4>Leucocitos (Leu)</h4>
@@ -148,7 +147,6 @@ export default function ManualEntry() {
             rojos. Indica si la sangre es “diluida” o “concentrada”.
           </p>
 
-          {/* ÍNDICES ERITROCITARIOS */}
           <h3>Índices eritrocitarios</h3>
 
           <h4>Volumen Corpuscular Medio (VCM)</h4>
@@ -180,7 +178,6 @@ export default function ManualEntry() {
             altos indican mucha diferencia entre células (anisocitosis).
           </p>
 
-          {/* PLAQUETAS */}
           <h3>Plaquetas</h3>
 
           <h4>Plaquetas (Plaq)</h4>
@@ -195,7 +192,6 @@ export default function ManualEntry() {
             más jóvenes y las pequeñas más viejas o de menor producción.
           </p>
 
-          {/* NRBC / IG */}
           <h3>NRBC / IG</h3>
 
           <h4>NRBC (glóbulos rojos nucleados)</h4>
@@ -224,7 +220,6 @@ export default function ManualEntry() {
             leucocitos.
           </p>
 
-          {/* DIFERENCIAL LEUCOCITARIA */}
           <h3>Diferencial leucocitaria (%)</h3>
 
           <h4>Linfocitos (Linf %)</h4>
@@ -257,7 +252,6 @@ export default function ManualEntry() {
             infecciones bacterianas.
           </p>
 
-          {/* RECUENTO ABSOLUTO */}
           <h3>Recuento absoluto</h3>
 
           <p>
@@ -302,18 +296,20 @@ export default function ManualEntry() {
         <h2>Ingresar datos manualmente</h2>
         <div className="card-manual">
           <form id="manualForm" onSubmit={handleSubmit}>
-            {/* Selector de sexo */}
-            <div className="row" style={{ marginBottom: '1rem' }}>
-              <div style={{ flex: 1, maxWidth: 260 }}>
-                <label className="field-label">Sexo</label>
-                <select
-                  className="field-input"
-                  value={form.sexo}
-                  onChange={handleChange('sexo')}
-                >
-                  <option value="Mujer">Mujer</option>
-                  <option value="Hombre">Hombre</option>
-                </select>
+            <p className="manual-section-title">Datos generales</p>
+            <div className="row row-compact" style={{ marginBottom: '1rem' }}>
+              <div className="field-block">
+                <label>Sexo</label>
+                <div className="field-select-wrapper">
+                  <select
+                    className="field-select"
+                    value={form.sexo}
+                    onChange={handleChange('sexo')}
+                  >
+                    <option value="Mujer">Mujer</option>
+                    <option value="Hombre">Hombre</option>
+                  </select>
+                </div>
               </div>
             </div>
 
