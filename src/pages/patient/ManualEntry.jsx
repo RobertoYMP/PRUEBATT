@@ -92,7 +92,8 @@ export default function ManualEntry() {
         localStorage.setItem('lastPrediction', JSON.stringify(result))
       } catch {}
 
-      nav('/app/results', { state: { result } })
+      // ⬇️ aquí cambiamos la ruta para usar tu nueva pantalla de resultados
+      nav('/patient/prediag/results', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
     } finally {
@@ -142,6 +143,21 @@ export default function ManualEntry() {
         <h2>Ingresar datos manualmente</h2>
         <div className="card-manual">
           <form id="manualForm" onSubmit={handleSubmit}>
+            {/* Selector de sexo */}
+            <div className="row" style={{ marginBottom: '1rem' }}>
+              <div style={{ flex: 1, maxWidth: 260 }}>
+                <label className="field-label">Sexo</label>
+                <select
+                  className="field-input"
+                  value={form.sexo}
+                  onChange={handleChange('sexo')}
+                >
+                  <option value="Mujer">Mujer</option>
+                  <option value="Hombre">Hombre</option>
+                </select>
+              </div>
+            </div>
+
             <p className="manual-section-title">Parámetros principales</p>
             <div className="row">
               <div style={{ flex: 1 }}>
