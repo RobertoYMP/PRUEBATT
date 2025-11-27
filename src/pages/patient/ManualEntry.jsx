@@ -92,7 +92,6 @@ export default function ManualEntry() {
         localStorage.removeItem('lastPrediction')
       } catch {}
 
-      // ⬇️ aquí cambiamos la ruta para usar tu nueva pantalla de resultados
       nav('/app/results', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
