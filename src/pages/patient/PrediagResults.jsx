@@ -1,6 +1,6 @@
 // src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
 import { useNotifications } from '../../context/NotificationContext'
 
@@ -90,6 +90,7 @@ function derivePatternsFromResumen(prediction) {
     })
   }
 
+  // Si no hay nada alto/bajo, no devolvemos patrones
   if (!patterns.length && !altos.length && !bajos.length) {
     return []
   }
@@ -98,26 +99,14 @@ function derivePatternsFromResumen(prediction) {
 }
 
 export default function PrediagResults() {
-  const location = useLocation()
-  const initialFromState = location.state?.result || null
-  const isManual = !!initialFromState
-
-  const [loading, setLoading] = useState(!initialFromState)
+  const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')
-  const [prediction, setPrediction] = useState(initialFromState)
+  const [prediction, setPrediction] = useState(null)
   const { addNotification, notifications } = useNotifications()
 
   const firedRef = useRef(false)
 
-  // 🔹 Solo llamamos a fetchLatestPrediction si NO venimos del formulario manual
   useEffect(() => {
-    if (isManual) {
-      return
-    }
-    if (prediction) {
-      return
-    }
-
     let mounted = true
     ;(async () => {
       setLoading(true)
@@ -133,13 +122,12 @@ export default function PrediagResults() {
         if (mounted) setLoading(false)
       }
     })()
-
     return () => { mounted = false }
-  }, [isManual, prediction])
+  }, [])
 
   useEffect(() => {
     if (prediction) {
-      console.log('PREDICTION EN PANTALLA =>', prediction)
+      console.log('LATEST PRED RAW =>', prediction)
     }
   }, [prediction])
 
@@ -163,7 +151,7 @@ export default function PrediagResults() {
     )
     firedRef.current = true
   }, [prediction, notifications, addNotification])
-
+  
   const renderEstado = () => {
     if (loading) return <p>Consultando…</p>
     if (error)   return <p style={{ color: '#b10808' }}>Error: {error}</p>
@@ -189,13 +177,8 @@ export default function PrediagResults() {
         <table className="results-table">
           <thead>
             <tr>
-              <th>Parámetro</th>
-              <th>Valor</th>
-              <th>Unidad</th>
-              <th>Ref. Mín</th>
-              <th>Ref. Máx</th>
-              <th>Estado</th>
-              <th>Severidad</th>
+              <th>Parámetro</th><th>Valor</th><th>Unidad</th>
+              <th>Ref. Mín</th><th>Ref. Máx</th><th>Estado</th><th>Severidad</th>
             </tr>
           </thead>
           <tbody>
