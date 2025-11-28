@@ -105,6 +105,10 @@ export default function PrediagResults() {
   const { addNotification, notifications } = useNotifications()
   const location = useLocation()
 
+  // 👇 nuevo: saber si venimos de /results?src=manual
+  const params = new URLSearchParams(location.search || '')
+  const fromManual = params.get('src') === 'manual'
+
   const firedRef = useRef(false)
 
   // 1) Si venimos de ManualEntry (o de otro lado) con state.result, úsalo
@@ -270,8 +274,20 @@ export default function PrediagResults() {
       </section>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-        <Link to="/app/charts" className="text-link">Ver resultados en formato gráfico</Link>
-        <Link to="/app/recommendations" className="text-link">Ver recomendaciones</Link>
+        <Link
+          to={fromManual ? "/app/charts?src=manual" : "/app/charts"}
+          state={prediction ? { result: prediction } : undefined}
+          className="text-link"
+        >
+          Ver resultados en formato gráfico
+        </Link>
+        <Link
+          to={fromManual ? "/app/recommendations?src=manual" : "/app/recommendations"}
+          state={prediction ? { result: prediction } : undefined}
+          className="text-link"
+        >
+          Ver recomendaciones
+        </Link>
       </div>
     </div>
   )
