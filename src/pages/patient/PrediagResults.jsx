@@ -1,6 +1,6 @@
 // src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
 import { useNotifications } from '../../context/NotificationContext'
 
@@ -103,10 +103,28 @@ export default function PrediagResults() {
   const [error,   setError]   = useState('')
   const [prediction, setPrediction] = useState(null)
   const { addNotification, notifications } = useNotifications()
+  const location = useLocation()
 
   const firedRef = useRef(false)
 
+  // 1) Si venimos de ManualEntry (o de otro lado) con state.result, úsalo
   useEffect(() => {
+    const stateResult = location.state?.result
+    if (!stateResult) return
+
+    setPrediction(stateResult)
+    setLoading(false)
+    setError('')
+
+    try {
+      localStorage.setItem('lastPrediction', JSON.stringify(stateResult))
+    } catch {}
+  }, [location.state])
+
+  // 2) Sólo si NO hay prediction todavía, consulta /history/latest (flujo anterior)
+  useEffect(() => {
+    if (prediction) return
+
     let mounted = true
     ;(async () => {
       setLoading(true)
@@ -115,6 +133,9 @@ export default function PrediagResults() {
         const pred = await fetchLatestPrediction()
         if (!mounted) return
         setPrediction(pred)
+        try {
+          localStorage.setItem('lastPrediction', JSON.stringify(pred))
+        } catch {}
       } catch (err) {
         if (!mounted) return
         setError(err?.message || String(err))
@@ -123,14 +144,16 @@ export default function PrediagResults() {
       }
     })()
     return () => { mounted = false }
-  }, [])
+  }, [prediction])
 
+  // 3) Log de la predicción actual
   useEffect(() => {
     if (prediction) {
       console.log('LATEST PRED RAW =>', prediction)
     }
   }, [prediction])
 
+  // 4) Notificación (igual que antes, pero usando la prediction actual)
   useEffect(() => {
     if (!prediction || firedRef.current) return
 
