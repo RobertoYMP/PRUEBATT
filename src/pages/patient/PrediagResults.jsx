@@ -1,6 +1,6 @@
 // src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
 import { useNotifications } from '../../context/NotificationContext'
 
@@ -99,14 +99,49 @@ function derivePatternsFromResumen(prediction) {
 }
 
 export default function PrediagResults() {
-  const [loading, setLoading] = useState(true)
+  // 👇 NUEVO: leemos origen (manual o normal) y armamos predicción inicial
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const isManual = params.get('src') === 'manual'
+
+  const initialPrediction = (() => {
+    // 1) si viene directamente en el state de la navegación
+    if (location.state && location.state.result) {
+      return location.state.result
+    }
+
+    if (isManual) {
+      // 2) flujo manual: usar lo que guardó el formulario
+      try {
+        const raw = sessionStorage.getItem('manualPrediction')
+        if (raw) return JSON.parse(raw)
+      } catch {}
+      return null
+    } else {
+      // 3) flujo normal: usar lo que ya tenías
+      try {
+        const raw = localStorage.getItem('lastPrediction')
+        if (raw) return JSON.parse(raw)
+      } catch {}
+      if (typeof window !== 'undefined' && window.MODEL_DEMO) {
+        return window.MODEL_DEMO
+      }
+      return null
+    }
+  })()
+
+  const [loading, setLoading] = useState(!initialPrediction)
   const [error,   setError]   = useState('')
-  const [prediction, setPrediction] = useState(null)
+  const [prediction, setPrediction] = useState(initialPrediction)
   const { addNotification, notifications } = useNotifications()
 
   const firedRef = useRef(false)
 
   useEffect(() => {
+    // 👇 NUEVO: si es manual o ya tenemos predicción, no pedimos al backend
+    if (isManual) return
+    if (prediction) return
+
     let mounted = true
     ;(async () => {
       setLoading(true)
@@ -123,7 +158,7 @@ export default function PrediagResults() {
       }
     })()
     return () => { mounted = false }
-  }, [])
+  }, [isManual, prediction])
 
   useEffect(() => {
     if (prediction) {
