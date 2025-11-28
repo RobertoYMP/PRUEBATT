@@ -88,11 +88,14 @@ export default function ManualEntry() {
 
       const result = await postManualPrediction(payload)
 
+      // 👉 Guardamos el resultado manual y limpiamos el último automático
       try {
+        sessionStorage.setItem('manualPrediction', JSON.stringify(result))
         localStorage.removeItem('lastPrediction')
       } catch {}
 
-      nav('/app/results', { state: { result } })
+      // 👉 Indicamos que venimos del formulario manual
+      nav('/app/results?src=manual', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
     } finally {
