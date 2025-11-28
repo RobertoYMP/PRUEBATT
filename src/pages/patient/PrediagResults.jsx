@@ -1,6 +1,6 @@
 // src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
 import { useNotifications } from '../../context/NotificationContext'
 
@@ -99,14 +99,20 @@ function derivePatternsFromResumen(prediction) {
 }
 
 export default function PrediagResults() {
-  const [loading, setLoading] = useState(true)
+  const location = useLocation()
+  const initialFromState = location.state?.result || null
+
+  const [loading, setLoading] = useState(!initialFromState)
   const [error,   setError]   = useState('')
-  const [prediction, setPrediction] = useState(null)
+  const [prediction, setPrediction] = useState(initialFromState)
   const { addNotification, notifications } = useNotifications()
 
   const firedRef = useRef(false)
 
+  // 🔹 Solo llamamos a la API si NO tenemos un resultado ya (manual o de otro lado)
   useEffect(() => {
+    if (prediction) return
+
     let mounted = true
     ;(async () => {
       setLoading(true)
@@ -122,13 +128,24 @@ export default function PrediagResults() {
         if (mounted) setLoading(false)
       }
     })()
-    return () => { mounted = false }
-  }, [])
 
+    return () => { mounted = false }
+  }, [prediction])
+
+  // 🔹 Log para revisar qué llega exactamente
   useEffect(() => {
     if (prediction) {
       console.log('LATEST PRED RAW =>', prediction)
     }
+  }, [prediction])
+
+  // 🔹 Guardar SIEMPRE el último resultado en localStorage
+  // para que gráficas y recomendaciones lo usen
+  useEffect(() => {
+    if (!prediction) return
+    try {
+      localStorage.setItem('lastPrediction', JSON.stringify(prediction))
+    } catch {}
   }, [prediction])
 
   useEffect(() => {
