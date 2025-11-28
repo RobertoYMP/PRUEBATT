@@ -88,18 +88,20 @@ export default function ManualEntry() {
 
       const result = await postManualPrediction(payload)
 
+      // 👉 Guardamos resultado manual para que Results, Charts y Recomendations lo usen
       try {
-        localStorage.removeItem('lastPrediction')
+        sessionStorage.setItem('manualPrediction', JSON.stringify(result))
+        localStorage.setItem('lastPrediction', JSON.stringify(result))
       } catch {}
 
-      nav('/app/results', { state: { result } })
+      // 👉 Indicamos que venimos del flujo manual
+      nav('/app/results?src=manual', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
     } finally {
       setLoading(false)
     }
   }
-
   return (
     <>
       <div
