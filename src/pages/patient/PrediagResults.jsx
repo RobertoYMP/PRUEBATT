@@ -16,7 +16,6 @@ function derivePatternsFromResumen(prediction) {
 
   const patterns = []
 
-  // Serie roja (glóbulos rojos)
   const serieRojaAltBaj = hasAny(bajos, [
     'Hemoglobina',
     'Hematocrito',
@@ -41,7 +40,6 @@ function derivePatternsFromResumen(prediction) {
     })
   }
 
-  // Serie blanca (leucocitos y diferenciación)
   const serieBlancaAltBaj = hasAny(altos, [
     'Leucocitos',
     'Neutrofilos (%)',
@@ -71,7 +69,6 @@ function derivePatternsFromResumen(prediction) {
     })
   }
 
-  // Plaquetas
   const plaquetasAltBaj = hasAny(altos, [
     'Plaquetas',
     'Volumen Plaquetario Medio',
@@ -90,7 +87,6 @@ function derivePatternsFromResumen(prediction) {
     })
   }
 
-  // Si no hay nada alto/bajo, no devolvemos patrones
   if (!patterns.length && !altos.length && !bajos.length) {
     return []
   }
@@ -105,29 +101,45 @@ export default function PrediagResults() {
   const { addNotification, notifications } = useNotifications()
   const location = useLocation()
 
-  // 👇 nuevo: saber si venimos de /results?src=manual
+  // --- Detectar si venimos del flujo manual ---
   const params = new URLSearchParams(location.search || '')
-  const fromManual = params.get('src') === 'manual'
+  const src = params.get('src')
+
+  let manualSession = null
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = sessionStorage.getItem('manualPrediction')
+      if (raw) manualSession = JSON.parse(raw)
+    } catch {
+      manualSession = null
+    }
+  }
+
+  const isManualFlow =
+    src === 'manual' ||
+    !!location.state?.result ||
+    !!manualSession
 
   const firedRef = useRef(false)
 
-  // 1) Si venimos de ManualEntry (o de otro lado) con state.result, úsalo
+  // 1) Si tenemos resultado manual (state o sessionStorage), úsalo
   useEffect(() => {
     const stateResult = location.state?.result
-    if (!stateResult) return
+    const initial = stateResult || manualSession
+    if (!initial) return
 
-    setPrediction(stateResult)
+    setPrediction(initial)
     setLoading(false)
     setError('')
 
     try {
-      localStorage.setItem('lastPrediction', JSON.stringify(stateResult))
+      localStorage.setItem('lastPrediction', JSON.stringify(initial))
     } catch {}
-  }, [location.state])
+  }, [location.state, manualSession])
 
-  // 2) Sólo si NO hay prediction todavía, consulta /history/latest (flujo anterior)
+  // 2) Sólo si NO es flujo manual, usamos /history/latest (flujo PDF original)
   useEffect(() => {
-    if (prediction) return
+    if (prediction || isManualFlow) return  // 👈 aquí evitamos pisar el manual
 
     let mounted = true
     ;(async () => {
@@ -148,16 +160,16 @@ export default function PrediagResults() {
       }
     })()
     return () => { mounted = false }
-  }, [prediction])
+  }, [prediction, isManualFlow])
 
-  // 3) Log de la predicción actual
+  // Log de depuración
   useEffect(() => {
     if (prediction) {
       console.log('LATEST PRED RAW =>', prediction)
     }
   }, [prediction])
 
-  // 4) Notificación (igual que antes, pero usando la prediction actual)
+  // Notificación (igual que antes)
   useEffect(() => {
     if (!prediction || firedRef.current) return
 
@@ -274,20 +286,8 @@ export default function PrediagResults() {
       </section>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-        <Link
-          to={fromManual ? "/app/charts?src=manual" : "/app/charts"}
-          state={prediction ? { result: prediction } : undefined}
-          className="text-link"
-        >
-          Ver resultados en formato gráfico
-        </Link>
-        <Link
-          to={fromManual ? "/app/recommendations?src=manual" : "/app/recommendations"}
-          state={prediction ? { result: prediction } : undefined}
-          className="text-link"
-        >
-          Ver recomendaciones
-        </Link>
+        <Link to="/app/charts" className="text-link">Ver resultados en formato gráfico</Link>
+        <Link to="/app/recommendations" className="text-link">Ver recomendaciones</Link>
       </div>
     </div>
   )
