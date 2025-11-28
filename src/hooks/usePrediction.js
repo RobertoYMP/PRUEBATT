@@ -1,12 +1,32 @@
 // src/hooks/usePrediction.js
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchLatestPrediction } from '../api/historyClient';  // 👈 cambiar aquí
+import { fetchLatestPrediction } from '../api/historyClient'; 
 
 export function usePrediction(autoFetch = true) {
-  const { state } = useLocation();
+  const { state, search } = useLocation();
+
   const [result, setResult] = useState(() => {
+    // 1) Si viene en el estado de navegación, úsalo
     if (state?.result) return state.result;
+
+    // 2) Si venimos desde captura manual (?src=manual), intenta usar manualPrediction
+    try {
+      const params = new URLSearchParams(search || '');
+      const src = params.get('src');
+      if (src === 'manual') {
+        const rawManual = sessionStorage.getItem('manualPrediction');
+        if (rawManual) {
+          try {
+            return JSON.parse(rawManual);
+          } catch {
+            sessionStorage.removeItem('manualPrediction');
+          }
+        }
+      }
+    } catch {}
+
+    // 3) Si no, usa el último guardado en localStorage
     try {
       const raw = localStorage.getItem('lastPrediction');
       if (raw) {
@@ -17,6 +37,8 @@ export function usePrediction(autoFetch = true) {
         }
       }
     } catch {}
+
+    // 4) Modo demo
     if (typeof window !== 'undefined' && window.MODEL_DEMO) return window.MODEL_DEMO;
     return null;
   });
