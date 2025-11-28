@@ -105,7 +105,7 @@ export default function PrediagResults() {
   const { addNotification, notifications } = useNotifications()
   const location = useLocation()
 
-  // 👇 nuevo: saber si venimos de /results?src=manual
+  // 👇 saber si venimos de /results?src=manual
   const params = new URLSearchParams(location.search || '')
   const fromManual = params.get('src') === 'manual'
 
@@ -180,10 +180,11 @@ export default function PrediagResults() {
   }, [prediction, notifications, addNotification])
   
   const renderEstado = () => {
+    // 👇 Cambio mínimo: si YA hay prediction, no mostramos "Consultando..."
+    if (prediction) return null
     if (loading) return <p>Consultando…</p>
     if (error)   return <p style={{ color: '#b10808' }}>Error: {error}</p>
-    if (!prediction) return <p><strong>EN PROCESO</strong></p>
-    return null
+    return <p><strong>EN PROCESO</strong></p>
   }
 
   const datosPaciente = () => {
@@ -227,9 +228,10 @@ export default function PrediagResults() {
   }
 
   const renderPatrones = () => {
-    if (loading) return <p>Consultando…</p>
-    if (error)   return null
+    // 👇 Cambio mínimo: mientras NO haya prediction y esté cargando, sí mostramos "Consultando…"
+    if (!prediction && loading) return <p>Consultando…</p>
     if (!prediction) return <p>No hay datos de patrones todavía.</p>
+    if (error && !prediction) return null
 
     const patrones = derivePatternsFromResumen(prediction)
 
