@@ -8,6 +8,7 @@ import Register from './pages/auth/Register.jsx'
 import ForgotPassword from './pages/auth/ForgotPassword.jsx'
 import ResetPassword from './pages/auth/ResetPassword.jsx'
 import Terms from './pages/auth/Terms/Terms.jsx'
+import Privacy from './pages/auth/Privacy/Privacy.jsx'
 import Dashboard from './pages/patient/Dashboard/Dashboard.jsx'
 import Upload from './pages/patient/Upload/Upload.jsx'
 import History from './pages/patient/History.jsx'
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/specialists" element={<Specialists />} />
             <Route path="/terms"    element={<Terms />} />
+            <Route path="/privacy"    element={<Privacy />} />
 
             {/* Auth públicas */}
             <Route path="/login"    element={<PublicAuth><Login /></PublicAuth>} />

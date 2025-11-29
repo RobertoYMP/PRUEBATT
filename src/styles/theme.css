@@ -39,4 +39,11 @@
   --terms-text-muted: #6b7280;
   --terms-radius: 18px;
   --terms-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+
+  --privacy-bg: #0f172a;
+  --privacy-card-bg: #ffffff;
+  --privacy-text-main: #1f2933;
+  --privacy-text-muted: #6b7280;
+  --privacy-radius: 18px;
+  --privacy-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
 }

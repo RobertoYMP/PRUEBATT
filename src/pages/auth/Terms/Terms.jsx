@@ -1,6 +1,7 @@
 import './Terms.css';
+import { Link } from 'react-router-dom'
 
-export default function Upload() {
+export default function Terms() {
     return(
         <>
             <div className="terms-page">
@@ -57,7 +58,7 @@ export default function Upload() {
                             <span className="terms-highlight">Titular:</span> persona física a quien corresponden los datos personales.
                         </li>
                         <li>
-                            <span className="terms-highlight">Aviso de Privacidad:</span> documento disponible en <span className="terms-highlight">[URL del Aviso]</span>, que describe a detalle el tratamiento de los datos personales.
+                            <span className="terms-highlight">Aviso de Privacidad:</span> documento disponible en <span className="terms-highlight">[<Link to="/privacy">Aviso de privacidad</Link>]</span>, que describe a detalle el tratamiento de los datos personales.
                         </li>
                         <li>
                             <span className="terms-highlight">Profesional de la salud/Doctor:</span> usuario con perfil verificado que utiliza la Plataforma con fines de consulta clínica.
