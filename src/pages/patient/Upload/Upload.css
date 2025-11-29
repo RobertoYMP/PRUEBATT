@@ -257,14 +257,17 @@
 
     .button-upload-primary {
         order: 1;
-        width: 70%;
+        width: 50%;
     }
 
     .button-upload-secondary-group {
-        order: 2;
-        margin-top: 1rem;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: flex-start;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      order: 2;
+      margin-top: 1rem;
+      flex-direction: column-reverse;
+      align-items: flex-start;
     }
 }
