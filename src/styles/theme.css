@@ -32,4 +32,11 @@
   --padding-button: 8px;
   --default-gap: 10px;
   --margin-header: 0 15px 0 15px;
+
+  --terms-bg: #0f172a;
+  --terms-card-bg: #ffffff;
+  --terms-text-main: #1f2933;
+  --terms-text-muted: #6b7280;
+  --terms-radius: 18px;
+  --terms-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
 }

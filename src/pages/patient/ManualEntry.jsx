@@ -164,7 +164,7 @@ export default function ManualEntry() {
             </h4>
             <p className="glossary-term-desc">
               Porcentaje del volumen de sangre que está formado por glóbulos
-              rojos. Indica si la sangre es “diluida” o “concentrada”.
+              rojos. Indica si la sangre es "diluida" o "concentrada".
             </p>
           </div>
 
@@ -201,7 +201,7 @@ export default function ManualEntry() {
             </h4>
             <p className="glossary-term-desc">
               Concentración de hemoglobina dentro de los glóbulos rojos. Ayuda a
-              identificar células “pálidas” (hipocrómicas).
+              identificar células "pálidas" (hipocrómicas).
             </p>
           </div>
 
