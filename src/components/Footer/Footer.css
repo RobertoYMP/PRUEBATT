@@ -10,6 +10,10 @@ footer {
     z-index: 10;
 }
 
+footer a {
+  color: #fff;
+}
+
 @media (max-width: 700px){
   footer{
     grid-template-columns: 1fr;
