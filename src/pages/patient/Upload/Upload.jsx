@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Upload.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf, faFlask } from '@fortawesome/free-solid-svg-icons';
 
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { Link } from 'react-router-dom';
 import { getIdToken } from '../../auth/cognito';
+import { Popup } from '../../../components/Popup/Popup';
 
 // Helpers de entorno
 const REGION = import.meta.env.VITE_COG_REGION;
@@ -201,6 +202,17 @@ export default function Upload() {
       </div>
 
       {error && <div className="badge critico complete" style={{ marginTop: '1rem' }}>{error}</div>}
+      <Popup
+        isVisible={loading}
+        onClose={() => {}}
+        type="action"
+        icon={faFlask}
+        width="32rem"
+        tittle="Realizando prediagnóstico"
+        message="uploading_prediagnosis"
+        showButton={false}
+        closable={false}
+      />
     </div>
   );
 }
