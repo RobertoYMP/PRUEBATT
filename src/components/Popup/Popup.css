@@ -61,6 +61,7 @@
     align-content: center;
     border-radius: var(--half-radius);
     color: #fff;
+    border: none;
 }
 
 .popup-close-icon:hover {

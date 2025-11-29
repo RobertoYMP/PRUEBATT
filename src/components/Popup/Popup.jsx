@@ -2,13 +2,13 @@ import './Popup.css'
 import Button from '../../components/Button/Button';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export function Popup ({width, icon, type, tittle, message, showButton = false, buttonProps = {}, extraButton = false, extraButtonProps = {}, onClose, isVisible}) {
+export function Popup ({width, icon, type, tittle, message, showButton = false, buttonProps = {}, extraButton = false, extraButtonProps = {}, onClose, isVisible, closable = true}) {
     const colorMap = {
         success: "green",
         error: "var(--color-danger)",
         warning: "var(--color-warning)",
         info: "var(--color-primary)",
-        action: "var(--light-blue)"
+        action: "var(--light-blue)",
     };
 
     const messageMap = {
@@ -34,28 +34,45 @@ export function Popup ({width, icon, type, tittle, message, showButton = false, 
         updated_patient_information: "La información del paciente ha sido actualizada y los cambios se han guardado correctamente.",
         updated_patient_information_error: "No se pudieron guardar los cambios realizados. Por favor, revisa los datos modificados e intenta nuevamente.\n\nSi el problema persiste, contacta al desarrollador para revisar el incidente.",
         unsaved_patient_changes: "Has realizado cambios en la información del paciente.\n\nSi sales ahora, se perderán todos los cambios no guardados. Puedes guardar los cambios antes de continuar o confirmar que deseas salir sin guardarlos.",
+        uploading_prediagnosis: "Estamos realizando tu prediagnóstico con la información del estudio.\n\nEn unos momentos te mostraremos los resultados y se guardarán automáticamente en tu historial clínico."
     };
 
     const iconColor = colorMap[type] || "black";
     const widthCard = width || "45rem";
     const finalMessage = messageMap[message] || "";
 
+    if (!isVisible) return null;
+
     return (
         <>
-            <div className={`popup-container-background ${isVisible ? "show" : "hide"}`} onClick={onClose}>
-                <div className='popup-container' style={{width: widthCard}} onClick={(e) => e.stopPropagation()}>
-                    <div className='header-popup'>
-                        <div className='popup-close-icon-container'>
-                            <div className='popup-close-icon' onClick={onClose}>
-                                X
-                            </div>
+            <div
+                className={`popup-container-background ${isVisible ? "show" : "hide"}`}
+                onClick={closable ? onClose : undefined}
+            >
+                <div
+                    className="popup-container"
+                    style={{ width: widthCard }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="header-popup">
+                    {closable && (
+                        <div className="popup-close-icon-container">
+                        <button
+                            type="button"
+                            className="popup-close-icon"
+                            onClick={onClose}
+                            aria-label="Cerrar"
+                        >
+                            X
+                        </button>
                         </div>
+                    )}
                         <div className='popup-body'>
-                            <div className='logo-container'>
+                            <div className='logo-container' style={{ paddingTop: closable ? "0" : "2rem"}}>
                                 <FontAwesomeIcon icon={icon} style={{ color: iconColor}}/>
                             </div>
                             <div className='popup-title'>
-                                <h2>{tittle}</h2>
+                                <h2 className='glossary-title'>{tittle}</h2>
                             </div>
                             <div className='popup-content' style={{ whiteSpace: "pre-line" }}>
                                 <div className='popup-text'>
