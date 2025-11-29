@@ -184,4 +184,17 @@
     max-height: none;
     padding-right: 0;
   }
+
+  .terms-header {
+    text-align: center;
+  }
+
+  .terms-eyebrow, .terms-title {
+    margin: 0 0 1rem;
+  }
+
+  .terms-section-title {
+    text-align: justify;
+    gap: 0.5rem;
+  }
 }
