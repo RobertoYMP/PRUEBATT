@@ -256,41 +256,43 @@ export default function PrediagResults() {
   }
 
   return (
-    <div className="card results-card">
-      <h1>Resultados del prediagnóstico</h1>
-      {renderEstado()}
+    <>
+      <h2>Resultados del prediagnóstico</h2>
+      <div className="card results-card">
+        {renderEstado()}
 
-      <section>
-        <h2>Datos del paciente</h2>
-        {datosPaciente()}
-      </section>
+        <section>
+          <h3>Datos del paciente</h3>
+          {datosPaciente()}
+        </section>
 
-      <section>
-        <h2>Tabla de resultados</h2>
-        {tablaResultados()}
-      </section>
+        <section>
+          <h3>Tabla de resultados</h3>
+          {tablaResultados()}
+        </section>
 
-      <section>
-        <h2>Patrones hematológicos identificados</h2>
-        {renderPatrones()}
-      </section>
+        <section>
+          <h3>Patrones hematológicos identificados</h3>
+          {renderPatrones()}
+        </section>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-        <Link
-          to={fromManual ? "/app/charts?src=manual" : "/app/charts"}
-          state={prediction ? { result: prediction } : undefined}
-          className="text-link"
-        >
-          Ver resultados en formato gráfico
-        </Link>
-        <Link
-          to={fromManual ? "/app/recommendations?src=manual" : "/app/recommendations"}
-          state={prediction ? { result: prediction } : undefined}
-          className="text-link"
-        >
-          Ver recomendaciones
-        </Link>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+          <Link
+            to={fromManual ? "/app/charts?src=manual" : "/app/charts"}
+            state={prediction ? { result: prediction } : undefined}
+            className="text-link"
+          >
+            Ver resultados en formato gráfico
+          </Link>
+          <Link
+            to={fromManual ? "/app/recommendations?src=manual" : "/app/recommendations"}
+            state={prediction ? { result: prediction } : undefined}
+            className="text-link"
+          >
+            Ver recomendaciones
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
