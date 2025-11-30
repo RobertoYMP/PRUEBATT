@@ -604,6 +604,8 @@ a:hover {
   display: grid;
   gap: 1.4rem;
   overflow: hidden;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .card.results-card::before {
@@ -625,10 +627,20 @@ a:hover {
 }
 
 .results-card section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 1rem 1rem 0.9rem;
   border-radius: 14px;
   background: rgba(255,255,255,0.88);
   border: 1px solid rgba(148,163,184,0.5);
+}
+
+.results-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .results-card section + section {
@@ -720,6 +732,33 @@ a:hover {
 
 .results-card .text-link:hover::after {
   transform: scaleX(1);
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  min-width: 640px;
+}
+
+.results-table thead {
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.results-table th,
+.results-table td {
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.results-table th {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.results-table-wrapper {
+  overflow-x: auto;
 }
 
 .results-table .severity-pill {
@@ -814,17 +853,49 @@ a:hover {
     gap: 1.1rem;
   }
 
+  .results-table {
+    font-size: 0.8rem;
+    min-width: 520px;
+  }
+
+  .results-table th,
+  .results-table td {
+    padding: 0.4rem 0.45rem;
+  }
+
+  .results-table .estado-indicator {
+    font-size: 0.78rem;
+    gap: 0.25rem;
+  }
+
+  .results-table .estado-text {
+    white-space: normal;
+  }
+
+  .results-table .severity-pill {
+    font-size: 0.76rem;
+    padding: 0.08rem 0.45rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .card.results-card > div:last-child {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .card.results-card .text-link {
+    font-size: 0.85rem;
+  }
+
   .results-card section {
-    padding: .85rem .9rem .85rem;
-  }
-
-  .results-card section > h3 {
-    font-size: .95rem;
-    letter-spacing: .06em;
-  }
-
-  .results-card table {
-    font-size: .82rem;
+    max-width: 91%;
+    box-sizing: border-box;
+    padding: 1rem 1rem 0.9rem;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(148,163,184,0.5);
   }
 }
 

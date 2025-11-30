@@ -251,7 +251,7 @@ export default function PrediagResults() {
     const det = Array.isArray(prediction.detalles) ? prediction.detalles : []
     if (!det.length) return <p>No hay datos de parámetros en este resultado.</p>
     return (
-      <div style={{ overflowX: 'auto' }}>
+      <div className="results-table-wrapper">
         <table className="results-table">
           <thead>
             <tr>
