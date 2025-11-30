@@ -760,6 +760,54 @@ a:hover {
   text-transform: uppercase;
 }
 
+.results-table .estado-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.results-table .estado-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #9ca3af;
+}
+
+.results-table .estado-text {
+  white-space: nowrap;
+}
+
+.results-table .estado-indicator.estado-normal .estado-dot {
+  background: rgba(16, 185, 129, 0.9);
+}
+.results-table .estado-indicator.estado-normal .estado-text {
+  color: #047857;
+}
+
+.results-table .estado-indicator.estado-alto .estado-dot {
+  background: rgba(249, 115, 22, 0.9);
+}
+.results-table .estado-indicator.estado-alto .estado-text {
+  color: #9a3412;
+}
+
+.results-table .estado-indicator.estado-bajo .estado-dot {
+  background: rgba(59, 130, 246, 0.9);
+}
+.results-table .estado-indicator.estado-bajo .estado-text {
+  color: #1d4ed8;
+}
+
+.results-table .estado-indicator.estado-desconocido .estado-dot {
+  background: #9ca3af;
+}
+
+.results-table .estado-indicator.estado-desconocido .estado-text {
+  color: #6b7280;
+}
+
 @media (max-width: 768px) {
   .card.results-card {
     padding: 1.4rem 1.1rem;

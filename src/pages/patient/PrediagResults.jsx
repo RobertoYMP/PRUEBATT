@@ -196,6 +196,34 @@ export default function PrediagResults() {
     )
   }
 
+  function estadoToLabel(estado = '') {
+    const s = String(estado).toLowerCase()
+
+    if (['normal', 'en rango', 'ok'].includes(s)) {
+      return 'En rango'
+    }
+
+    if (['alto', 'alta', 'elevado', 'elevada'].includes(s)) {
+      return 'Alto'
+    }
+
+    if (['bajo', 'baja', 'disminuido', 'disminuida'].includes(s)) {
+      return 'Bajo'
+    }
+
+    return estado || 'No evaluado'
+  }
+
+  function estadoToClass(estado = '') {
+    const s = String(estado).toLowerCase()
+
+    if (['normal', 'en rango', 'ok'].includes(s)) return 'estado-normal'
+    if (['alto', 'alta', 'elevado', 'elevada'].includes(s)) return 'estado-alto'
+    if (['bajo', 'baja', 'disminuido', 'disminuida'].includes(s)) return 'estado-bajo'
+
+    return 'estado-desconocido'
+  }
+
   function sevToLabel(sev = '') {
     const s = String(sev).toLowerCase()
 
@@ -239,7 +267,16 @@ export default function PrediagResults() {
                 <td>{r.Unidad || '—'}</td>
                 <td>{r.Min ?? '—'}</td>
                 <td>{r.Max ?? '—'}</td>
-                <td>{r.Estado || '—'}</td>
+                <td>
+                  {r.Estado ? (
+                    <span className={`estado-indicator ${estadoToClass(r.Estado)}`}>
+                      <span className="estado-dot" />
+                      <span className="estado-text">
+                        {estadoToLabel(r.Estado)}
+                      </span>
+                    </span>
+                  ) : '—'}
+                </td>
                 <td>
                   {r.Severidad ? (
                     <span className={`severity-pill ${sevToClass(r.Severidad)}`}>
