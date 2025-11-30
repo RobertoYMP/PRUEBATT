@@ -4,9 +4,19 @@ import { fetchHistoryList, fetchPredictionByKey } from '../../api/history'
 
 function statusBadgeCls(st = 'PROCESSING') {
   const s = String(st).toUpperCase()
-  if (s === 'PREDICTED' || s === 'COMPLETED') return 'estable'
-  if (s === 'ERROR' || s === 'FAILED')   return 'grave'
-  return 'critico'
+  if (s === 'PREDICTED' || s === 'COMPLETED' || s === 'DONE') return 'estable' 
+  if (s === 'ERROR' || s === 'FAILED') return 'grave'                          
+  return 'critico'                                                            
+}
+
+function statusLabel(st = 'PROCESSING') {
+  const s = String(st).toUpperCase()
+
+  if (s === 'PREDICTED' || s === 'COMPLETED' || s === 'DONE') return 'Completado'
+  if (s === 'PROCESSING' || s === 'IN_PROGRESS' || s === 'PENDING') return 'En proceso'
+  if (s === 'ERROR' || s === 'FAILED') return 'Error'
+
+  return 'Desconocido'
 }
 
 export default function History(){
@@ -54,67 +64,50 @@ export default function History(){
   }
 
   return (
-    <div className="card">
+    <>
       <h2>Historial</h2>
+        <div className="card-history">
+        {loading && <p>Cargando historial…</p>}
+        {error && <p className="badge critico">Error: {error}</p>}
 
-      {loading && <p>Cargando historial…</p>}
-      {error && <p className="badge critico">Error: {error}</p>}
-
-      {(!loading && !error) && (
-        data.length === 0 ? <p>Aún no cuentas con historial de resultados.</p> : (
-          <div className="table-wrap">
-            <table className="table">
-              <thead><tr><th>Fecha</th><th>Estado</th><th>Examen</th><th></th></tr></thead>
-              <tbody>
-                {data.map((x,i)=> (
-                  <tr key={i}>
-                    <td>{x.fecha}</td>
-                    <td><span className={`badge ${statusBadgeCls(x.estado)} complete`}>{x.estado}</span></td>
-                    <td title={x.examen}>{x.examen}</td>
-                    <td>
-                      <button 
-                        className="visualizar-btn"
-                        onClick={() => onVisualizar(x.key)}
-                        disabled={!x.key || workingKey === x.key}
-                        style={{
-                          // <<< SOLO CAMBIÓ EL COLOR >>>
-                          background: 'linear-gradient(90deg, #54777e, #446373)',
-                          color: 'white',
-                          border: 'none',
-                          padding: '8px 16px',
-                          borderRadius: '4px',
-                          cursor: workingKey === x.key ? 'not-allowed' : 'pointer',
-                          opacity: workingKey === x.key ? 0.6 : 1,
-                          fontSize: '14px',
-                          fontWeight: '500',
-                          transition: 'all 0.2s ease',
-                          minWidth: '100px'
-                        }}
-                        onMouseOver={(e) => {
-                          if (!e.currentTarget.disabled) {
-                            e.currentTarget.style.background =
-                              'linear-gradient(90deg, #4b6c73, #3b5968)'; // un poquito más oscuro
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          if (!e.currentTarget.disabled) {
-                            e.currentTarget.style.background =
-                              'linear-gradient(90deg, #54777e, #446373)';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                          }
-                        }}
-                      >
-                        {workingKey === x.key ? 'Abriendo…' : 'Visualizar'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )
-      )}
-    </div>
+        {(!loading && !error) && (
+          data.length === 0 ? <p>Aún no cuentas con historial de resultados.</p> : (
+            <div className="table-wrap">
+              <table className="table">
+                <thead><tr><th>Fecha</th><th>Estado</th><th>Examen</th><th></th></tr></thead>
+                <tbody>
+                  {data.map((x,i)=> (
+                    <tr key={i}>
+                      <td>{x.fecha}</td>
+                      <td>
+                        <span className={`badge ${statusBadgeCls(x.estado)} complete`}>
+                          {statusLabel(x.estado)}
+                        </span>
+                      </td>
+                      <td title={x.examen}>{x.examen}</td>
+                      <td>
+                        <button 
+                          className="button-primary"
+                          onClick={() => onVisualizar(x.key)}
+                          disabled={!x.key || workingKey === x.key}
+                        >
+                          {workingKey === x.key ? 'Abriendo…' : 'Visualizar'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        )}
+      </div>
+      <hr style={{marginTop: '2.5rem'}}/>
+      <div className="button-back-container">
+        <button className="button-secondary" onClick={() => nav(-1)}>
+          Regresar
+        </button>
+      </div>
+    </>
   )
 }
