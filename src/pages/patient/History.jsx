@@ -78,7 +78,7 @@ export default function History(){
 
         {(!loading && !error) && (
           data.length === 0 ? <p>Aún no cuentas con historial de resultados.</p> : (
-            <div className="table-wrap">
+            <div className="history-table-inner">
               <table className="table">
                 <thead><tr><th>Fecha</th><th>Estado</th><th>Examen</th><th></th></tr></thead>
                 <tbody>
