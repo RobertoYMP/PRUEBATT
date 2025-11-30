@@ -6,7 +6,6 @@ import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-
 import { useNotifications } from "../../../context/NotificationContext";
 import { getSession } from '../../auth/cognito'
 
-
 import { fetchCriticalPatients } from '../../../api/doctorClient'
 
 export default function DoctorDashboard(){
@@ -45,7 +44,6 @@ export default function DoctorDashboard(){
     return () => { cancelled = true; };
   }, []);
 
-  // Filtro por nombre y fecha
   useEffect(() => {
     const lower = search.toLowerCase();
     const filteredRows = rows.filter(r => {
@@ -123,19 +121,28 @@ export default function DoctorDashboard(){
                     {r.fecha ? new Date(r.fecha).toLocaleDateString('es-MX') : '—'}
                   </td>
                   <td>{r.paciente}</td>
+
+                  {/* EXAMEN: solo mostrar botón si hay downloadUrl (o sea, hay PDF) */}
                   <td>
-                    <button
-                      type="button"
-                      className='download-file icon-button'
-                      onClick={() => handleDownload(r.downloadUrl)}
-                      title="Descargar archivo original"
-                    >
-                      <FontAwesomeIcon
-                        icon={faFileArrowDown}
-                        style={{color: "var(--color-secundary)", fontSize: "40px"}}
-                      />
-                    </button>
+                    {r.downloadUrl ? (
+                      <button
+                        type="button"
+                        className='download-file icon-button'
+                        onClick={() => handleDownload(r.downloadUrl)}
+                        title="Descargar archivo original"
+                      >
+                        <FontAwesomeIcon
+                          icon={faFileArrowDown}
+                          style={{color: "var(--color-secundary)", fontSize: "40px"}}
+                        />
+                      </button>
+                    ) : (
+                      <span className="no-file-label">
+                        Sin PDF (captura manual)
+                      </span>
+                    )}
                   </td>
+
                   <td>
                     <Link
                       to={`/doctor/prediag/${encodeURIComponent(r.s3Key || r.id)}`}
