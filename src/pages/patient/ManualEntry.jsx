@@ -7,6 +7,8 @@ import { faCircleInfo, faXmark, faFlask } from "@fortawesome/free-solid-svg-icon
 import { postManualPrediction } from '../../api/historyClient'
 import { Popup } from '../../components/Popup/Popup.jsx'
 
+import { getIdentityId } from '../auth/identity.js'
+
 export default function ManualEntry() {
   const [open, setOpen] = useState(false)
 
@@ -84,18 +86,24 @@ export default function ManualEntry() {
         "Basofilos": Number(form.baso),
         "Neutrofilos": Number(form.neut),
       }
+      let identityId = null
+      try {
+        identityId = await getIdentityId()
+      } catch {
+        identityId = null
+      }
 
-      const payload = { sexo: form.sexo, metrics }
+      const payload = {
+        sexo: form.sexo,
+        metrics,
+        pk: identityId  
+      }
 
       const result = await postManualPrediction(payload)
-
-      // 👉 Guardamos resultado manual para que Results, Charts y Recomendations lo usen
       try {
         sessionStorage.setItem('manualPrediction', JSON.stringify(result))
         localStorage.setItem('lastPrediction', JSON.stringify(result))
       } catch {}
-
-      // 👉 Indicamos que venimos del flujo manual
       nav('/app/results?src=manual', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
