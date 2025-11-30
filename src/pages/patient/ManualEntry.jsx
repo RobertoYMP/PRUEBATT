@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleInfo, faXmark } from "@fortawesome/free-solid-svg-icons"
+import { faCircleInfo, faXmark, faFlask } from "@fortawesome/free-solid-svg-icons"
 import { postManualPrediction } from '../../api/historyClient'
+import { Popup } from '../../components/Popup/Popup.jsx'
 
 export default function ManualEntry() {
   const [open, setOpen] = useState(false)
@@ -711,6 +712,17 @@ export default function ManualEntry() {
           </form>
         </div>
       </div>
+      <Popup
+        isVisible={loading}
+        onClose={() => {}}
+        type="action"
+        icon={faFlask}
+        width="32rem"
+        tittle="Realizando prediagnóstico"
+        message="uploading_prediagnosis"
+        showButton={false}
+        closable={false}
+      />
     </>
   )
 }
