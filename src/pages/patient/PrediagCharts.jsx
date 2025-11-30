@@ -1,6 +1,6 @@
 // src/pages/patient/PrediagCharts.jsx
 import React, { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
 import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
 
@@ -14,13 +14,20 @@ function tripletData(min, val, max) {
 
 export default function PrediagCharts() {
   const [params] = useSearchParams()
-  const [loading, setLoading] = useState(true)
+  const location = useLocation()
+  const passedResult = location.state?.result || null
+
+  const [loading, setLoading] = useState(!passedResult)
   const [error, setError] = useState('')
-  const [detalles, setDetalles] = useState([])
+  const [detalles, setDetalles] = useState(
+    Array.isArray(passedResult?.detalles) ? passedResult.detalles : []
+  )
 
   useEffect(() => {
     let mounted = true
     ;(async () => {
+      if (passedResult) return
+
       setLoading(true)
       setError('')
       try {
@@ -38,7 +45,7 @@ export default function PrediagCharts() {
       }
     })()
     return () => { mounted = false }
-  }, [params])
+  }, [params, passedResult])
 
   const elementos = [
     "LEUCOCITOS", "ERITROCITOS", "HEMOGLOBINA", "HEMATOCRITO", "VOLUMEN CORPUSCULAR MEDIO",
