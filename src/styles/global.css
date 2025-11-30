@@ -722,6 +722,44 @@ a:hover {
   transform: scaleX(1);
 }
 
+.results-table .severity-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-transform: none;
+}
+
+.results-table .severity-pill.sev-ok {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-green);
+  border: 1px solid var(--color-green);
+}
+
+.results-table .severity-pill.sev-leve {
+  background: rgba(234, 179, 8, 0.12);
+  color: #92400e;
+  border: 1px solid rgba(234, 179, 8, 0.7);
+}
+
+.results-table .severity-pill.sev-moderado {
+  background: rgba(249, 115, 22, 0.12);
+  color: #9a3412;
+  border: 1px solid rgba(249, 115, 22, 0.7);
+}
+
+.results-table .severity-pill.sev-grave {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  text-transform: uppercase;
+}
+
 @media (max-width: 768px) {
   .card.results-card {
     padding: 1.4rem 1.1rem;

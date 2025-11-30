@@ -196,6 +196,28 @@ export default function PrediagResults() {
     )
   }
 
+  function sevToLabel(sev = '') {
+    const s = String(sev).toLowerCase()
+
+    if (['ok', 'normal'].includes(s)) return 'Dentro de rango'
+    if (['leve', 'mild'].includes(s)) return 'Alteración leve'
+    if (['moderado', 'moderada', 'medium'].includes(s)) return 'Alteración moderada'
+    if (['grave', 'severo', 'severa', 'high'].includes(s)) return 'Alteración marcada'
+
+    return sev || '—'
+  }
+
+  function sevToClass(sev = '') {
+    const s = String(sev).toLowerCase()
+
+    if (['ok', 'normal'].includes(s)) return 'sev-ok'
+    if (['leve', 'mild'].includes(s)) return 'sev-leve'
+    if (['moderado', 'moderada', 'medium'].includes(s)) return 'sev-moderado'
+    if (['grave', 'severo', 'severa', 'high'].includes(s)) return 'sev-grave'
+
+    return 'sev-unknown'
+  }
+
   const tablaResultados = () => {
     if (!prediction) return <p>No hay datos de parámetros en este resultado.</p>
     const det = Array.isArray(prediction.detalles) ? prediction.detalles : []
@@ -218,7 +240,13 @@ export default function PrediagResults() {
                 <td>{r.Min ?? '—'}</td>
                 <td>{r.Max ?? '—'}</td>
                 <td>{r.Estado || '—'}</td>
-                <td>{r.Severidad || '—'}</td>
+                <td>
+                  {r.Severidad ? (
+                    <span className={`severity-pill ${sevToClass(r.Severidad)}`}>
+                      {sevToLabel(r.Severidad)}
+                    </span>
+                  ) : '—'}
+                </td>
               </tr>
             ))}
           </tbody>
