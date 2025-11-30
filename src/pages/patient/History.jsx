@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { fetchHistoryList, fetchPredictionByKey } from '../../api/history'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
 
 function statusBadgeCls(st = 'PROCESSING') {
   const s = String(st).toUpperCase()
@@ -86,12 +88,16 @@ export default function History(){
                       </td>
                       <td title={x.examen}>{x.examen}</td>
                       <td>
-                        <button 
-                          className="button-primary"
+                        <button
+                          type="button"
+                          className="history-view-button"
                           onClick={() => onVisualizar(x.key)}
                           disabled={!x.key || workingKey === x.key}
                         >
-                          {workingKey === x.key ? 'Abriendo…' : 'Visualizar'}
+                          <FontAwesomeIcon icon={faEye} className="history-view-icon" />
+                          <span>
+                            {workingKey === x.key ? 'Abriendo' : 'Visualizar'}
+                          </span>
                         </button>
                       </td>
                     </tr>
