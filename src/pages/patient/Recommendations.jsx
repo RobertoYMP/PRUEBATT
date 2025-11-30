@@ -92,11 +92,10 @@ export default function Recommendations(){
             color: '#374151'
           }}>
             <strong style={{color: '#dc2626'}}>Aviso:</strong>{' '}
-            {nota || 'Contenido educativo; no sustituye valoración médica.'}
+            {nota || 'Contenido orientativo; no sustituye valoración médica.'}
           </p>
         </div>
 
-        {/* CUADRO PRIORITARIAS CON BORDE REDONDEADO */}
         {dest.length > 0 && (
           <div
             style={{
