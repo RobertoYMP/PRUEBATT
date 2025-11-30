@@ -12,8 +12,8 @@ export default function Specialists(){
 
   return (
     <>
+      <h2>Nuestros especialistas</h2>
       <div className='specialists-container'>
-        <h2>Nuestros especialistas</h2>
         <div className='specialists-cards-container'>
           {items.map((x,i)=> (
             <div key={i} className="specialist-card">

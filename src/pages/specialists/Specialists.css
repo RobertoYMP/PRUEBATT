@@ -1,57 +1,108 @@
 .specialists-container {
-    margin-bottom: 4rem;
+  margin: 4rem 0;
+  padding: 0 1.5rem;
 }
 
 .specialists-container h2 {
-    text-align: center;
-    margin-bottom: 3rem;
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
 .specialists-cards-container {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 24%);
-    gap: 8%;
-    justify-content: center;
-    word-break: break-word;
-}
-.specialists-cards-container {
-    display: flex;
-    justify-content: center;
-    gap: 4rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  justify-items: center;
 }
 
 .specialist-card {
-    background-color: #fff;
-    box-shadow: var(--box-shadow);
-    padding: var(--big-padding);
-    border-radius: var(--card-radius);
-    border-left: 0.75rem solid var(--light-blue);
-    border-bottom: 0.75rem solid var(--light-blue);
-    display: grid;
-    gap: 1rem;
-    text-align: center;
-    justify-content: center;
-    justify-items: center;
-    align-content: center;
-    width: 320px;
-    max-width: 340px;
+  background-color: #fff;
+  box-shadow: var(--box-shadow);
+  padding: var(--big-padding);
+  border-radius: var(--card-radius);
+  border-left: 0.75rem solid var(--light-blue);
+  border-bottom: 0.75rem solid var(--light-blue);
+  display: grid;
+  gap: 1rem;
+  text-align: center;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  width: 100%;
+  max-width: 340px;
 }
 
 .specialist-card img {
-    aspect-ratio: 1/1;
-    width: 100px;
-    border-radius: var(--card-radius);
-    border: 3px solid var(--light-blue);
+  aspect-ratio: 1/1;
+  width: 100px;
+  border-radius: var(--card-radius);
+  border: 3px solid var(--light-blue);
+}
+
+.specialist-card strong {
+  font-size: 1rem;
+  color: var(--color-primary);
+  display: inline-block;
+  margin-bottom: 0.2rem;
+}
+
+.specialist-card strong::after {
+  content: "";
+  display: block;
+  width: 52px;
+  height: 2px;
+  margin: 0.3rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secundary));
+}
+
+.specialist-card > div:nth-of-type(1) {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-secundary);
+  margin-bottom: 0.15rem;
+}
+
+.specialist-card > div:nth-of-type(2) {
+  font-size: 0.88rem;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.specialist-card > div:nth-of-type(2)::before {
+  content: "📞";
+  font-size: 0.9rem;
+}
+
+.specialist-card > div:nth-of-type(3) {
+  font-size: 0.88rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  word-break: break-all;
+}
+
+.specialist-card > div:nth-of-type(3)::before {
+  content: "✉️";
+  font-size: 0.9rem;
+}
+
+.specialist-card > div:nth-of-type(3):hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-secundary);
 }
 
 @media (max-width: 700px) {
-    .specialists-cards-container {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(1, 60%);
-        gap: 2rem;
-        justify-content: center;
-        word-break: break-word;
-    }
+  .specialists-cards-container {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .specialist-card {
+    max-width: 100%;
+  }
 }
