@@ -323,7 +323,7 @@ export default function PrediagResults() {
   return (
     <>
       <h2>Resultados del prediagnóstico</h2>
-      <div className="card results-card">
+      <div className="results-card">
         {renderEstado()}
 
         <section>
@@ -331,7 +331,7 @@ export default function PrediagResults() {
           {datosPaciente()}
         </section>
 
-        <section>
+        <section className='results-section-table'>
           <h3>Tabla de resultados</h3>
           {tablaResultados()}
         </section>

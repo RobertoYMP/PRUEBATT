@@ -592,7 +592,7 @@ a:hover {
   color: #fff;
 }
 
-.card.results-card {
+.results-card {
   position: relative;
   margin-top: 1.5rem;
   padding: 1.75rem 1.6rem;
@@ -605,10 +605,11 @@ a:hover {
   gap: 1.4rem;
   overflow: hidden;
   box-sizing: border-box;
+  width: 100%;
   max-width: 100%;
 }
 
-.card.results-card::before {
+.results-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -634,6 +635,19 @@ a:hover {
   border-radius: 14px;
   background: rgba(255,255,255,0.88);
   border: 1px solid rgba(148,163,184,0.5);
+}
+
+.results-section-table {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.4rem;
+}
+
+.results-section-table .results-table {
+  min-width: 640px;
 }
 
 .results-table-wrapper {
@@ -738,7 +752,6 @@ a:hover {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.88rem;
-  min-width: 640px;
 }
 
 .results-table thead {
@@ -848,14 +861,22 @@ a:hover {
 }
 
 @media (max-width: 768px) {
-  .card.results-card {
+  .results-card {
     padding: 1.4rem 1.1rem;
     gap: 1.1rem;
   }
 
+  .results-card section {
+    max-width: 100%;
+  }
+
+  .results-section-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .results-table {
     font-size: 0.8rem;
-    min-width: 520px;
   }
 
   .results-table th,
@@ -879,23 +900,14 @@ a:hover {
     text-align: center;
   }
 
-  .card.results-card > div:last-child {
+  .results-card > div:last-child {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.4rem;
   }
 
-  .card.results-card .text-link {
+  .results-card .text-link {
     font-size: 0.85rem;
-  }
-
-  .results-card section {
-    max-width: 91%;
-    box-sizing: border-box;
-    padding: 1rem 1rem 0.9rem;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.88);
-    border: 1px solid rgba(148,163,184,0.5);
   }
 }
 
