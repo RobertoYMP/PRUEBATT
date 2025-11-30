@@ -111,54 +111,68 @@ export default function DoctorDashboard(){
               </tr>
             </thead>
             <tbody>
-              {filtered.map((r, i) => (
-                <tr key={r.id || i}>
-                  <td>
-                    <FontAwesomeIcon
-                      icon={faCalendarDays}
-                      style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}
-                    />
-                    {r.fecha ? new Date(r.fecha).toLocaleDateString('es-MX') : '—'}
-                  </td>
-                  <td>{r.paciente}</td>
+              {filtered.map((r, i) => {
+                const isManual =
+                  (r.s3Key && r.s3Key.startsWith('manual/')) ||
+                  (r.downloadUrl && r.downloadUrl.includes('/manual/'));
 
-                  {/* EXAMEN: solo mostrar botón si hay downloadUrl (o sea, hay PDF) */}
-                  <td>
-                    {r.downloadUrl ? (
-                      <button
-                        type="button"
-                        className='download-file icon-button'
-                        onClick={() => handleDownload(r.downloadUrl)}
-                        title="Descargar archivo original"
+                return (
+                  <tr key={r.id || i}>
+                    <td>
+                      <FontAwesomeIcon
+                        icon={faCalendarDays}
+                        style={{color: "var(--color-primary)", paddingRight: "0.5rem"}}
+                      />
+                      {r.fecha ? new Date(r.fecha).toLocaleDateString('es-MX') : '—'}
+                    </td>
+                    <td>{r.paciente}</td>
+
+                    {/* EXAMEN */}
+                    <td>
+                      {isManual ? (
+                        <div className="manual-summary-cell">
+                          <span className="no-file-label">
+                            Sin PDF (captura manual)
+                          </span>
+                          <br />
+                          <small className="manual-hint">
+                            Revisa el prediagnóstico para ver el resumen.
+                          </small>
+                        </div>
+                      ) : (
+                        r.downloadUrl && (
+                          <button
+                            type="button"
+                            className='download-file icon-button'
+                            onClick={() => handleDownload(r.downloadUrl)}
+                            title="Descargar archivo original"
+                          >
+                            <FontAwesomeIcon
+                              icon={faFileArrowDown}
+                              style={{color: "var(--color-secundary)", fontSize: "40px"}}
+                            />
+                          </button>
+                        )
+                      )}
+                    </td>
+
+                    <td>
+                      <Link
+                        to={`/doctor/prediag/${encodeURIComponent(r.s3Key || r.id)}`}
+                        state={{ predictionKey: r.s3Key || r.id }}
+                        className='visualize-button'
+                        title="Ver prediagnóstico"
                       >
                         <FontAwesomeIcon
-                          icon={faFileArrowDown}
+                          icon={faEye}
                           style={{color: "var(--color-secundary)", fontSize: "40px"}}
+                          className='icon-button'
                         />
-                      </button>
-                    ) : (
-                      <span className="no-file-label">
-                        Sin PDF (captura manual)
-                      </span>
-                    )}
-                  </td>
-
-                  <td>
-                    <Link
-                      to={`/doctor/prediag/${encodeURIComponent(r.s3Key || r.id)}`}
-                      state={{ predictionKey: r.s3Key || r.id }}
-                      className='visualize-button'
-                      title="Ver prediagnóstico"
-                    >
-                      <FontAwesomeIcon
-                        icon={faEye}
-                        style={{color: "var(--color-secundary)", fontSize: "40px"}}
-                        className='icon-button'
-                      />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                      </Link>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         )}
