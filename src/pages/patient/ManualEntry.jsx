@@ -721,6 +721,12 @@ export default function ManualEntry() {
           </form>
         </div>
       </div>
+      <hr style={{marginTop: '2.5rem'}}/>
+      <div className="button-back-container">
+        <button className="button-secondary" onClick={() => nav(-1)}>
+          Regresar
+        </button>
+      </div>
       <Popup
         isVisible={loading}
         onClose={() => {}}
