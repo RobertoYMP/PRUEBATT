@@ -34,7 +34,8 @@ export function Popup ({width, icon, type, tittle, message, showButton = false, 
         updated_patient_information: "La información del paciente ha sido actualizada y los cambios se han guardado correctamente.",
         updated_patient_information_error: "No se pudieron guardar los cambios realizados. Por favor, revisa los datos modificados e intenta nuevamente.\n\nSi el problema persiste, contacta al desarrollador para revisar el incidente.",
         unsaved_patient_changes: "Has realizado cambios en la información del paciente.\n\nSi sales ahora, se perderán todos los cambios no guardados. Puedes guardar los cambios antes de continuar o confirmar que deseas salir sin guardarlos.",
-        uploading_prediagnosis: "Estamos realizando tu prediagnóstico con la información del estudio.\n\nEn unos momentos te mostraremos los resultados y se guardarán automáticamente en tu historial clínico."
+        uploading_prediagnosis: "Estamos realizando tu prediagnóstico con la información del estudio.\n\nEn unos momentos te mostraremos los resultados y se guardarán automáticamente en tu historial clínico.",
+        opening_results: "Estamos abriendo tu resultado de biometría hemática.\n\nEsto puede tardar unos segundos mientras recuperamos la información.",
     };
 
     const iconColor = colorMap[type] || "black";

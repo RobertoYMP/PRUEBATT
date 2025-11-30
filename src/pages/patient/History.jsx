@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Popup } from '../../components/Popup/Popup'
 import { fetchHistoryList, fetchPredictionByKey } from '../../api/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 function statusBadgeCls(st = 'PROCESSING') {
   const s = String(st).toUpperCase()
@@ -27,6 +28,7 @@ export default function History(){
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [workingKey, setWorkingKey] = useState('')
+  const [showOpeningPopup, setShowOpeningPopup] = useState(false)
 
   useEffect(() => {
     let cancel = false
@@ -54,6 +56,7 @@ export default function History(){
   async function onVisualizar(sk) {
     try {
       setWorkingKey(sk)
+      setShowOpeningPopup(true)
       const result = await fetchPredictionByKey(sk)
       if (!result) throw new Error('Este elemento no tiene predicción disponible aún.')
       try { localStorage.setItem('lastPrediction', JSON.stringify(result)) } catch {}
@@ -62,6 +65,7 @@ export default function History(){
       alert(e?.message || 'No fue posible cargar el resultado.')
     } finally {
       setWorkingKey('')
+      setShowOpeningPopup(false)
     }
   }
 
@@ -114,6 +118,17 @@ export default function History(){
           Regresar
         </button>
       </div>
+      <Popup
+        isVisible={showOpeningPopup}
+        onClose={() => {}}
+        width="32rem"
+        type="info"
+        icon={faCircleNotch}
+        tittle="Abriendo resultados"
+        message="opening_results"
+        showButton={false}
+        closable={false}
+      />
     </>
   )
 }
