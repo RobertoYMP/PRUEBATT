@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
 import { useNotifications } from '../../context/NotificationContext'
+import { useNavigate } from 'react-router-dom';
 
 function derivePatternsFromResumen(prediction) {
   if (!prediction) return []
@@ -99,6 +100,7 @@ function derivePatternsFromResumen(prediction) {
 }
 
 export default function PrediagResults() {
+  const nav = useNavigate();
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')
   const [prediction, setPrediction] = useState(null)
@@ -357,6 +359,12 @@ export default function PrediagResults() {
             Ver recomendaciones
           </Link>
         </div>
+      </div>
+      <hr style={{marginTop: '2.5rem'}}/>
+      <div className="button-back-container">
+        <button className="button-secondary" onClick={() => nav(-1)}>
+          Regresar
+        </button>
       </div>
     </>
   )

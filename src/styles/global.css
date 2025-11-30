@@ -870,7 +870,7 @@ a:hover {
   justify-content: center;
   gap: 0.35rem;
   padding: 0.45rem 1.2rem;
-  border-radius: 999px;
+  border-radius: var(--default-radius);
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: .08em;
@@ -906,8 +906,7 @@ a:hover {
     linear-gradient(135deg, var(--color-primary), var(--color-secundary)) border-box;
   color: #ffffff;
   box-shadow: var(--box-shadow);
-  transform: translateY(-1px) scale(1.02);
-  letter-spacing: .11em;
+  transform: translateY(-0.5px) scale(1.01);
 }
 
 .results-card .text-link::before {
@@ -931,6 +930,14 @@ a:hover {
 .results-card .text-link:focus-visible {
   outline: 2px solid var(--color-secundary);
   outline-offset: 3px;
+}
+
+.button-back-container {
+  margin-top: 1rem;
+}
+
+.button-back-container .button-primary, .button-back-container .button-secondary {
+  border-radius: var(--default-radius);
 }
 
 @media (max-width: 768px) {
@@ -990,7 +997,7 @@ a:hover {
   .results-card > div:last-child {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.4rem;
+    gap: 1rem;
   }
 
   .results-card .text-link {
