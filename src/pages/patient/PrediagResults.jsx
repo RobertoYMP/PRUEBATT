@@ -309,7 +309,7 @@ export default function PrediagResults() {
     return (
       <ul>
         {patrones.map((p, idx) => (
-          <li key={p.codigo || idx} style={{ marginBottom: 8 }}>
+          <li key={p.codigo || idx} style={{ marginBottom: 8 }} className='patterns-list'>
             <strong>{p.titulo}</strong>
             {p.descripcion && (
               <span> — {p.descripcion}</span>
