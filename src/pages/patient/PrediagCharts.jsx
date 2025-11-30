@@ -1,6 +1,6 @@
 // src/pages/patient/PrediagCharts.jsx
 import React, { useEffect, useState } from 'react'
-import { useSearchParams, useLocation } from 'react-router-dom'
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
 import { fetchLatestPrediction, fetchPredictionByKey } from '../../api/historyClient'
 
@@ -13,6 +13,7 @@ function tripletData(min, val, max) {
 }
 
 export default function PrediagCharts() {
+  const nav = useNavigate();
   const [params] = useSearchParams()
   const location = useLocation()
   const passedResult = location.state?.result || null
