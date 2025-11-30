@@ -691,6 +691,13 @@ a:hover {
   font-size: .9rem;
   color: #1f2933;
 }
+.left-text {
+  text-align: left;
+}
+
+.centered-text {
+  text-align: center;
+}
 
 .results-card table {
   width: 100%;
@@ -705,7 +712,6 @@ a:hover {
 .results-card th,
 .results-card td {
   padding: .5rem .6rem;
-  text-align: left;
   border-bottom: 1px solid rgba(148,163,184,0.4);
 }
 
@@ -761,7 +767,6 @@ a:hover {
 .results-table th,
 .results-table td {
   padding: 0.5rem 0.6rem;
-  text-align: left;
   border-bottom: 1px solid rgba(148, 163, 184, 0.4);
 }
 
@@ -939,6 +944,7 @@ a:hover {
 .button-back-container .button-primary, .button-back-container .button-secondary {
   border-radius: var(--default-radius);
 }
+
 .card-history {
   margin-top: 1.5rem;
   padding: 1.6rem 1.5rem;
@@ -947,7 +953,7 @@ a:hover {
     radial-gradient(circle at top right, rgba(143,172,191,0.18), transparent 55%),
     linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
   box-shadow: 0 16px 36px rgba(15,23,42,.18);
-  border: 1px solid rgba(148,163,184,0.7);
+  border: 2.5px solid var(--light-blue);
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;

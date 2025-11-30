@@ -257,18 +257,18 @@ export default function PrediagResults() {
         <table className="results-table">
           <thead>
             <tr>
-              <th>Parámetro</th><th>Valor</th><th>Unidad</th>
-              <th>Ref. Mín</th><th>Ref. Máx</th><th>Estado</th><th>Severidad</th>
+              <th className='left-text'>Parámetro</th><th>Valor</th><th>Unidad</th>
+              <th>Ref. Mín</th><th>Ref. Máx</th><th className='left-text'>Estado</th><th className='left-text'>Severidad</th>
             </tr>
           </thead>
           <tbody>
             {det.map((r, i) => (
               <tr key={`${r.Parametro}-${i}`}>
                 <td>{r.Parametro}</td>
-                <td>{r.Valor}</td>
-                <td>{r.Unidad || '—'}</td>
-                <td>{r.Min ?? '—'}</td>
-                <td>{r.Max ?? '—'}</td>
+                <td className='centered-text'>{r.Valor}</td>
+                <td className='centered-text'>{r.Unidad || '—'}</td>
+                <td className='centered-text'>{r.Min ?? '—'}</td>
+                <td className='centered-text'>{r.Max ?? '—'}</td>
                 <td>
                   {r.Estado ? (
                     <span className={`estado-indicator ${estadoToClass(r.Estado)}`}>
