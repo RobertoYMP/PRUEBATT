@@ -96,14 +96,15 @@ export default function ManualEntry() {
       const payload = {
         sexo: form.sexo,
         metrics,
-        pk: identityId  
+        pk: identityId    
       }
-
       const result = await postManualPrediction(payload)
+
       try {
         sessionStorage.setItem('manualPrediction', JSON.stringify(result))
         localStorage.setItem('lastPrediction', JSON.stringify(result))
       } catch {}
+
       nav('/app/results?src=manual', { state: { result } })
     } catch (err) {
       setError(err.message || String(err))
