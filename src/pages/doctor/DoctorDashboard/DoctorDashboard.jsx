@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
 import { useNotifications } from "../../../context/NotificationContext";
 import { getSession } from '../../auth/cognito'
-
 import { fetchCriticalPatients } from '../../../api/doctorClient'
 
 export default function DoctorDashboard(){
@@ -24,6 +23,16 @@ export default function DoctorDashboard(){
     [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
     claims.email ||
     'Doctor'
+
+  function patientLabel(r) {
+    return (
+      r.patientName ||
+      r.paciente ||
+      r.identityId ||
+      r.pk ||
+      'Paciente sin nombre'
+    );
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -47,7 +56,8 @@ export default function DoctorDashboard(){
   useEffect(() => {
     const lower = search.toLowerCase();
     const filteredRows = rows.filter(r => {
-      const matchName = !lower || (r.paciente || '').toLowerCase().includes(lower);
+      const name = patientLabel(r).toLowerCase();
+      const matchName = !lower || name.includes(lower);
       const matchDate = !dateFilter || (r.fecha || '').slice(0,10) === dateFilter;
       return matchName && matchDate;
     });
@@ -125,9 +135,7 @@ export default function DoctorDashboard(){
                       />
                       {r.fecha ? new Date(r.fecha).toLocaleDateString('es-MX') : '—'}
                     </td>
-                    <td>{r.paciente}</td>
-
-                    {/* EXAMEN */}
+                    <td>{patientLabel(r)}</td>
                     <td>
                       {isManual ? (
                         <div className="manual-summary-cell">
