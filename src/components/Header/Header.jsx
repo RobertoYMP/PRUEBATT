@@ -232,11 +232,6 @@ export default function Header() {
                       Historial de pacientes
                     </Link>
                     <hr/>
-                    <Link to="/doctor/edit-recommendations" className="submenu-item">
-                      <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
-                      Editar recomendaciones
-                    </Link>
-                    <hr/>
                   </>
                 )}
 
