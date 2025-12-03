@@ -27,6 +27,7 @@ export default function DoctorDashboard(){
   function patientLabel(r) {
     return (
       r.patientName ||
+      r.pacienteNombre ||
       r.paciente ||
       r.identityId ||
       r.pk ||
@@ -135,7 +136,8 @@ export default function DoctorDashboard(){
               {filtered.map((r, i) => {
                 const isManual =
                   (r.s3Key && r.s3Key.startsWith('manual/')) ||
-                  (r.downloadUrl && r.downloadUrl.includes('/manual/'));
+                  (r.downloadUrl && r.downloadUrl.includes('/manual/')) ||
+                  (r.source === 'manual');
 
                 return (
                   <tr key={r.id || i}>
