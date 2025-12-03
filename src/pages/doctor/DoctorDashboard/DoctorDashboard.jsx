@@ -34,6 +34,15 @@ export default function DoctorDashboard(){
     );
   }
 
+  function emailLabel(r) {
+    return (
+      r.userEmail ||
+      r.email ||
+      r.correo ||
+      '—'
+    );
+  }
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -57,9 +66,10 @@ export default function DoctorDashboard(){
     const lower = search.toLowerCase();
     const filteredRows = rows.filter(r => {
       const name = patientLabel(r).toLowerCase();
-      const matchName = !lower || name.includes(lower);
+      const email = emailLabel(r).toLowerCase();
+      const matchSearch = !lower || name.includes(lower) || email.includes(lower);
       const matchDate = !dateFilter || (r.fecha || '').slice(0,10) === dateFilter;
-      return matchName && matchDate;
+      return matchSearch && matchDate;
     });
     setFiltered(filteredRows);
   }, [rows, search, dateFilter]);
@@ -86,7 +96,7 @@ export default function DoctorDashboard(){
         <div className='field input-search'>
           <input
             type="text"
-            placeholder='Buscar paciente'
+            placeholder='Buscar paciente o correo'
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -116,6 +126,7 @@ export default function DoctorDashboard(){
               <tr>
                 <th>Fecha</th>
                 <th>Paciente</th>
+                <th>Correo</th>
                 <th>Examen</th>
                 <th>Ver prediagnóstico</th>
               </tr>
@@ -136,6 +147,7 @@ export default function DoctorDashboard(){
                       {r.fecha ? new Date(r.fecha).toLocaleDateString('es-MX') : '—'}
                     </td>
                     <td>{patientLabel(r)}</td>
+                    <td>{emailLabel(r)}</td>
                     <td>
                       {isManual ? (
                         <div className="manual-summary-cell">
