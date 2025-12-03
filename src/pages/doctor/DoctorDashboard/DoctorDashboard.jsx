@@ -186,13 +186,6 @@ export default function DoctorDashboard(){
         )}
       </div>
 
-      <button
-        type="button"
-        className="notify-button"
-        onClick={addForCurrentUser}
-      >
-        Notificar
-      </button>
     </div>
   )
 }
