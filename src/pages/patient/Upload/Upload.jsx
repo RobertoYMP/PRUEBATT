@@ -42,9 +42,11 @@ export default function Upload() {
     setError('');
 
     try {
-      if (!file) return setError('Selecciona un archivo PDF');
-      if (file.type && file.type !== 'application/pdf') {
-        return setError('El archivo debe ser un PDF');
+      if (!file) return setError('Selecciona un PDF o una imagen JPEG/PNG');
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+
+      if (file.type && !allowedTypes.includes(file.type)) {
+        return setError('El archivo debe ser un PDF o una imagen (JPG/PNG)');
       }
 
       setLoading(true);
@@ -142,7 +144,7 @@ export default function Upload() {
                 <input
                   id="pdfInput"
                   type="file"
-                  accept="application/pdf"
+                  accept="application/pdf,image/jpeg,image/png"
                   onChange={e => setFile(e.target.files?.[0] || null)}
                   className="file-input-hidden"
                 />
