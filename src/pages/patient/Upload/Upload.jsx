@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Upload.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf, faFlask } from '@fortawesome/free-solid-svg-icons';
+import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf, faFlask, faFileImage } from '@fortawesome/free-solid-svg-icons';
 
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -119,21 +119,24 @@ export default function Upload() {
             <h3>Instrucciones</h3>
           </div>
           <div className="text-content">
-            Por favor selecciona o arrastra a esta área el archivo PDF correspondiente.
+            Por favor selecciona o arrastra a esta área el archivo de Biometría Hemática
+            en formato <strong>PDF</strong> (recomendado) o una imagen clara en formato
+            <strong> JPEG/PNG</strong>.
             <br /><br />
             <FontAwesomeIcon 
               icon={faHandPointRight} 
               style={{ color: 'var(--color-primary)' }}
             />{" "}
-            El documento debe corresponder al formato oficial emitido por la clínica.
+            El documento o imagen debe corresponder al formato oficial emitido por la clínica
+            y ser completamente legible.
             <br /><br />
             <FontAwesomeIcon 
               icon={faExclamation} 
               style={{ color: '#d9534f' }}
             />{" "}
-            <strong>Importante:</strong> El resultado generado es un prediagnóstico automatizado y no sustituye la evaluación médica profesional.
+            <strong>Importante:</strong> El resultado generado es un prediagnóstico automatizado
+            y no sustituye la evaluación médica profesional.
           </div>
-
           <div className="upload-line"></div>
         </div>
 
@@ -148,17 +151,20 @@ export default function Upload() {
                   onChange={e => setFile(e.target.files?.[0] || null)}
                   className="file-input-hidden"
                 />
-
                 <label
                   htmlFor="pdfInput"
                   className="file-cta"
-                  aria-label="Selecciona un archivo PDF"
+                  aria-label="Selecciona un archivo PDF (o una imagen JPEG/PNG)"
                 >
                   <span className="file-cta__icon" aria-hidden="true">
-                    <FontAwesomeIcon icon={faFilePdf} />
+                    <FontAwesomeIcon
+                      icon={file && file.type !== 'application/pdf' ? faFileImage : faFilePdf}
+                    />
                   </span>
                   <span className="file-cta__text">
-                    {file ? 'Cambiar archivo PDF' : 'Selecciona archivo PDF'}
+                    {file
+                      ? 'Cambiar archivo PDF o imagen'
+                      : 'Selecciona un archivo PDF o una imagen'}
                   </span>
                 </label>
 
