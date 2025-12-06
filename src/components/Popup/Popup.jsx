@@ -36,6 +36,7 @@ export function Popup ({width, icon, type, tittle, message, showButton = false, 
         unsaved_patient_changes: "Has realizado cambios en la información del paciente.\n\nSi sales ahora, se perderán todos los cambios no guardados. Puedes guardar los cambios antes de continuar o confirmar que deseas salir sin guardarlos.",
         uploading_prediagnosis: "Estamos realizando tu prediagnóstico con la información del estudio.\n\nEn unos momentos te mostraremos los resultados y se guardarán automáticamente en tu historial clínico.",
         opening_results: "Estamos abriendo tu resultado de biometría hemática.\n\nEsto puede tardar unos segundos mientras recuperamos la información.",
+        terms_required: "Antes de continuar, por favor revisa y acepta los Términos y Condiciones de Uso y el Aviso de Privacidad de HEMATEC.\n\nAl aceptar, confirmas estar de acuerdo con ambos documentos."
     };
 
     const iconColor = colorMap[type] || "black";

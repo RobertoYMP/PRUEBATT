@@ -27,6 +27,8 @@ import PatientProfile from './pages/admin/PatientProfile/PatientProfile.jsx'
 import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile.jsx'
 import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
+import { Popup } from './components/Popup/Popup.jsx'
+import { faFileSignature } from '@fortawesome/free-solid-svg-icons'
 
 // ⬇️ NUEVO: vista de prediagnóstico para el doctor
 import DoctorPrediagResults from './pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx'
@@ -78,7 +80,25 @@ function Logout() {
 }
 
 export default function App() {
+  const location = useLocation()
   const currentUserId = 123
+  const isLegalPage =
+    location.pathname === '/terms' ||
+    location.pathname === '/privacy'
+  const [termsAccepted, setTermsAccepted] = React.useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.localStorage.getItem('hematec.termsAccepted') === 'yes'
+  })
+
+  React.useEffect(() => {
+    if (termsAccepted && typeof window !== 'undefined') {
+      window.localStorage.setItem('hematec.termsAccepted', 'yes')
+    }
+  }, [termsAccepted])
+
+  function handleAcceptTerms() {
+    setTermsAccepted(true)
+  }
   return (
     <div className="layout">
       <NotificationProvider currentUserId={currentUserId}>
@@ -192,6 +212,29 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <Popup
+          isVisible={!termsAccepted && !isLegalPage}
+          closable={false}
+          onClose={() => {}}
+          width="36rem"
+          type="info"
+          icon={faFileSignature}
+          tittle="Términos y Condiciones"
+          message="terms_required"
+          showButton
+          buttonProps={{
+            typeButton: 'button-primary',
+            onClick: handleAcceptTerms,
+            content: 'Acepto los términos y condiciones de uso y el aviso de privacidad'
+          }}
+          extraButton
+          extraButtonProps={{
+            typeButton: 'button-secondary',
+            borderRadius: '8px',
+            onClick: () => { window.location.href = '/terms' },
+            content: 'Consultar términos y condiciones de uso'
+          }}
+        />
       </NotificationProvider>
     </div>
   )

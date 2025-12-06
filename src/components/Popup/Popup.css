@@ -97,7 +97,29 @@
 }
 
 .popup-button-container {
+    margin-top: 1rem;
     display: flex;
     justify-content: center;
     align-content: center;
+    gap: 2rem;
+}
+
+@media (max-width: 640px) {
+  .popup-button-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .popup-button-container .popup-button:nth-child(1) {
+    order: 2;
+  }
+
+  .popup-button-container .popup-button:nth-child(2) {
+    order: 1;
+  }
+
+  .popup-button-container .popup-button {
+    width: 100%;
+  }
 }
