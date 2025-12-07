@@ -1424,6 +1424,54 @@ a:hover {
   border-color: rgba(239,68,68,0.9);
 }
 
+.doctor-table-wrap {
+  margin-top: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.doctor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.doctor-table thead {
+  background: #f9fafb;
+}
+
+.doctor-table th,
+.doctor-table td {
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.doctor-table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.doctor-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.doctor-table tbody tr:hover {
+  background: var(--color-surface-2);
+}
+
+.doctor-table th:nth-child(4),
+.doctor-table th:nth-child(5),
+.doctor-table td:nth-child(4),
+.doctor-table td:nth-child(5) {
+  text-align: center;
+  justify-items: center;
+}
+
 @media (max-width: 768px) {
   .results-params-grid {
     grid-template-columns: minmax(0, 1fr);

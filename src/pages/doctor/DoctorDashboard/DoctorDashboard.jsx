@@ -114,7 +114,7 @@ export default function DoctorDashboard(){
         </div>
       </div>
 
-      <div className="table-wrap">
+      <div className="doctor-table-wrap">
         {loading && <p>Cargando pacientes críticos…</p>}
         {error && <p className="badge critico">{error}</p>}
         {!loading && !error && filtered.length === 0 && (
@@ -122,7 +122,7 @@ export default function DoctorDashboard(){
         )}
 
         {!loading && !error && filtered.length > 0 && (
-          <table className="global-table">
+          <table className="doctor-table">
             <thead>
               <tr>
                 <th>Fecha</th>
