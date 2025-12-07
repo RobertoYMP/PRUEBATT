@@ -103,7 +103,11 @@ export default function Upload() {
         [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
         claims.email ||
         'Paciente';
+      
       const userEmail = claims.email || null;
+      
+      // Para el backend NO mandamos el fallback "Paciente"
+      const apiPatientName = displayName === 'Paciente' ? undefined : displayName;
 
       if (API_BASE) {
         await fetch(`${API_BASE}/upload`, {
@@ -115,11 +119,12 @@ export default function Upload() {
           body: JSON.stringify({
             bucket: UPLOADS_BUCKET,
             key,
-            patientName: displayName,
+            patientName: apiPatientName,
             userEmail,
           }),
         });
       }
+
 
       localStorage.setItem('hematec.identityId', identityId);
       localStorage.setItem('hematec.lastUploadKey', key);
