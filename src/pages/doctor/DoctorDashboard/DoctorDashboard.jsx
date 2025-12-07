@@ -187,8 +187,7 @@ export default function DoctorDashboard(){
                       >
                         <FontAwesomeIcon
                           icon={faEye}
-                          style={{color: "var(--color-secundary)", fontSize: "40px"}}
-                          className='icon-button'
+                          className="visualize-button-icon"
                         />
                       </Link>
                     </td>
