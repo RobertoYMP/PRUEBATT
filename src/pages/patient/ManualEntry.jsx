@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleInfo, faXmark, faFlask } from "@fortawesome/free-solid-svg-icons"
 import { postManualPrediction } from '../../api/historyClient'
 import { Popup } from '../../components/Popup/Popup.jsx'
+
 import { getIdentityId } from '../auth/identity.js'
-import { getSession } from '../auth/cognito'
+import { getSession } from '../auth/cognito.js'
 
 export default function ManualEntry() {
   const [open, setOpen] = useState(false)
@@ -25,14 +26,6 @@ export default function ManualEntry() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const nav = useNavigate()
-
-  const claims = getSession()?.claims || {}
-  const patientName =
-    claims.name ||
-    [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
-    claims.email ||
-    'Paciente'
-  const userEmail = claims.email || null
 
   function handleChange(field) {
     return (e) => {
@@ -102,13 +95,21 @@ export default function ManualEntry() {
         identityId = null
       }
 
+      const session = getSession()
+      const claims = session?.claims || {}
+      const displayName =
+        claims.name ||
+        [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
+        claims.email ||
+        'Paciente'
+
       const payload = {
         sexo: form.sexo,
         metrics,
         pk: identityId,
-        patientName,
-        pacienteNombre: patientName,
-        userEmail
+        patientName: displayName,
+        pacienteNombre: displayName,
+        userEmail: claims.email || undefined
       }
 
       const result = await postManualPrediction(payload)
