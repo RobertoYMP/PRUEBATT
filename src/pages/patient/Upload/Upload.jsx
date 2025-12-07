@@ -1,6 +1,6 @@
 // src/pages/patient/Upload/Upload.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Upload.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf, faFlask, faFileImage } from '@fortawesome/free-solid-svg-icons';
@@ -8,16 +8,14 @@ import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf, faFl
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
-import { Link } from 'react-router-dom';
-import { getIdToken } from '../../auth/cognito';
+import { getIdToken, getSession, getAuthHeader } from '../../auth/cognito';
 import { Popup } from '../../../components/Popup/Popup';
 
-// Helpers de entorno
 const REGION = import.meta.env.VITE_COG_REGION;
 const IDENTITY_POOL_ID = import.meta.env.VITE_IDENTITY_POOL_ID;
 const UPLOADS_BUCKET = import.meta.env.VITE_UPLOADS_BUCKET;
+const API_BASE = import.meta.env.VITE_API_URL;
 
-// Decodifica el payload del JWT sin dependencias (para tomar iss)
 function parseJwt(token) {
   try {
     const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -28,7 +26,9 @@ function parseJwt(token) {
         .join('')
     );
     return JSON.parse(json);
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export default function Upload() {
@@ -42,55 +42,85 @@ export default function Upload() {
     setError('');
 
     try {
-      if (!file) return setError('Selecciona un PDF o una imagen JPEG/PNG');
+      if (!file) {
+        setError('Selecciona un PDF o una imagen JPEG/PNG');
+        return;
+      }
       const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-
       if (file.type && !allowedTypes.includes(file.type)) {
-        return setError('El archivo debe ser un PDF o una imagen (JPG/PNG)');
+        setError('El archivo debe ser un PDF o una imagen (JPG/PNG)');
+        return;
       }
 
       setLoading(true);
 
-      // 1) ID token de Cognito (User Pools)
       const idToken = await getIdToken();
-      if (!idToken) { setLoading(false); return nav('/login'); }
+      if (!idToken) {
+        setLoading(false);
+        nav('/login');
+        return;
+      }
 
-      // 2) Resolver proveedor del User Pool para usar LOGINS en el Identity Pool
-      const payload  = parseJwt(idToken);
-      const provider = payload?.iss?.replace(/^https?:\/\//, ''); // p.ej. cognito-idp.us-east-2.amazonaws.com/us-east-2_XXXX
-      if (!provider) { setLoading(false); return setError('No se pudo resolver el proveedor de identidad.'); }
+      const payload = parseJwt(idToken);
+      const provider = payload?.iss?.replace(/^https?:\/\//, '');
+      if (!provider) {
+        setLoading(false);
+        setError('No se pudo resolver el proveedor de identidad.');
+        return;
+      }
 
-      // 3) Credenciales del Identity Pool AUTENTICADAS (clave para evitar "Unauthenticated access...")
       const credentials = fromCognitoIdentityPool({
         client: new CognitoIdentityClient({ region: REGION }),
         identityPoolId: IDENTITY_POOL_ID,
         logins: { [provider]: idToken },
       });
 
-      // 4) S3 client con dichas credenciales
       const s3 = new S3Client({ region: REGION, credentials });
 
-      // 5) Obtén el IdentityId resuelto (PK de Dynamo y prefijo S3)
-      const resolved   = await s3.config.credentials();
+      const resolved = await s3.config.credentials();
       const identityId = resolved.identityId;
       if (!identityId) throw new Error('No se pudo resolver tu IdentityId');
 
-      // 6) Key esperada por el trigger: private/{identityId}/... .pdf
-      const safe    = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
+      const safe = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
       const withPdf = /\.pdf$/i.test(safe) ? safe : `${safe}.pdf`;
-      const key     = `private/${identityId}/${Date.now()}-${withPdf}`;
+      const key = `private/${identityId}/${Date.now()}-${withPdf}`;
 
-      // 7) Evitar streams (algunos navegadores llaman getReader); mejor bytes puros
       const bodyBytes = new Uint8Array(await file.arrayBuffer());
 
-      await s3.send(new PutObjectCommand({
-        Bucket: UPLOADS_BUCKET,
-        Key: key,
-        Body: bodyBytes,
-        ContentType: 'application/pdf',
-      }));
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: UPLOADS_BUCKET,
+          Key: key,
+          Body: bodyBytes,
+          ContentType: file.type || 'application/pdf',
+        })
+      );
 
-      // Guardar para que la vista de resultados/historial pueda inferir PK/SK
+      const session = getSession() || {};
+      const claims = session.claims || {};
+      const displayName =
+        claims.name ||
+        [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
+        claims.email ||
+        'Paciente';
+      const userEmail = claims.email || null;
+
+      if (API_BASE) {
+        await fetch(`${API_BASE}/upload`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeader(),
+          },
+          body: JSON.stringify({
+            bucket: UPLOADS_BUCKET,
+            key,
+            patientName: displayName,
+            userEmail,
+          }),
+        });
+      }
+
       localStorage.setItem('hematec.identityId', identityId);
       localStorage.setItem('hematec.lastUploadKey', key);
       localStorage.setItem('hematec.lastUploadAt', String(Date.now()));
@@ -100,9 +130,10 @@ export default function Upload() {
     } catch (err) {
       console.error(err);
       setLoading(false);
-      // Mensaje más claro para el caso típico de identity pool
       if (String(err?.message || '').includes('Unauthenticated access is not supported')) {
-        setError('Tu sesión no está autenticada con el Identity Pool. Vuelve a iniciar sesión e inténtalo de nuevo.');
+        setError(
+          'Tu sesión no está autenticada con el Identity Pool. Vuelve a iniciar sesión e inténtalo de nuevo.'
+        );
       } else {
         setError(err?.message || 'Ocurrió un error al subir el archivo.');
       }
@@ -115,27 +146,25 @@ export default function Upload() {
       <div className="upload-content">
         <div className="instructions-content">
           <div className="instructions-title">
-            <h3><FontAwesomeIcon icon={faTriangleExclamation} className="upload-icon" /></h3>
+            <h3>
+              <FontAwesomeIcon icon={faTriangleExclamation} className="upload-icon" />
+            </h3>
             <h3>Instrucciones</h3>
           </div>
           <div className="text-content">
-            Por favor selecciona o arrastra a esta área el archivo de Biometría Hemática
-            en formato <strong>PDF</strong> (recomendado) o una imagen clara en formato
+            Por favor selecciona o arrastra a esta área el archivo de Biometría Hemática en formato{' '}
+            <strong>PDF</strong> (recomendado) o una imagen clara en formato
             <strong> JPEG/PNG</strong>.
-            <br /><br />
-            <FontAwesomeIcon 
-              icon={faHandPointRight} 
-              style={{ color: 'var(--color-primary)' }}
-            />{" "}
-            El documento o imagen debe corresponder al formato oficial emitido por la clínica
-            y ser completamente legible.
-            <br /><br />
-            <FontAwesomeIcon 
-              icon={faExclamation} 
-              style={{ color: '#d9534f' }}
-            />{" "}
-            <strong>Importante:</strong> El resultado generado es un prediagnóstico automatizado
-            y no sustituye la evaluación médica profesional.
+            <br />
+            <br />
+            <FontAwesomeIcon icon={faHandPointRight} style={{ color: 'var(--color-primary)' }} />{' '}
+            El documento o imagen debe corresponder al formato oficial emitido por la clínica y ser
+            completamente legible.
+            <br />
+            <br />
+            <FontAwesomeIcon icon={faExclamation} style={{ color: '#d9534f' }} />{' '}
+            <strong>Importante:</strong> El resultado generado es un prediagnóstico automatizado y no
+            sustituye la evaluación médica profesional.
           </div>
           <div className="upload-line"></div>
         </div>
@@ -162,13 +191,10 @@ export default function Upload() {
                     />
                   </span>
                   <span className="file-cta__text">
-                    {file
-                      ? 'Cambiar archivo PDF o imagen'
-                      : 'Selecciona un archivo PDF o una imagen'}
+                    {file ? 'Cambiar archivo PDF o imagen' : 'Selecciona un archivo PDF o una imagen'}
                   </span>
                 </label>
 
-                {/* Nombre del archivo seleccionado */}
                 {file && (
                   <div className="file-selected-name" aria-live="polite">
                     <span className="file-selected-label">Archivo seleccionado:</span>
@@ -181,11 +207,10 @@ export default function Upload() {
             </div>
           </div>
         </div>
-
       </div>
 
       <hr />
-      
+
       <div className="button-upload-container">
         <div className="button-upload-secondary-group">
           <button className="button-secondary" onClick={() => nav(-1)}>
@@ -197,7 +222,7 @@ export default function Upload() {
           </Link>
         </div>
 
-        <button 
+        <button
           className="button-primary button-upload-primary"
           form="uploadForm"
           type="submit"
@@ -209,7 +234,11 @@ export default function Upload() {
         </button>
       </div>
 
-      {error && <div className="badge critico complete" style={{ marginTop: '1rem' }}>{error}</div>}
+      {error && (
+        <div className="badge critico complete" style={{ marginTop: '1rem' }}>
+          {error}
+        </div>
+      )}
       <Popup
         isVisible={loading}
         onClose={() => {}}
