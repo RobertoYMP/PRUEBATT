@@ -3,7 +3,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Upload.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTriangleExclamation, faHandPointRight, faExclamation, faFilePdf, faFlask, faFileImage } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTriangleExclamation,
+  faHandPointRight,
+  faExclamation,
+  faFilePdf,
+  faFlask,
+  faFileImage
+} from '@fortawesome/free-solid-svg-icons';
 
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -11,10 +18,13 @@ import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { getIdToken, getSession, getAuthHeader } from '../../auth/cognito';
 import { Popup } from '../../../components/Popup/Popup';
 
-const REGION = import.meta.env.VITE_COG_REGION;
+const REGION           = import.meta.env.VITE_COG_REGION;
 const IDENTITY_POOL_ID = import.meta.env.VITE_IDENTITY_POOL_ID;
-const UPLOADS_BUCKET = import.meta.env.VITE_UPLOADS_BUCKET;
-const API_BASE = import.meta.env.VITE_API_URL;
+const UPLOADS_BUCKET   = import.meta.env.VITE_UPLOADS_BUCKET;
+
+// Normalizamos la base del API por si viene con /
+const API_BASE_RAW = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_BASE     = API_BASE_RAW || '';
 
 function parseJwt(token) {
   try {
@@ -33,8 +43,8 @@ function parseJwt(token) {
 
 export default function Upload() {
   const nav = useNavigate();
-  const [file, setFile] = useState(null);
-  const [error, setError] = useState('');
+  const [file, setFile]       = useState(null);
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
@@ -54,6 +64,7 @@ export default function Upload() {
 
       setLoading(true);
 
+      // ================== Auth Cognito (ID Token) ==================
       const idToken = await getIdToken();
       if (!idToken) {
         setLoading(false);
@@ -61,7 +72,7 @@ export default function Upload() {
         return;
       }
 
-      const payload = parseJwt(idToken);
+      const payload  = parseJwt(idToken);
       const provider = payload?.iss?.replace(/^https?:\/\//, '');
       if (!provider) {
         setLoading(false);
@@ -69,6 +80,7 @@ export default function Upload() {
         return;
       }
 
+      // ================== Credenciales S3 por Identity Pool ==================
       const credentials = fromCognitoIdentityPool({
         client: new CognitoIdentityClient({ region: REGION }),
         identityPoolId: IDENTITY_POOL_ID,
@@ -77,13 +89,13 @@ export default function Upload() {
 
       const s3 = new S3Client({ region: REGION, credentials });
 
-      const resolved = await s3.config.credentials();
+      const resolved   = await s3.config.credentials();
       const identityId = resolved.identityId;
       if (!identityId) throw new Error('No se pudo resolver tu IdentityId');
 
-      const safe = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
+      const safe    = (file.name || 'archivo.pdf').replace(/[^\w.\-]/g, '_');
       const withPdf = /\.pdf$/i.test(safe) ? safe : `${safe}.pdf`;
-      const key = `private/${identityId}/${Date.now()}-${withPdf}`;
+      const key     = `private/${identityId}/${Date.now()}-${withPdf}`;
 
       const bodyBytes = new Uint8Array(await file.arrayBuffer());
 
@@ -96,25 +108,36 @@ export default function Upload() {
         })
       );
 
+      // ================== Datos del usuario (nombre/correo) ==================
       const session = getSession() || {};
-      const claims = session.claims || {};
+      const claims  = session.claims || payload || {};
+
       const displayName =
         claims.name ||
         [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
         claims.email ||
         'Paciente';
-      
-      const userEmail = claims.email || null;
-      
-      // Para el backend NO mandamos el fallback "Paciente"
-      const apiPatientName = displayName === 'Paciente' ? undefined : displayName;
 
+      const userEmail = claims.email || null;
+
+      // Para el backend no mandamos el literal "Paciente" si es solo fallback
+      const apiPatientName =
+        displayName === 'Paciente' ? undefined : displayName;
+
+      // ================== Notificar a la Lambda /upload ==================
       if (API_BASE) {
+        // Preferimos asegurar aquí el formato Bearer por si getAuthHeader no lo tiene
+        const headerFromHelper = getAuthHeader() || {};
+        const authHeader =
+          headerFromHelper.Authorization
+            ? headerFromHelper
+            : { Authorization: `Bearer ${idToken}` };
+
         await fetch(`${API_BASE}/upload`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...getAuthHeader(),
+            ...authHeader,
           },
           body: JSON.stringify({
             bucket: UPLOADS_BUCKET,
@@ -125,7 +148,7 @@ export default function Upload() {
         });
       }
 
-
+      // ================== Persistimos algunos datos en localStorage ==========
       localStorage.setItem('hematec.identityId', identityId);
       localStorage.setItem('hematec.lastUploadKey', key);
       localStorage.setItem('hematec.lastUploadAt', String(Date.now()));
