@@ -351,6 +351,69 @@ export default function Terms() {
                         por razón de su domicilio presente o futuro.
                         </p>
                     </section>
+                    <section className="terms-section" id="aws">
+                        <h2 className="terms-section-title">
+                            <span className="terms-section-number">15.</span>
+                            <span>Uso de servicios de Amazon Web Services (AWS)</span>
+                        </h2>
+
+                        <p>
+                            La Plataforma Hematec opera sobre infraestructura y microservicios provistos por 
+                            <span className="terms-highlight"> Amazon Web Services (AWS)</span>, incluyendo pero no limitándose a:
+                            <span className="terms-chip"> AWS Lambda</span>, 
+                            <span className="terms-chip"> Amazon Cognito</span>, 
+                            <span className="terms-chip"> Amazon S3</span>, 
+                            <span className="terms-chip"> Amazon DynamoDB</span>, 
+                            <span className="terms-chip"> Amazon Textract</span> y <span className="terms-chip"> Amazon SageMaker</span>.
+                        </p>
+
+                        <p>
+                            Al utilizar Hematec, el usuario reconoce y acepta que el procesamiento, almacenamiento 
+                            y transmisión de datos puede estar sujeto adicionalmente a los 
+                            <span className="terms-highlight"> Términos de Servicio, Políticas de Uso Aceptable</span> 
+                            y <span className="terms-highlight">Acuerdos de Procesamiento de Datos (DPA)</span> de AWS.
+                        </p>
+
+                        <p>
+                            En consecuencia, el usuario acepta que:
+                        </p>
+
+                        <ul className="terms-list">
+                            <li>
+                            AWS opera como <strong>encargado de tratamiento</strong> para ciertos servicios en la nube, 
+                            conforme a lo descrito en su <em>Data Processing Addendum</em> y políticas vigentes.
+                            </li>
+                            <li>
+                            El uso de la Plataforma implica la aceptación de las condiciones técnicas y operativas 
+                            inherentes al uso de dicha infraestructura, incluyendo disponibilidad, mantenimiento, 
+                            rendimiento y continuidad del servicio.
+                            </li>
+                            <li>
+                            La seguridad de la infraestructura subyacente se rige por el modelo de 
+                            <span className="terms-highlight">responsabilidad compartida de AWS</span>, 
+                            donde AWS es responsable de la seguridad de la nube, y Hematec es responsable 
+                            de la seguridad en la nube (configuraciones, accesos, permisos, cifrado, etc.).
+                            </li>
+                            <li>
+                            Cualquier servicio externo proporcionado por AWS está sujeto a sus propios términos, 
+                            los cuales pueden consultarse en: <a 
+                                href="https://aws.amazon.com/es/terms/" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="terms-highlight"
+                            >
+                                https://aws.amazon.com/es/terms/
+                            </a>.
+                            </li>
+                        </ul>
+
+                        <p>
+                            Hematec no controla las decisiones operativas de AWS ni las variaciones que puedan existir 
+                            en sus servicios, políticas o características técnicas. No obstante, mantendrá configuraciones 
+                            orientadas a la seguridad, integridad y disponibilidad de la información en cumplimiento 
+                            con la máxima diligencia.
+                        </p>
+                        </section>
                     </main>
                 </div>
                 </div>
