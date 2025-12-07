@@ -30,7 +30,7 @@ export async function apiFetch(path, options = {}) {
 
   if (token) {
     // Si tu Lambda espera el token "pelón", deja esto:
-    headers['Authorization'] = token;
+    headers['Authorization'] = `Bearer ${token}`;
 
     // Si algún día cambias a `Bearer <token>`, sería:
     // headers['Authorization'] = `Bearer ${token}`;
