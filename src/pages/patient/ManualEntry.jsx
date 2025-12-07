@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleInfo, faXmark, faFlask } from "@fortawesome/free-solid-svg-icons"
 import { postManualPrediction } from '../../api/historyClient'
 import { Popup } from '../../components/Popup/Popup.jsx'
-
 import { getIdentityId } from '../auth/identity.js'
+import { getSession } from '../auth/cognito'
 
 export default function ManualEntry() {
   const [open, setOpen] = useState(false)
@@ -25,6 +25,14 @@ export default function ManualEntry() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const nav = useNavigate()
+
+  const claims = getSession()?.claims || {}
+  const patientName =
+    claims.name ||
+    [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
+    claims.email ||
+    'Paciente'
+  const userEmail = claims.email || null
 
   function handleChange(field) {
     return (e) => {
@@ -86,6 +94,7 @@ export default function ManualEntry() {
         "Basofilos": Number(form.baso),
         "Neutrofilos": Number(form.neut),
       }
+
       let identityId = null
       try {
         identityId = await getIdentityId()
@@ -96,8 +105,12 @@ export default function ManualEntry() {
       const payload = {
         sexo: form.sexo,
         metrics,
-        pk: identityId    
+        pk: identityId,
+        patientName,
+        pacienteNombre: patientName,
+        userEmail
       }
+
       const result = await postManualPrediction(payload)
 
       try {
@@ -112,6 +125,7 @@ export default function ManualEntry() {
       setLoading(false)
     }
   }
+
   return (
     <>
       <div
