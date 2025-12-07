@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-// 👇 IMPORT CORRECTO: sube 3 niveles hasta src, luego api
 import { fetchPredictionByKey } from '../../../api/historyClient';
 
-// Vista de prediagnóstico para el doctor, usando la clave (SK / s3Key)
 export default function DoctorPrediagResults() {
-  // URL: /doctor/prediag/:key
   const { key } = useParams();
   const location = useLocation();
 
-  // Si el <Link> mandó state.predictionKey, usamos eso; si no, usamos :key
   const predictionKey = location.state?.predictionKey || key;
 
   const [loading, setLoading] = useState(true);
@@ -24,7 +20,6 @@ export default function DoctorPrediagResults() {
         setLoading(true);
         setError('');
         const resp = await fetchPredictionByKey(predictionKey);
-        // historyClient generalmente regresa { prediction: {...} }
         const pred = resp?.prediction || resp;
         if (!mounted) return;
         setPrediction(pred || null);
@@ -67,7 +62,11 @@ export default function DoctorPrediagResults() {
             <ul>
               <li>
                 Paciente:{' '}
-                <strong>{prediction.pacienteNombre || '—'}</strong>
+                <strong>
+                  {prediction.patientName ||
+                    prediction.pacienteNombre ||
+                    '—'}
+                </strong>
               </li>
               <li>
                 Sexo:{' '}
