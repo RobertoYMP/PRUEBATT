@@ -165,13 +165,13 @@ export default function DoctorDashboard(){
                         r.downloadUrl && (
                           <button
                             type="button"
-                            className='download-file icon-button'
+                            className="download-file icon-button"
                             onClick={() => handleDownload(r.downloadUrl)}
                             title="Descargar archivo original"
                           >
                             <FontAwesomeIcon
                               icon={faFileArrowDown}
-                              style={{color: "var(--color-secundary)", fontSize: "40px"}}
+                              className="download-file-icon"
                             />
                           </button>
                         )

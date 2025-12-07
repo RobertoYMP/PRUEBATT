@@ -213,7 +213,45 @@ a:hover {
 }
 
 .download-file {
-  cursor: default;
+  border: 2px solid var(--light-blue);
+  background: transparent;
+  color: var(--light-blue);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--card-radius);
+  padding: 0;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.12s ease;
+}
+
+.download-file-icon {
+  font-size: 1.3rem;
+}
+
+.download-file:hover {
+  background: var(--light-blue);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+  transform: translateY(-1px);
+}
+
+.download-file:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.2);
+}
+
+.download-file:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .color-gray {
