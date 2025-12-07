@@ -68,26 +68,62 @@ export async function fetchLatestPrediction() {
 }
 
 // ======================================
-//   NUEVO: PREDIAGNÓSTICO MANUAL
+//   PREDIAGNÓSTICO MANUAL
 // ======================================
 
-export async function postManualPrediction(payload) {
-  const pk = await getIdentityId();
-  const url = `${BASE}/history/manual`;
+export async function postManualPrediction(payload = {}) {
+  // pk definitivo: el que venga en payload o el del Identity Pool
+  const pk = payload.pk || await getIdentityId();
 
-  const res = await fetch(url, {
+  // Extraemos lo importante
+  const {
+    sexo,
+    metrics,
+    patientName,
+    pacienteNombre,
+    userEmail,
+    ...rest
+  } = payload;
+
+  // Limpiamos el nombre: si es "Paciente" (fallback de UI), no lo mandamos
+  const cleanedName =
+    patientName && patientName !== 'Paciente'
+      ? patientName
+      : undefined;
+
+  const cleanedPacienteNombre =
+    pacienteNombre && pacienteNombre !== 'Paciente'
+      ? pacienteNombre
+      : undefined;
+
+  const body = {
+    pk,
+    sexo,
+    metrics,
+    ...rest   // por si quieres mandar algo más en el futuro
+  };
+
+  if (cleanedName) {
+    body.patientName = cleanedName;
+  }
+  if (cleanedPacienteNombre) {
+    body.pacienteNombre = cleanedPacienteNombre;
+  }
+  if (userEmail) {
+    body.userEmail = userEmail;
+  }
+
+  const res = await fetch(`${BASE}/history/manual`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       ...authHeader()
     },
-    body: JSON.stringify({ pk, ...payload })
+    body: JSON.stringify(body)
   });
 
   const item = await parseResponse(res);
 
-  // Tu Lambda /history/manual devuelve directamente el objeto prediction
-  // (no viene envuelto en { prediction: ... })
   const pred = normalizePrediction(item);
   return pred;
 }
