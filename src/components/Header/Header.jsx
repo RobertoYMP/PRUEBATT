@@ -35,6 +35,19 @@ export default function Header() {
   const [notifOpen, setNotifOpen] = useState(false)
   const { notifications, removeNotification } = useNotifications()
 
+  useEffect(() => {
+    function handleCloseMenus() {
+      setOpen(false)
+      setIsOpen(false)    
+      setNotifOpen(false)
+    }
+
+    window.addEventListener('hematec:closeHeaderMenus', handleCloseMenus)
+    return () => {
+      window.removeEventListener('hematec:closeHeaderMenus', handleCloseMenus)
+    }
+  }, [])
+
   useEffect(() => { setIsOpen(false) }, [])
 
   const toggleMenu = () => setIsOpen(!isOpen)

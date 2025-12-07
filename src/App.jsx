@@ -99,11 +99,15 @@ export default function App() {
   function handleAcceptTerms() {
     setTermsAccepted(true)
   }
+
+  function handleMainClick() {
+    window.dispatchEvent(new Event('hematec:closeHeaderMenus'))
+  }
   return (
     <div className="layout">
       <NotificationProvider currentUserId={currentUserId}>
         <Header />
-        <main className="container">
+        <main className="container" onClick={handleMainClick}>
           <Routes>
             {/* Públicas */}
             <Route path="/" element={<Home />} />
