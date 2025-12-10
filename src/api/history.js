@@ -95,6 +95,22 @@ export async function fetchLatestPrediction(pk) {
   };
 }
 
+export async function fetchPredictionByKey(sk) {
+  const res = await fetch(url(`/history/item?key=${encodeURIComponent(sk)}`), {
+    headers: { 'Content-Type': 'application/json', ...authHeader() }
+  });
+
+  const item = await parseResponse(res, '/history/item');
+
+  return {
+    prediction: normalizePrediction(item?.prediction),
+    doctorRecommendations: item?.doctorRecommendations || null,
+    PK: item?.PK || null,
+    SK: item?.SK || sk
+  };
+}
+
+
 // ======================================================
 //  PATCH: GUARDAR RECOMENDACIONES DEL DOCTOR
 // ======================================================
