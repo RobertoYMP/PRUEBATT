@@ -237,16 +237,6 @@ export default function Header() {
                   </>
                 )}
 
-                {role === 'doctor' && (
-                  <>
-                    <Link to="/doctor/history-reviews" className="submenu-item">
-                      <FontAwesomeIcon icon={faBars} style={{ marginRight: "1rem" }} />
-                      Historial de pacientes
-                    </Link>
-                    <hr/>
-                  </>
-                )}
-
                 {role === 'patient' && (
                   <>
                     <Link to="/app/history" className="submenu-item">
