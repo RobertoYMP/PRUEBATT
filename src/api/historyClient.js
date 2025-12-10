@@ -139,7 +139,7 @@ export async function fetchLatestPrediction() {
 // ======================================================
 
 export async function saveDoctorRecommendations(pk, sk, text) {
-  const url = `${BASE}/history/${encodeURIComponent(pk)}/${encodeURIComponent(sk)}/recommendations`;
+    const url = `${BASE}/history/${encodeURIComponent(pk)}/${encodeURIComponent(shortSk)}/recommendations`;
 
   const res = await fetch(url, {
     method: 'PATCH',
