@@ -99,7 +99,7 @@ export async function saveDoctorRecommendations(pk, sk, text) {
 // ======================================================
 //                PREDIAGNÓSTICO MANUAL
 // ======================================================
-
+// src/api/historyClient.js
 export async function postManualPrediction(payload = {}) {
   const pk = payload.pk || await getIdentityId();
 
@@ -149,8 +149,12 @@ export async function postManualPrediction(payload = {}) {
   });
 
   const item = await parseResponse(res);
-  return normalizePrediction(item);
+
+  const prediction = normalizePrediction(item?.prediction ?? item);
+
+  return prediction;
 }
+
 
 // ======================================================
 //                 EXPORTS ORIGINALES
