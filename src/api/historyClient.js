@@ -27,7 +27,9 @@ function normalizePrediction(pred) {
   if (pred && typeof pred === 'string') {
     try {
       return JSON.parse(pred);
-    } catch {}
+    } catch {
+      console.warn('No se pudo parsear prediction string:', pred);
+    }
   }
   return pred || null;
 }
@@ -57,14 +59,15 @@ export async function fetchPredictionByKey(sk) {
 
   const item = await parseResponse(res);
 
-  // prediction plano (objeto del modelo)
+  // prediction viene como JSON string desde Dynamo
   const prediction = normalizePrediction(item?.prediction);
 
-  // inyectar meta que ahora viene en la respuesta HTTP
   if (prediction) {
+    // Inyectamos recomendaciones del doctor si existen
     if (item?.doctorRecommendations !== undefined) {
       prediction.doctorRecommendations = item.doctorRecommendations;
     }
+    // Inyectamos estado_global si viene en el registro
     if (item?.estado_global !== undefined && prediction.estado_global == null) {
       prediction.estado_global = item.estado_global;
     }
@@ -78,30 +81,57 @@ export async function fetchPredictionByKey(sk) {
   };
 }
 
+// ===================== Última predicción =====================
+// NO usamos /history/latest. Todo sale de /history/list + /history/item.
 export async function fetchLatestPrediction() {
   const pk = await getIdentityId();
-  const res = await fetch(
-    `${BASE}/history/latest?pk=${encodeURIComponent(pk)}`,
-    { headers: { 'Content-Type': 'application/json', ...authHeader() } }
-  );
 
-  const item = await parseResponse(res);
+  // 1) Traemos todo el historial del usuario
+  const list = await fetchHistoryList();
 
-  // item ahora viene como { prediction, estado_global, doctorRecommendations }
-  const prediction = normalizePrediction(item?.prediction);
+  if (!Array.isArray(list) || list.length === 0) {
+    console.warn('fetchLatestPrediction: lista vacía');
+    return null;
+  }
 
-  if (prediction) {
-    if (item?.doctorRecommendations !== undefined) {
-      prediction.doctorRecommendations = item.doctorRecommendations;
-    }
-    if (item?.estado_global !== undefined && prediction.estado_global == null) {
-      prediction.estado_global = item.estado_global;
+  // 2) Ordenamos por createdAt desc si viene ese campo
+  const sorted = [...list].sort((a, b) => {
+    const da = new Date(a.createdAt || a.CreatedAt || 0).getTime();
+    const db = new Date(b.createdAt || b.CreatedAt || 0).getTime();
+    if (!isFinite(da) || !isFinite(db)) return 0;
+    return db - da;
+  });
+
+  // 3) Vamos probando cada SK hasta encontrar una prediction "buena"
+  for (const row of sorted) {
+    const sk =
+      row.SK ||
+      row.sk ||
+      row.key ||
+      row.s3Key ||
+      row.filename;
+
+    if (!sk) continue;
+
+    try {
+      const { prediction } = await fetchPredictionByKey(sk);
+
+      if (
+        prediction &&
+        Array.isArray(prediction.detalles) &&
+        prediction.detalles.length > 0
+      ) {
+        // Esta sí trae datos de parámetros → usamos esta
+        return prediction;
+      }
+    } catch (err) {
+      console.warn('Error obteniendo item para SK', sk, err);
     }
   }
 
-  // devolvemos el objeto de predicción plano (como antes),
-  // pero con doctorRecommendations / estado_global incorporados
-  return prediction;
+  // Si ninguna trae detalles, regresamos null
+  console.warn('fetchLatestPrediction: no se encontró prediction con detalles');
+  return null;
 }
 
 // ======================================================
@@ -177,14 +207,12 @@ export async function postManualPrediction(payload = {}) {
     body: JSON.stringify(body)
   });
 
+  // La Lambda de /history/manual regresa directamente prediction
   const item = await parseResponse(res);
-
-  // El endpoint devuelve { PK, SK, ..., prediction }
   const prediction = normalizePrediction(item?.prediction ?? item);
 
   return prediction;
 }
-
 
 // ======================================================
 //                 EXPORTS ORIGINALES
