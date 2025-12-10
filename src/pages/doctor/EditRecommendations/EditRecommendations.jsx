@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import './EditRecommendations.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons"
-import { saveDoctorRecommendations } from '../../../api/historyClient'
+import { saveDoctorRecommendations } from '../../../api/history'
+
 
 export default function EditRecommendations({ pk, sk, initialText, onBack }) {
   const [text, setText] = useState(initialText || "")
