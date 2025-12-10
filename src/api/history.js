@@ -41,13 +41,14 @@ async function parseResponse(res, endpoint = '') {
 
 function normalizePrediction(pred) {
   if (pred && typeof pred === 'string') {
-    try {
-      return JSON.parse(pred);
-    } catch {}
+    try { return JSON.parse(pred); } catch {}
   }
   return pred || null;
 }
 
+// ======================================================
+//  LISTAR HISTORIA
+// ======================================================
 export async function fetchHistoryList(pk) {
   const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
@@ -56,19 +57,58 @@ export async function fetchHistoryList(pk) {
   });
   return parseResponse(res, '/history/list');
 }
+
+// ======================================================
+//  OBTENER UN ESTUDIO
+// ======================================================
 export async function fetchPredictionByKey(sk) {
   const res = await fetch(url(`/history/item?key=${encodeURIComponent(sk)}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
+
   const item = await parseResponse(res, '/history/item');
-  return normalizePrediction(item?.prediction);
+
+  return {
+    prediction: normalizePrediction(item?.prediction),
+    doctorRecommendations: item?.doctorRecommendations || null,
+    PK: item?.PK || null,
+    SK: item?.SK || sk
+  };
 }
+
+// ======================================================
+//  ÚLTIMO ESTUDIO
+// ======================================================
 export async function fetchLatestPrediction(pk) {
   const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
   const res = await fetch(url(`/history/latest${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
+
   const item = await parseResponse(res, '/history/latest');
-  return normalizePrediction(item?.prediction);
+
+  return {
+    prediction: normalizePrediction(item?.prediction),
+    doctorRecommendations: item?.doctorRecommendations || null,
+    estado_global: item?.estado_global || null
+  };
+}
+
+// ======================================================
+//  PATCH: GUARDAR RECOMENDACIONES DEL DOCTOR
+// ======================================================
+export async function saveDoctorRecommendations(pk, sk, text) {
+  const res = await fetch(url(`/history/${pk}/${sk}/recommendations`), {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeader()
+    },
+    body: JSON.stringify({
+      recomendacionesDoctor: text
+    })
+  });
+
+  return parseResponse(res, '/history/.../recommendations');
 }
