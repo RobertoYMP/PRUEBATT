@@ -35,19 +35,15 @@
 .doctordashboard-container > div:nth-of-type(1) {
     margin: 0 auto 1.5rem;
     padding: 0.75rem 3rem;
-    background: rgba(220, 53, 69, 0.10);
+    background: var(--color-gray);
     border-radius: 999px;
-    color: var(--color-gray);
+    color: gray;
     font-weight: 600;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: .08em;
-    border: 1px solid rgba(179, 59, 59, 0.30);
+    border: 1px solid gray;
 }
-
-/* ========================= */
-/*   Tabla de pacientes      */
-/* ========================= */
 
 .table-wrap {
     width: 100%;
