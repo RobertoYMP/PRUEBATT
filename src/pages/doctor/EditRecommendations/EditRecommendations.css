@@ -20,8 +20,8 @@
 
 .button-recommendations-container {
     display: grid;
-    grid-template-columns: auto 25% auto;
-    gap: 20%;
+    grid-template-columns: repeat(3, auto);
+    gap: 1rem;
 }
 
 .button-recommendations-container button{
