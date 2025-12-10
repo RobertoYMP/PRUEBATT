@@ -59,7 +59,7 @@ export default function HistoryReviews() {
       <h2>Historial de pacientes revisados</h2>
 
       <div className='informative'>
-        <b>PACIENTES EN ESTADO CRÍTICO</b>
+        <b>PACIENTES</b>
       </div>
 
       <div className='header-container'>
@@ -83,7 +83,7 @@ export default function HistoryReviews() {
         </div>
       </div>
 
-      <div className="table-wrap">
+      <div className="doctor-table-wrap">
         {loading && <p>Cargando historial…</p>}
         {error && <p className="badge critico">{error}</p>}
         {!loading && !error && filtered.length === 0 && (
@@ -91,7 +91,7 @@ export default function HistoryReviews() {
         )}
 
         {!loading && !error && filtered.length > 0 && (
-          <table className="global-table">
+          <table className="doctor-table">
             <thead>
               <tr>
                 <th>Fecha</th>
