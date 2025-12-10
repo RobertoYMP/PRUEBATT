@@ -133,7 +133,6 @@ export default function Header() {
                 {loggedIn && role === 'doctor' && (
                   <>
                     <Link to="/doctor" onClick={() => setOpen(false)}>Médico</Link>
-                    <Link to="/doctor/history-reviews" onClick={() => setOpen(false)}>Revisiones</Link>
                     <Link to="/doctor/edit-recommendations" onClick={() => setOpen(false)}>Recomendaciones</Link>
                   </>
                 )}
