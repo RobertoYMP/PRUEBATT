@@ -168,10 +168,6 @@ export default function App() {
               element={<RoleRoute role="doctor"><DoctorDashboard /></RoleRoute>}
             />
             <Route
-              path="/doctor/history-reviews"
-              element={<RoleRoute role="doctor"><HistoryReviews /></RoleRoute>}
-            />
-            <Route
               path="/doctor/edit-recommendations"
               element={<RoleRoute role="doctor"><EditRecommendations /></RoleRoute>}
             />
