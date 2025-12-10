@@ -46,28 +46,64 @@ export default function History(){
     return () => { cancel = true }
   }, [])
 
-  const data = useMemo(() => rows.map(x => ({
-    fecha: x.createdAt ? new Date(x.createdAt).toLocaleString() : '—',
-    estado: x.status || '—',
-    examen: x.filename || (x.SK ? x.SK.split('/').pop() : '—'),
-    key: x.SK
-  })), [rows])
+  const data = useMemo(
+  () =>
+    rows.map((x) => {
+      const key =
+        x.SK ||
+        x.sk ||
+        x.key ||
+        x.s3Key ||
+        x.filename ||
+        null;
+
+      return {
+        fecha: x.createdAt
+          ? new Date(x.createdAt).toLocaleString()
+          : (x.CreatedAt
+              ? new Date(x.CreatedAt).toLocaleString()
+              : '—'),
+        estado: x.status || x.Status || '—',
+        examen: x.filename || (key ? String(key).split('/').pop() : '—'),
+        key,
+      };
+    }),
+  [rows]
+);
+
 
   async function onVisualizar(sk) {
-    try {
-      setWorkingKey(sk)
-      setShowOpeningPopup(true)
-      const result = await fetchPredictionByKey(sk)
-      if (!result) throw new Error('Este elemento no tiene predicción disponible aún.')
-      try { localStorage.setItem('lastPrediction', JSON.stringify(result)) } catch {}
-      nav('/app/results', { state: { result } })
-    } catch (e) {
-      alert(e?.message || 'No fue posible cargar el resultado.')
-    } finally {
-      setWorkingKey('')
-      setShowOpeningPopup(false)
+  try {
+    if (!sk) {
+      throw new Error('Este registro no tiene clave asociada (SK).');
     }
+
+    setWorkingKey(sk);
+    setShowOpeningPopup(true);
+
+    const { prediction } = await fetchPredictionByKey(sk);
+
+    if (
+      !prediction ||
+      !Array.isArray(prediction.detalles) ||
+      prediction.detalles.length === 0
+    ) {
+      throw new Error(
+        'Este elemento todavía no tiene resultados de parámetros disponibles.'
+      );
+    }
+    try {
+      localStorage.setItem('lastPrediction', JSON.stringify(prediction));
+    } catch {}
+    nav('/app/results', { state: { result: prediction } });
+  } catch (e) {
+    alert(e?.message || 'No fue posible cargar el resultado.');
+  } finally {
+    setWorkingKey('');
+    setShowOpeningPopup(false);
   }
+}
+
 
   return (
     <>
