@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { saveDoctorRecommendations } from '../../../api/history';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import './EditRecommendations.css'
 
 export default function EditRecommendations({ pk: pkProp, sk: skProp, initialText, autoText, onBack }) {
   const navigate = useNavigate();
