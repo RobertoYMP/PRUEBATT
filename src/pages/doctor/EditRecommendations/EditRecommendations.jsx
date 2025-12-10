@@ -12,7 +12,6 @@ export default function EditRecommendations({ pk: pkProp, sk: skProp, initialTex
 
   const pk = pkProp || params.get('pk') || '';
   const sk = skProp || params.get('sk') || '';
-  const shortSk = sk ? sk.substring(0, 8) : '';
 
   const [text, setText] = useState(initialText || autoText || '');
   const [saving, setSaving] = useState(false);
@@ -86,7 +85,7 @@ export default function EditRecommendations({ pk: pkProp, sk: skProp, initialTex
           Regresar
         </button>
 
-      <button
+        <button
           className="button-primary"
           type="button"
           onClick={handleSave}
