@@ -91,7 +91,7 @@ export default function DoctorDashboard(){
   return (
     <div className="doctordashboard-container">
       <h2>¡Es un placer tenerte aquí, {displayName}!</h2>
-      <div className='informative'><b>PACIENTES EN ESTADO CRÍTICO</b></div>
+      <div className='informative'><b>PACIENTES</b></div>
 
       <div className='header-container'>
         <div className='field input-search'>
