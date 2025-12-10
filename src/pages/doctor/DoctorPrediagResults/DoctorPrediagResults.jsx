@@ -1,7 +1,7 @@
 // src/pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { fetchPredictionByKey, saveDoctorRecommendations } from '../../../api/history';
+import { fetchPredictionByKey } from '../../../api/history';
 import EditRecommendations from '../EditRecommendations/EditRecommendations';
 
 export default function DoctorPrediagResults() {
@@ -15,7 +15,6 @@ export default function DoctorPrediagResults() {
   const [doctorRec, setDoctorRec] = useState(null);
   const [pk, setPk] = useState(null);
   const [sk, setSk] = useState(null);
-
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -50,12 +49,22 @@ export default function DoctorPrediagResults() {
     ? prediction.detalles
     : [];
 
+  const autoText = useMemo(() => {
+    if (!detalles.length) return '';
+    const lines = detalles
+      .filter(d => d.Recomendacion)
+      .map(d => `• ${d.Parametro}: ${d.Recomendacion}`);
+    if (!lines.length) return '';
+    return lines.join('\n');
+  }, [detalles]);
+
   if (editing) {
     return (
       <EditRecommendations
         pk={pk}
         sk={sk}
-        initialText={doctorRec || ''}
+        initialText={doctorRec}
+        autoText={autoText}
         onBack={() => setEditing(false)}
       />
     );
@@ -85,7 +94,8 @@ export default function DoctorPrediagResults() {
                 Sexo: <strong>{prediction.sexo || '—'}</strong>
               </li>
               <li>
-                Cluster: <strong>{prediction.cluster ?? '—'}</strong>
+                Cluster:{' '}
+                <strong>{prediction.cluster ?? '—'}</strong>
               </li>
               {prediction.estado_global && (
                 <li>
