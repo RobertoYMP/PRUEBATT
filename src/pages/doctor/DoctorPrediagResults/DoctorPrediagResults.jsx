@@ -29,7 +29,12 @@ export default function DoctorPrediagResults() {
         if (!mounted) return;
 
         setPrediction(resp?.prediction || null);
-        setDoctorRec(resp?.doctorRecommendations || null);
+        setDoctorRec(
+          typeof resp?.doctorRecommendations === 'string' &&
+          resp.doctorRecommendations.trim().length > 0
+            ? resp.doctorRecommendations
+            : null
+        );
         setPk(resp?.PK || null);
         setSk(resp?.SK || null);
       } catch (err) {
@@ -52,8 +57,8 @@ export default function DoctorPrediagResults() {
   const autoText = useMemo(() => {
     if (!detalles.length) return '';
     const lines = detalles
-      .filter(d => d.Recomendacion)
-      .map(d => `• ${d.Parametro}: ${d.Recomendacion}`);
+      .filter((d) => d.Recomendacion)
+      .map((d) => `• ${d.Parametro}: ${d.Recomendacion}`);
     if (!lines.length) return '';
     return lines.join('\n');
   }, [detalles]);
@@ -136,7 +141,7 @@ export default function DoctorPrediagResults() {
                         <td>{r.Estado || '—'}</td>
                         <td>{r.Severidad || '—'}</td>
                         <td style={{ whiteSpace: 'pre-line' }}>
-                          {doctorRec || r.Recomendacion || '—'}
+                          {r.Recomendacion || '—'}
                         </td>
                       </tr>
                     ))}
