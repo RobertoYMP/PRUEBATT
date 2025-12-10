@@ -1,7 +1,7 @@
 // DoctorPrediagResults.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { fetchPredictionByKey } from '../../../api/historyClient';
+import { saveDoctorRecommendations } from '../../../api/history'
 import EditRecommendations from '../EditRecommendations/EditRecommendations';
 
 export default function DoctorPrediagResults() {
