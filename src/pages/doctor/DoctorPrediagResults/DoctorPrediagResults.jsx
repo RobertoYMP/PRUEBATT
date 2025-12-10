@@ -1,7 +1,7 @@
-// DoctorPrediagResults.jsx
+// src/pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { saveDoctorRecommendations } from '../../../api/history'
+import { fetchPredictionByKey, saveDoctorRecommendations } from '../../../api/history';
 import EditRecommendations from '../EditRecommendations/EditRecommendations';
 
 export default function DoctorPrediagResults() {
@@ -41,7 +41,9 @@ export default function DoctorPrediagResults() {
       }
     })();
 
-    return () => { mounted = false };
+    return () => {
+      mounted = false;
+    };
   }, [predictionKey]);
 
   const detalles = Array.isArray(prediction?.detalles)
@@ -53,7 +55,7 @@ export default function DoctorPrediagResults() {
       <EditRecommendations
         pk={pk}
         sk={sk}
-        initialText={doctorRec || ""}
+        initialText={doctorRec || ''}
         onBack={() => setEditing(false)}
       />
     );
@@ -71,11 +73,25 @@ export default function DoctorPrediagResults() {
           <section style={{ marginTop: 16 }}>
             <h2>Datos del paciente</h2>
             <ul>
-              <li>Paciente: <strong>{prediction.patientName || prediction.pacienteNombre || '—'}</strong></li>
-              <li>Sexo: <strong>{prediction.sexo || '—'}</strong></li>
-              <li>Cluster: <strong>{prediction.cluster ?? '—'}</strong></li>
+              <li>
+                Paciente:{' '}
+                <strong>
+                  {prediction.patientName ||
+                    prediction.pacienteNombre ||
+                    '—'}
+                </strong>
+              </li>
+              <li>
+                Sexo: <strong>{prediction.sexo || '—'}</strong>
+              </li>
+              <li>
+                Cluster: <strong>{prediction.cluster ?? '—'}</strong>
+              </li>
               {prediction.estado_global && (
-                <li>Estado global: <strong>{prediction.estado_global}</strong></li>
+                <li>
+                  Estado global:{' '}
+                  <strong>{prediction.estado_global}</strong>
+                </li>
               )}
             </ul>
           </section>
@@ -109,7 +125,7 @@ export default function DoctorPrediagResults() {
                         <td>{r.Max ?? '—'}</td>
                         <td>{r.Estado || '—'}</td>
                         <td>{r.Severidad || '—'}</td>
-                        <td style={{ whiteSpace: "pre-line" }}>
+                        <td style={{ whiteSpace: 'pre-line' }}>
                           {doctorRec || r.Recomendacion || '—'}
                         </td>
                       </tr>
@@ -123,7 +139,7 @@ export default function DoctorPrediagResults() {
           <section style={{ marginTop: 24 }}>
             <h2>Recomendaciones del doctor</h2>
             {doctorRec ? (
-              <p style={{ whiteSpace: "pre-line" }}>{doctorRec}</p>
+              <p style={{ whiteSpace: 'pre-line' }}>{doctorRec}</p>
             ) : (
               <p>No hay recomendaciones del doctor aún.</p>
             )}
