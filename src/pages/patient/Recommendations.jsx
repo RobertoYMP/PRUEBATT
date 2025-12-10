@@ -1,36 +1,45 @@
-// Recommendations.jsx
-import React from 'react'
-import { usePrediction } from '../../hooks/usePrediction'
+// src/pages/patient/Recommendations.jsx
+import React from 'react';
+import { usePrediction } from '../../hooks/usePrediction';
 import { useNavigate } from 'react-router-dom';
 
-function sevToOrder(sev='ok'){
-  const s = String(sev).toLowerCase()
-  if (['grave','severo','severa','high'].includes(s)) return 2
-  if (['leve','moderado','moderada','medium'].includes(s)) return 1
-  return 0
-}
-function sevToBadge(sev='ok'){
-  const s = String(sev).toLowerCase()
-  if (['grave','severo','severa','high'].includes(s)) return 'grave'
-  if (['leve','moderado','moderada','medium'].includes(s)) return 'critico'
-  return 'estable'
+function sevToOrder(sev = 'ok') {
+  const s = String(sev).toLowerCase();
+  if (['grave', 'severo', 'severa', 'high'].includes(s)) return 2;
+  if (['leve', 'moderado', 'moderada', 'medium'].includes(s)) return 1;
+  return 0;
 }
 
-export default function Recommendations(){
+function sevToBadge(sev = 'ok') {
+  const s = String(sev).toLowerCase();
+  if (['grave', 'severo', 'severa', 'high'].includes(s)) return 'grave';
+  if (['leve', 'moderado', 'moderada', 'medium'].includes(s)) return 'critico';
+  return 'estable';
+}
+
+export default function Recommendations() {
   const nav = useNavigate();
-  const { result, detalles, loading, error } = usePrediction(true)
+  const { result, detalles, loading, error } = usePrediction(true);
 
-  const doctorRec = result?.doctorRecommendations || null
-  const dest = Array.isArray(result?.recomendaciones_destacadas) ? result.recomendaciones_destacadas : []
-  const nota = result?.nota
+  const doctorRec =
+    typeof result?.doctorRecommendations === 'string' &&
+    result.doctorRecommendations.trim().length > 0
+      ? result.doctorRecommendations
+      : null;
+
+  const dest = Array.isArray(result?.recomendaciones_destacadas)
+    ? result.recomendaciones_destacadas
+    : [];
+
+  const nota = result?.nota;
 
   const notaFront = nota
     ? nota.replace(/educativo/gi, 'orientativo')
-    : 'La información mostrada es orientativa y no sustituye una valoración médica profesional.'
+    : 'La información mostrada es orientativa y no sustituye una valoración médica profesional.';
 
   const específicas = detalles
-    .filter(d => String(d.Severidad||'ok').toLowerCase() !== 'ok')
-    .sort((a,b) => sevToOrder(b.Severidad) - sevToOrder(a.Severidad))
+    .filter((d) => String(d.Severidad || 'ok').toLowerCase() !== 'ok')
+    .sort((a, b) => sevToOrder(b.Severidad) - sevToOrder(a.Severidad));
 
   return (
     <>
@@ -57,7 +66,7 @@ export default function Recommendations(){
         {doctorRec && (
           <section className="results-section">
             <h3 className="results-section-title">Recomendación médica</h3>
-            <p style={{ whiteSpace: "pre-line" }}>{doctorRec}</p>
+            <p style={{ whiteSpace: 'pre-line' }}>{doctorRec}</p>
           </section>
         )}
 
@@ -93,7 +102,9 @@ export default function Recommendations(){
                       {d.Parametro}
                     </strong>
                     <span
-                      className={`badge ${sevToBadge(d.Severidad)} results-param-badge`}
+                      className={`badge ${sevToBadge(
+                        d.Severidad
+                      )} results-param-badge`}
                     >
                       {d.Estado} · {d.Severidad}
                     </span>
@@ -109,7 +120,7 @@ export default function Recommendations(){
                   </div>
 
                   <p className="results-param-recommendation">
-                    {doctorRec || d.Recomendacion || ''}
+                    {d.Recomendacion || ''}
                   </p>
                 </article>
               ))}
@@ -118,7 +129,7 @@ export default function Recommendations(){
         </section>
       </div>
 
-      <hr style={{marginTop: '2.5rem'}}/>
+      <hr style={{ marginTop: '2.5rem' }} />
 
       <div className="button-back-container">
         <button className="button-secondary" onClick={() => nav(-1)}>
@@ -126,5 +137,5 @@ export default function Recommendations(){
         </button>
       </div>
     </>
-  )
+  );
 }
