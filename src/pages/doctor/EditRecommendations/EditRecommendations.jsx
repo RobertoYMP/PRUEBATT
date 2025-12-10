@@ -1,12 +1,19 @@
 // src/pages/doctor/EditRecommendations/EditRecommendations.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { saveDoctorRecommendations } from '../../../api/history';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-export default function EditRecommendations({ pk, sk, initialText, autoText, onBack }) {
+export default function EditRecommendations({ pk: pkProp, sk: skProp, initialText, autoText, onBack }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
+  const pk = pkProp || params.get('pk') || '';
+  const sk = skProp || params.get('sk') || '';
+  const shortSk = sk ? sk.substring(0, 8) : '';
+
   const [text, setText] = useState(initialText || autoText || '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -79,7 +86,7 @@ export default function EditRecommendations({ pk, sk, initialText, autoText, onB
           Regresar
         </button>
 
-        <button
+      <button
           className="button-primary"
           type="button"
           onClick={handleSave}
