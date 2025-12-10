@@ -57,8 +57,21 @@ export async function fetchPredictionByKey(sk) {
 
   const item = await parseResponse(res);
 
+  // prediction plano (objeto del modelo)
+  const prediction = normalizePrediction(item?.prediction);
+
+  // inyectar meta que ahora viene en la respuesta HTTP
+  if (prediction) {
+    if (item?.doctorRecommendations !== undefined) {
+      prediction.doctorRecommendations = item.doctorRecommendations;
+    }
+    if (item?.estado_global !== undefined && prediction.estado_global == null) {
+      prediction.estado_global = item.estado_global;
+    }
+  }
+
   return {
-    prediction: normalizePrediction(item?.prediction),
+    prediction,
     doctorRecommendations: item?.doctorRecommendations || null,
     PK: item?.PK || null,
     SK: item?.SK || sk || null
@@ -71,8 +84,24 @@ export async function fetchLatestPrediction() {
     `${BASE}/history/latest?pk=${encodeURIComponent(pk)}`,
     { headers: { 'Content-Type': 'application/json', ...authHeader() } }
   );
+
   const item = await parseResponse(res);
-  return normalizePrediction(item?.prediction);
+
+  // item ahora viene como { prediction, estado_global, doctorRecommendations }
+  const prediction = normalizePrediction(item?.prediction);
+
+  if (prediction) {
+    if (item?.doctorRecommendations !== undefined) {
+      prediction.doctorRecommendations = item.doctorRecommendations;
+    }
+    if (item?.estado_global !== undefined && prediction.estado_global == null) {
+      prediction.estado_global = item.estado_global;
+    }
+  }
+
+  // devolvemos el objeto de predicción plano (como antes),
+  // pero con doctorRecommendations / estado_global incorporados
+  return prediction;
 }
 
 // ======================================================
@@ -99,7 +128,7 @@ export async function saveDoctorRecommendations(pk, sk, text) {
 // ======================================================
 //                PREDIAGNÓSTICO MANUAL
 // ======================================================
-// src/api/historyClient.js
+
 export async function postManualPrediction(payload = {}) {
   const pk = payload.pk || await getIdentityId();
 
@@ -150,6 +179,7 @@ export async function postManualPrediction(payload = {}) {
 
   const item = await parseResponse(res);
 
+  // El endpoint devuelve { PK, SK, ..., prediction }
   const prediction = normalizePrediction(item?.prediction ?? item);
 
   return prediction;
