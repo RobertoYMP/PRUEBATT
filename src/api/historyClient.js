@@ -76,7 +76,7 @@ export async function fetchLatestPrediction() {
 }
 
 // ======================================================
-//        PATCH: Guardar recomendaciones del doctor
+//   PATCH: Guardar recomendaciones del doctor
 // ======================================================
 
 export async function saveDoctorRecommendations(pk, sk, text) {
