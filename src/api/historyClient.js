@@ -59,15 +59,12 @@ export async function fetchPredictionByKey(sk) {
 
   const item = await parseResponse(res);
 
-  // prediction viene como JSON string desde Dynamo
   const prediction = normalizePrediction(item?.prediction);
 
   if (prediction) {
-    // Inyectamos recomendaciones del doctor si existen
     if (item?.doctorRecommendations !== undefined) {
       prediction.doctorRecommendations = item.doctorRecommendations;
     }
-    // Inyectamos estado_global si viene en el registro
     if (item?.estado_global !== undefined && prediction.estado_global == null) {
       prediction.estado_global = item.estado_global;
     }
@@ -82,11 +79,9 @@ export async function fetchPredictionByKey(sk) {
 }
 
 // ===================== Última predicción =====================
-// NO usamos /history/latest. Todo sale de /history/list + /history/item.
 export async function fetchLatestPrediction() {
   const pk = await getIdentityId();
 
-  // 1) Traemos todo el historial del usuario
   const list = await fetchHistoryList();
 
   if (!Array.isArray(list) || list.length === 0) {
@@ -94,7 +89,6 @@ export async function fetchLatestPrediction() {
     return null;
   }
 
-  // 2) Ordenamos por createdAt desc si viene ese campo
   const sorted = [...list].sort((a, b) => {
     const da = new Date(a.createdAt || a.CreatedAt || 0).getTime();
     const db = new Date(b.createdAt || b.CreatedAt || 0).getTime();
@@ -102,7 +96,6 @@ export async function fetchLatestPrediction() {
     return db - da;
   });
 
-  // 3) Vamos probando cada SK hasta encontrar una prediction "buena"
   for (const row of sorted) {
     const sk =
       row.SK ||
@@ -121,7 +114,6 @@ export async function fetchLatestPrediction() {
         Array.isArray(prediction.detalles) &&
         prediction.detalles.length > 0
       ) {
-        // Esta sí trae datos de parámetros → usamos esta
         return prediction;
       }
     } catch (err) {
@@ -129,7 +121,6 @@ export async function fetchLatestPrediction() {
     }
   }
 
-  // Si ninguna trae detalles, regresamos null
   console.warn('fetchLatestPrediction: no se encontró prediction con detalles');
   return null;
 }
@@ -139,7 +130,13 @@ export async function fetchLatestPrediction() {
 // ======================================================
 
 export async function saveDoctorRecommendations(pk, sk, text) {
-    const url = `${BASE}/history/${encodeURIComponent(pk)}/${encodeURIComponent(shortSk)}/recommendations`;
+  if (!pk || !sk) {
+    throw new Error('Faltan identificadores del estudio.');
+  }
+
+  const shortSk = String(sk).split('/').pop() || '';
+
+  const url = `${BASE}/history/${encodeURIComponent(pk)}/${encodeURIComponent(shortSk)}/recommendations`;
 
   const res = await fetch(url, {
     method: 'PATCH',
@@ -148,7 +145,7 @@ export async function saveDoctorRecommendations(pk, sk, text) {
       ...authHeader()
     },
     body: JSON.stringify({
-      recomendacionesDoctor: text
+      recomendacionesDoctor: text || ''
     })
   });
 
@@ -207,7 +204,6 @@ export async function postManualPrediction(payload = {}) {
     body: JSON.stringify(body)
   });
 
-  // La Lambda de /history/manual regresa directamente prediction
   const item = await parseResponse(res);
   const prediction = normalizePrediction(item?.prediction ?? item);
 
