@@ -26,7 +26,7 @@ import EditSpecialist from './pages/admin/EditSpecialist/EditSpecialist.jsx'
 import PatientProfile from './pages/admin/PatientProfile/PatientProfile.jsx'
 import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile.jsx'
 import { NotificationProvider } from "./context/NotificationContext"
-import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
+//import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 import { Popup } from './components/Popup/Popup.jsx'
 import { faFileSignature } from '@fortawesome/free-solid-svg-icons'
 
