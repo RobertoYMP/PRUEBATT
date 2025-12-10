@@ -52,14 +52,16 @@ function normalizePrediction(pred) {
 export async function fetchHistoryList(pk) {
   const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
+
   const res = await fetch(url(`/history/list${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
+
   return parseResponse(res, '/history/list');
 }
 
 // ======================================================
-//  OBTENER UN ESTUDIO
+//  OBTENER UN ESTUDIO POR SK
 // ======================================================
 export async function fetchPredictionByKey(sk) {
   const res = await fetch(url(`/history/item?key=${encodeURIComponent(sk)}`), {
@@ -77,11 +79,12 @@ export async function fetchPredictionByKey(sk) {
 }
 
 // ======================================================
-//  ÚLTIMO ESTUDIO
+//  ÚLTIMO ESTUDIO POR PK
 // ======================================================
 export async function fetchLatestPrediction(pk) {
   const _pk = pk || await getIdentityId();
   const qs = `?pk=${encodeURIComponent(_pk)}`;
+
   const res = await fetch(url(`/history/latest${qs}`), {
     headers: { 'Content-Type': 'application/json', ...authHeader() }
   });
@@ -94,22 +97,6 @@ export async function fetchLatestPrediction(pk) {
     estado_global: item?.estado_global || null
   };
 }
-
-export async function fetchPredictionByKey(sk) {
-  const res = await fetch(url(`/history/item?key=${encodeURIComponent(sk)}`), {
-    headers: { 'Content-Type': 'application/json', ...authHeader() }
-  });
-
-  const item = await parseResponse(res, '/history/item');
-
-  return {
-    prediction: normalizePrediction(item?.prediction),
-    doctorRecommendations: item?.doctorRecommendations || null,
-    PK: item?.PK || null,
-    SK: item?.SK || sk
-  };
-}
-
 
 // ======================================================
 //  PATCH: GUARDAR RECOMENDACIONES DEL DOCTOR
@@ -128,4 +115,3 @@ export async function saveDoctorRecommendations(pk, sk, text) {
 
   return parseResponse(res, '/history/.../recommendations');
 }
-
