@@ -112,3 +112,4 @@ export async function saveDoctorRecommendations(pk, sk, text) {
 
   return parseResponse(res, '/history/.../recommendations');
 }
+
