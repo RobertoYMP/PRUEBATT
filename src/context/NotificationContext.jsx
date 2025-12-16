@@ -1,22 +1,16 @@
-// src/context/NotificationContext.jsx
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { getSession } from '../pages/auth/cognito' // <-- ya lo tienes en tu proyecto
+import { getSession } from '../pages/auth/cognito' 
 
 const NotificationContext = createContext(null)
 export const useNotifications = () => useContext(NotificationContext)
 
-// ——— helpers ———
 function storageKey(sub) {
-  // cada usuario tiene su propio espacio de notificaciones
   const who = sub || 'anon'
   return `hematec.notifications.${who}`
 }
 
 export function NotificationProvider({ children }) {
-  // ---- quién es el usuario actual (Cognito) ----
   const sub = getSession()?.claims?.sub || null
-
-  // ---- estado ----
   const [items, setItems] = useState(() => {
     try {
       const raw = localStorage.getItem(storageKey(sub))
@@ -26,10 +20,8 @@ export function NotificationProvider({ children }) {
     }
   })
 
-  // set para deduplicar por id
   const known = useRef(new Set(items.map(i => i.id)))
 
-  // cuando cambie el usuario (sub), recargamos sus notifs del storage
   useEffect(() => {
     try {
       const raw = localStorage.getItem(storageKey(sub))
@@ -40,18 +32,14 @@ export function NotificationProvider({ children }) {
       known.current = new Set()
       setItems([])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sub])
 
-  // persistencia por usuario
   useEffect(() => {
     try { localStorage.setItem(storageKey(sub), JSON.stringify(items)) } catch {}
   }, [items, sub])
-
-  // ---- API ----
   const addNotification = (id, text, style = {}, ttlMs = 0) => {
     if (!id || !text) return
-    if (known.current.has(id)) return // no duplicar
+    if (known.current.has(id)) return 
     known.current.add(id)
     const n = {
       id,
@@ -72,7 +60,6 @@ export function NotificationProvider({ children }) {
     setItems(prev => prev.filter(n => n.id !== id))
   }
 
-  // compat: borrar por índice relativo a la lista actual
   const removeNotification = (index) => {
     setItems(prev => {
       const n = prev[index]
