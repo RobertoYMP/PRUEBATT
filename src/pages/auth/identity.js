@@ -1,4 +1,3 @@
-// src/pages/auth/identity.js
 import { CognitoIdentityClient, GetIdCommand } from "@aws-sdk/client-cognito-identity";
 
 const REGION = import.meta.env.VITE_COG_REGION || "us-east-2";
