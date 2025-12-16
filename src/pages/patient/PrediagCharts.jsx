@@ -1,4 +1,3 @@
-// src/pages/patient/PrediagCharts.jsx
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts'
