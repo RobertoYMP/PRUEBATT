@@ -28,29 +28,21 @@ import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile
 import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 import { Popup } from './components/Popup/Popup.jsx'
-import { faFileSignature } from '@fortawesome/free-solid-svg-icons'
-
-// ⬇️ NUEVO: vista de prediagnóstico para el doctor
+import { faFileSignature } from '@fortawesome/free-solid-svg-icons
 import DoctorPrediagResults from './pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx'
-
-// ⬇️ Importa initSession para “hidratar” Cognito al arrancar
 import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
 
-// Destino por rol
 function targetByRole(role) {
   if (role === 'admin')  return '/admin/users'
   if (role === 'doctor') return '/doctor'
   return '/app'
 }
 
-// Espera a que Cognito resuelva sesión/refresh antes de decidir
 function useAuthReady() {
   const [ready, setReady] = React.useState(false)
   React.useEffect(() => { initSession().finally(() => setReady(true)) }, [])
   return ready
 }
-
-// Públicas de auth (permiten ?force=1 para abrir aunque haya sesión)
 function PublicAuth({ children }) {
   const ready = useAuthReady()
   if (!ready) return null
@@ -62,8 +54,6 @@ function PublicAuth({ children }) {
   }
   return children
 }
-
-// Protegidas + rol
 function RoleRoute({ role, children }) {
   const ready = useAuthReady()
   if (!ready) return null
@@ -72,8 +62,6 @@ function RoleRoute({ role, children }) {
   if (role && r !== role) return <Navigate to={targetByRole(r)} replace />
   return children
 }
-
-// /logout
 function Logout() {
   React.useEffect(() => { signOut() }, [])
   return <Navigate to="/login" replace />
@@ -175,13 +163,10 @@ export default function App() {
               path="/doctor/edit-recommendations"
               element={<RoleRoute role="doctor"><EditRecommendations /></RoleRoute>}
             />
-            {/* NUEVA ruta: ver prediagnóstico específico del doctor */}
             <Route
               path="/doctor/prediag/:key"
               element={<RoleRoute role="doctor"><DoctorPrediagResults /></RoleRoute>}
             />
-
-            {/* Admin */}
             <Route
               path="/admin/users"
               element={<RoleRoute role="admin"><Users /></RoleRoute>}
