@@ -1,4 +1,3 @@
-// src/components/Notification/NotificationItem.jsx
 import React from "react";
 import "./Notifications.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
