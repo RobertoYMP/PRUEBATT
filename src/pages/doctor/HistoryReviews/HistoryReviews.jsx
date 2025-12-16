@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import './HistoryReviews.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faFileArrowDown, faEye } from "@fortawesome/free-solid-svg-icons";
-
-// 👇 usamos el mismo cliente que en DoctorDashboard
 import { fetchCriticalPatients } from '../../../api/doctorClient';
 
 export default function HistoryReviews() {
@@ -24,8 +22,6 @@ export default function HistoryReviews() {
         setError('');
         const data = await fetchCriticalPatients();
         if (cancelled) return;
-        // Aquí podrías filtrar solo los ya revisados si luego guardas un flag,
-        // por ahora mostramos la misma lista crítica que en el dashboard.
         setRows(data);
       } catch (err) {
         if (cancelled) return;
@@ -38,7 +34,6 @@ export default function HistoryReviews() {
     return () => { cancelled = true; };
   }, []);
 
-  // Filtro por nombre y fecha
   useEffect(() => {
     const lower = search.toLowerCase();
     const filteredRows = rows.filter(r => {
