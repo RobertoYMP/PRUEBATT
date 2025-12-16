@@ -1,7 +1,5 @@
-// src/api/historyClient.js
 import { getIdentityId } from '../pages/auth/identity.js';
 
-// ===================== Auth header =====================
 function authHeader() {
   try {
     const raw = localStorage.getItem('hematec.session');
@@ -27,9 +25,7 @@ function normalizePrediction(pred) {
   if (pred && typeof pred === 'string') {
     try {
       return JSON.parse(pred);
-    } catch {
-      console.warn('No se pudo parsear prediction string:', pred);
-    }
+    } catch {}
   }
   return pred || null;
 }
@@ -37,10 +33,6 @@ function normalizePrediction(pred) {
 const API_BASE_RAW = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
 const STAGE = (import.meta.env.VITE_API_STAGE || 'prod').replace(/^\/+|\/+$/g, '');
 const BASE = STAGE ? `${API_BASE_RAW}/${STAGE}` : API_BASE_RAW;
-
-// ======================================================
-//                     HISTORY
-// ======================================================
 
 export async function fetchHistoryList() {
   const pk = await getIdentityId();
@@ -58,7 +50,6 @@ export async function fetchPredictionByKey(sk) {
   );
 
   const item = await parseResponse(res);
-
   const prediction = normalizePrediction(item?.prediction);
 
   if (prediction) {
@@ -78,14 +69,11 @@ export async function fetchPredictionByKey(sk) {
   };
 }
 
-// ===================== Última predicción =====================
 export async function fetchLatestPrediction() {
   const pk = await getIdentityId();
-
   const list = await fetchHistoryList();
 
   if (!Array.isArray(list) || list.length === 0) {
-    console.warn('fetchLatestPrediction: lista vacía');
     return null;
   }
 
@@ -116,18 +104,11 @@ export async function fetchLatestPrediction() {
       ) {
         return prediction;
       }
-    } catch (err) {
-      console.warn('Error obteniendo item para SK', sk, err);
-    }
+    } catch {}
   }
 
-  console.warn('fetchLatestPrediction: no se encontró prediction con detalles');
   return null;
 }
-
-// ======================================================
-//   PATCH: Guardar recomendaciones del doctor
-// ======================================================
 
 export async function saveDoctorRecommendations(pk, sk, text) {
   if (!pk || !sk) {
@@ -135,7 +116,6 @@ export async function saveDoctorRecommendations(pk, sk, text) {
   }
 
   const shortSk = String(sk).split('/').pop() || '';
-
   const url = `${BASE}/history/${encodeURIComponent(pk)}/${encodeURIComponent(shortSk)}/recommendations`;
 
   const res = await fetch(url, {
@@ -151,10 +131,6 @@ export async function saveDoctorRecommendations(pk, sk, text) {
 
   return parseResponse(res);
 }
-
-// ======================================================
-//                PREDIAGNÓSTICO MANUAL
-// ======================================================
 
 export async function postManualPrediction(payload = {}) {
   const pk = payload.pk || await getIdentityId();
@@ -209,10 +185,6 @@ export async function postManualPrediction(payload = {}) {
 
   return prediction;
 }
-
-// ======================================================
-//                 EXPORTS ORIGINALES
-// ======================================================
 
 export {
   fetchLatestPrediction as getLatestByPk,
