@@ -11,8 +11,8 @@ export default function ResetPassword() {
 
   const [email, setEmail] = useState(initialEmail);
   const [code, setCode]   = useState('');
-  const [a, setA]         = useState(''); // nueva contraseña
-  const [b, setB]         = useState(''); // confirmación
+  const [a, setA]         = useState(''); 
+  const [b, setB]         = useState(''); 
   const [ok, setOk]       = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,6 @@ export default function ResetPassword() {
     try {
       await confirmPassword({ email, code, newPassword: a });
       setOk(true);
-      // Limpia el email temporal
       try { sessionStorage.removeItem('fp_email'); } catch {}
     } catch (err) {
       const msg = err?.message || 'No se pudo cambiar la contraseña';
@@ -49,7 +48,6 @@ export default function ResetPassword() {
           {error && <div className="badge critico">{error}</div>}
 
           <form onSubmit={onSubmit} className="stack">
-            {/* Email: editable por si el usuario cambió de idea */}
             <FormField
               label="Correo electrónico"
               type="email"
