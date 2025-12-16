@@ -1,4 +1,3 @@
-// src/pages/patient/Notifications.jsx
 import React from 'react'
 import { useNotifications } from '../../context/NotificationContext'
 import NotificationList from '../../components/Notification/NotificationList'
