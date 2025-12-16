@@ -1,4 +1,3 @@
-// src/pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { fetchPredictionByKey } from '../../../api/history';
