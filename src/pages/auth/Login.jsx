@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import FormField from '../../components/FormField.jsx'; 
-import { signIn } from './cognito'; // mismo archivo, ya actualizado
+import { signIn } from './cognito'; 
 import '../../styles/login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +11,6 @@ function targetByRole(role) {
   if (role === 'doctor') return '/doctor';
   return '/app';
 }
-
 export default function Login() {
   const nav = useNavigate();
   const [email, setEmail]       = useState('');
@@ -27,19 +26,9 @@ export default function Login() {
       const { role } = await signIn({ email, password });
       const dest = targetByRole(role);
       console.debug('[auth] redirect →', dest);
-
-      // 1) navegación SPA
       nav(dest, { replace: true });
 
-      // 2) “cinturón y tirantes”: si por alguna razón el router no empuja,
-      //   forzamos el cambio de URL (útil en S3/CloudFront con reglas de rewrite)
-    /*  setTimeout(() => {
-        if (location.pathname !== dest) {
-          window.location.assign(dest);
-        }
-      }, 100);*/
     } catch (err) {
-      // Mensaje legible
       const msg =
         err?.message ||
         err?.code ||
