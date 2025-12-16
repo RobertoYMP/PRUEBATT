@@ -1,4 +1,3 @@
-// src/pages/patient/PrediagResults.jsx
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { fetchLatestPrediction } from '../../api/historyClient'
@@ -17,7 +16,6 @@ function derivePatternsFromResumen(prediction) {
 
   const patterns = []
 
-  // Serie roja (glóbulos rojos)
   const serieRojaAltBaj = hasAny(bajos, [
     'Hemoglobina',
     'Hematocrito',
@@ -41,8 +39,7 @@ function derivePatternsFromResumen(prediction) {
         'Se observan parámetros relacionados con eritrocitos y/o hemoglobina fuera de rango. Este patrón puede ser compatible con alteraciones en la oxigenación o en el recambio de glóbulos rojos y requiere interpretación médica.'
     })
   }
-
-  // Serie blanca (leucocitos y diferenciación)
+  
   const serieBlancaAltBaj = hasAny(altos, [
     'Leucocitos',
     'Neutrofilos (%)',
@@ -72,7 +69,6 @@ function derivePatternsFromResumen(prediction) {
     })
   }
 
-  // Plaquetas
   const plaquetasAltBaj = hasAny(altos, [
     'Plaquetas',
     'Volumen Plaquetario Medio',
@@ -91,7 +87,6 @@ function derivePatternsFromResumen(prediction) {
     })
   }
 
-  // Si no hay nada alto/bajo, no devolvemos patrones
   if (!patterns.length && !altos.length && !bajos.length) {
     return []
   }
@@ -107,13 +102,11 @@ export default function PrediagResults() {
   const { addNotification, notifications } = useNotifications()
   const location = useLocation()
 
-  // 👇 saber si venimos de /results?src=manual
   const params = new URLSearchParams(location.search || '')
   const fromManual = params.get('src') === 'manual'
 
   const firedRef = useRef(false)
 
-  // 1) Si venimos de ManualEntry (o de otro lado) con state.result, úsalo
   useEffect(() => {
     const stateResult = location.state?.result
     if (!stateResult) return
@@ -127,7 +120,6 @@ export default function PrediagResults() {
     } catch {}
   }, [location.state])
 
-  // 2) Sólo si NO hay prediction todavía, consulta /history/latest (flujo anterior)
   useEffect(() => {
     if (prediction) return
 
@@ -152,14 +144,12 @@ export default function PrediagResults() {
     return () => { mounted = false }
   }, [prediction])
 
-  // 3) Log de la predicción actual
   useEffect(() => {
     if (prediction) {
       console.log('LATEST PRED RAW =>', prediction)
     }
   }, [prediction])
 
-  // 4) Notificación (igual que antes, pero usando la prediction actual)
   useEffect(() => {
     if (!prediction || firedRef.current) return
 
@@ -182,7 +172,6 @@ export default function PrediagResults() {
   }, [prediction, notifications, addNotification])
   
   const renderEstado = () => {
-    // 👇 Cambio mínimo: si YA hay prediction, no mostramos "Consultando..."
     if (prediction) return null
     if (loading) return <p>Consultando…</p>
     if (error)   return <p style={{ color: '#b10808' }}>Error: {error}</p>
@@ -295,7 +284,6 @@ export default function PrediagResults() {
   }
 
   const renderPatrones = () => {
-    // 👇 Cambio mínimo: mientras NO haya prediction y esté cargando, sí mostramos "Consultando…"
     if (!prediction && loading) return <p>Consultando…</p>
     if (!prediction) return <p>No hay datos de patrones todavía.</p>
     if (error && !prediction) return null
