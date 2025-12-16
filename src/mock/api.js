@@ -1,9 +1,6 @@
-// Mock de "servicios" sin backend: usa localStorage con roles
+//FUNCIONAMIENTO DE PRUEBA SIMULADOR
 const wait = (ms = 600) => new Promise((r) => setTimeout(r, ms))
 
-// Cuentas demo (solo front, SIN backend):
-// - Admin  → usuario: admin   · contraseña: admin12
-// - Doctor → usuario: doctor  · contraseña: doctor12
 const HARD_USERS = [
   { email: 'admin',  password: 'admin12',  role: 'admin',  nombre: 'Administrador' },
   { email: 'doctor', password: 'doctor12', role: 'doctor', nombre: 'Médico Especialista' },
@@ -11,7 +8,7 @@ const HARD_USERS = [
 
 export async function login({ email, password }) {
   await wait()
-  const users = JSON.parse(localStorage.getItem('users') || '[]') // registrados (pacientes)
+  const users = JSON.parse(localStorage.getItem('users') || '[]') 
   const all = [...HARD_USERS, ...users]
   const user = all.find((u) => u.email === email)
   if (!user) throw new Error('Usuario no registrado')
