@@ -1,7 +1,6 @@
-// src/api/doctorClient.js
-import { apiFetch } from './httpClient'; // el mismo helper que uses en historyClient
+import { apiFetch } from './httpClient'; 
 
 export async function fetchCriticalPatients() {
-  const res = await apiFetch('/doctor/critical'); // ruta del API Gateway
+  const res = await apiFetch('/doctor/critical');
   return res.items || [];
 }
