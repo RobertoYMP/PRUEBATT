@@ -1,4 +1,3 @@
-// src/pages/doctor/EditRecommendations/EditRecommendations.jsx
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { saveDoctorRecommendations } from '../../../api/history';
