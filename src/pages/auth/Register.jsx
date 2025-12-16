@@ -13,7 +13,7 @@ export default function Register() {
   })
   const [error, setError] = useState('')
   const [msg, setMsg] = useState('')
-  const [step, setStep] = useState('signup') // signup | confirm
+  const [step, setStep] = useState('signup') 
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirming, setConfirming] = useState(false)
@@ -47,7 +47,7 @@ export default function Register() {
         email: form.email,
         password: form.password,
         name: `${form.nombre} ${form.apellido}`.trim(),
-        edad: age, // 👈 mandamos la edad a Cognito
+        edad: age, 
       })
       setMsg('Usuario creado. Revisa tu correo y escribe el código de confirmación.')
       setStep('confirm')
