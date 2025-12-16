@@ -28,7 +28,7 @@ import SpecialistProfile from './pages/admin/SpecialistProfile/SpecialistProfile
 import { NotificationProvider } from "./context/NotificationContext"
 import HistoryReviews from './pages/doctor/HistoryReviews/HistoryReviews.jsx'
 import { Popup } from './components/Popup/Popup.jsx'
-import { faFileSignature } from '@fortawesome/free-solid-svg-icons
+import { faFileSignature } from '@fortawesome/free-solid-svg-icons'
 import DoctorPrediagResults from './pages/doctor/DoctorPrediagResults/DoctorPrediagResults.jsx'
 import { isSessionValid, getRole, signOut, initSession } from './pages/auth/cognito'
 
