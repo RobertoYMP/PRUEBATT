@@ -1,4 +1,3 @@
-// src/pages/patient/Recommendations.jsx
 import React from 'react';
 import { usePrediction } from '../../hooks/usePrediction';
 import { useNavigate } from 'react-router-dom';
