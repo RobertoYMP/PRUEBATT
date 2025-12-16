@@ -1,4 +1,3 @@
-// src/pages/patient/Upload/Upload.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Upload.css';
@@ -106,7 +105,6 @@ export default function Upload() {
       
       const userEmail = claims.email || null;
       
-      // Para el backend NO mandamos el fallback "Paciente"
       const apiPatientName = displayName === 'Paciente' ? undefined : displayName;
 
       if (API_BASE) {
