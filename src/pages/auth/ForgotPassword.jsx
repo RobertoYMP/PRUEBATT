@@ -1,4 +1,3 @@
-// src/pages/auth/ForgotPassword.jsx
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
@@ -7,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Button from '../../components/Button/Button.jsx'
 
-// 👇 importa las funciones de Cognito
 import { forgotPassword, resendCode } from './cognito';
 
 export default function ForgotPassword() {
@@ -22,8 +20,7 @@ export default function ForgotPassword() {
     setError(''); setInfo('')
     setLoading(true)
     try {
-      await forgotPassword({ email }) // inicia el flujo en Cognito
-      // Guarda el email para prefilling en /reset
+      await forgotPassword({ email }) 
       try { sessionStorage.setItem('fp_email', email) } catch {}
       setSent(true)
       setInfo('Te enviamos un código de verificación a tu correo.')
@@ -105,8 +102,6 @@ export default function ForgotPassword() {
             <div className="mail-sent">
               <div className="badge estable" style={{ width: "80%" }}>Código enviado</div>
               <p>Te enviamos un código para restablecer tu contraseña. Revisa tu bandeja o SPAM.</p>
-
-              {/* Ir directo a /reset con email como query param */}
               <Button
                 as={Link}
                 to={`/reset?email=${encodeURIComponent(email)}`}
