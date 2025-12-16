@@ -1,4 +1,3 @@
-// src/pages/patient/ManualEntry.jsx
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import FormField from '../../components/FormField.jsx'
